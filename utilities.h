@@ -1,0 +1,3 @@
+#pragma once
+AcCmColor getRandomColor();
+
