@@ -58,6 +58,7 @@ protected:
 
 public:
 	ADSKTetrahedron () ;
+	//ADSKTetrahedron(AcGePoint3d adCenter); // TODO
 	virtual ~ADSKTetrahedron () ;
 
 	//----- AcDbObject protocols
@@ -74,7 +75,7 @@ public:
 protected:
 	virtual Adesk::Boolean subWorldDraw (AcGiWorldDraw *mode) ;
 	virtual Adesk::UInt32 subSetAttributes (AcGiDrawableTraits *traits) ;
-
+	virtual Acad::ErrorStatus   subTransformBy(const AcGeMatrix3d& xform);
 	//- Osnap points protocol
 public:
 	virtual Acad::ErrorStatus subGetOsnapPoints (
@@ -103,6 +104,18 @@ public:
 		const AcGeVector3d &curViewDir, const int bitflags) const ;
 	virtual Acad::ErrorStatus subMoveGripPointsAt (const AcDbVoidPtrArray &gripAppData, const AcGeVector3d &offset, const int bitflags) ;
 
+	// 
+	double volume() const;
+private:
+	void calculateVertices() noexcept; // AcGePoint3d aNewCenter
+	//m_aEdges;
+	// m_aFaces;
+	double m_dLenght; // длинна ребра // TODO remove use scale
+	//AcGePoint3d m_dCenter;
+	AcArray<AcArray<int>> m_aFaces; // индексы вершин // TODO static atribute?
+	AcGePoint3dArray m_aVertices; 
+	
+	// TransformMatrix
 } ;
 
 #ifdef TETRAHEDRON_MODULE

@@ -24,7 +24,10 @@
 //-----------------------------------------------------------------------------
 #include "StdAfx.h"
 #include "resource.h"
-
+#include <cmath>
+#include <ranges>
+#include <array>
+#include <numbers>
 //-----------------------------------------------------------------------------
 #define szRDS _RXST("ADSK")
 
@@ -60,85 +63,80 @@ public:
 	virtual void RegisterServerComponents () {
 	}
 	
-	// The ACED_ARXCOMMAND_ENTRY_AUTO macro can be applied to any static member 
-	// function of the CicosahedroninscribedinatetrahedronApp class.
-	// The function should take no arguments and return nothing.
-	//
-	// NOTE: ACED_ARXCOMMAND_ENTRY_AUTO has overloads where you can provide resourceid and
-	// have arguments to define context and command mechanism.
-	
-	// ACED_ARXCOMMAND_ENTRY_AUTO(classname, group, globCmd, locCmd, cmdFlags, UIContext)
-	// ACED_ARXCOMMAND_ENTRYBYID_AUTO(classname, group, globCmd, locCmdId, cmdFlags, UIContext)
-	// only differs that it creates a localized name using a string in the resource file
-	//   locCmdId - resource ID for localized command
+    static void ADSKMyGroup_CREATE(void) // createIcosahedron
+    {
+        
 
-	// Modal Command with localized name
-	// ACED_ARXCOMMAND_ENTRY_AUTO(CicosahedroninscribedinatetrahedronApp, ADSKMyGroup, MyCommand, MyCommandLocal, ACRX_CMD_MODAL)
-	static void ADSKMyGroupMyCommand () {
-		// Put your command code here
+        AcDbBlockTableRecordPointer pSpaceRecord(acdbHostApplicationServices()->workingDatabase()->currentSpaceId(), AcDb::kForWrite);
+        if (pSpaceRecord.openStatus() != Acad::eOk) {
+            return;
+        }
 
-	}
+        auto phi = std::numbers::phi_v<double>;
 
-	// Modal Command with pickfirst selection
-	// ACED_ARXCOMMAND_ENTRY_AUTO(CicosahedroninscribedinatetrahedronApp, ADSKMyGroup, MyPickFirst, MyPickFirstLocal, ACRX_CMD_MODAL | ACRX_CMD_USEPICKSET)
-	static void ADSKMyGroupMyPickFirst () {
-		ads_name result ;
-		int iRet =acedSSGet (ACRX_T("_I"), NULL, NULL, NULL, result) ;
-		if ( iRet == RTNORM )
-		{
-			// There are selected entities
-			// Put your command using pickfirst set code here
-		}
-		else
-		{
-			// There are no selected entities
-			// Put your command code here
-		}
-	}
+        const double X = 0.525731112119133606;
+        const double Z = 0.850650808352039932;
+        
+        AcGePoint3d vertices[12] = {
+            AcGePoint3d(),
+        }
+        //AcGePoint3d vertices[12] = {
+        //    AcGePoint3d(-X, 0, Z), AcGePoint3d(X, 0, Z), AcGePoint3d(-X, 0, -Z), AcGePoint3d(X, 0, -Z),
+        //    AcGePoint3d(0, Z, X), AcGePoint3d(0, Z, -X), AcGePoint3d(0, -Z, X), AcGePoint3d(0, -Z, -X),
+        //    AcGePoint3d(Z, X, 0), AcGePoint3d(-Z, X, 0), AcGePoint3d(Z, -X, 0), AcGePoint3d(-Z, -X, 0)
+        //};
 
-	// Application Session Command with localized name
-	// ACED_ARXCOMMAND_ENTRY_AUTO(CicosahedroninscribedinatetrahedronApp, ADSKMyGroup, MySessionCmd, MySessionCmdLocal, ACRX_CMD_MODAL | ACRX_CMD_SESSION)
-	static void ADSKMyGroupMySessionCmd () {
-		// Put your command code here
-	}
+        
+        int faces[20][3] = {
+            {0, 4, 1}, {0, 9, 4}, {9, 5, 4}, {4, 5, 8}, {4, 8, 1},
+            {8, 10, 1}, {8, 3, 10}, {5, 3, 8}, {5, 2, 3}, {2, 7, 3},
+            {7, 10, 3}, {7, 6, 10}, {7, 11, 6}, {11, 0, 6}, {0, 1, 6},
+            {6, 1, 10}, {9, 0, 11}, {9, 11, 2}, {9, 2, 5}, {7, 2, 11}
+        };
 
-	// The ACED_ADSFUNCTION_ENTRY_AUTO / ACED_ADSCOMMAND_ENTRY_AUTO macros can be applied to any static member 
-	// function of the CicosahedroninscribedinatetrahedronApp class.
-	// The function may or may not take arguments and have to return RTNORM, RTERROR, RTCAN, RTFAIL, RTREJ to AutoCAD, but use
-	// acedRetNil, acedRetT, acedRetVoid, acedRetInt, acedRetReal, acedRetStr, acedRetPoint, acedRetName, acedRetList, acedRetVal to return
-	// a value to the Lisp interpreter.
-	//
-	// NOTE: ACED_ADSFUNCTION_ENTRY_AUTO / ACED_ADSCOMMAND_ENTRY_AUTO has overloads where you can provide resourceid.
-	
-	//- ACED_ADSFUNCTION_ENTRY_AUTO(classname, name, regFunc) - this example
-	//- ACED_ADSSYMBOL_ENTRYBYID_AUTO(classname, name, nameId, regFunc) - only differs that it creates a localized name using a string in the resource file
-	//- ACED_ADSCOMMAND_ENTRY_AUTO(classname, name, regFunc) - a Lisp command (prefix C:)
-	//- ACED_ADSCOMMAND_ENTRYBYID_AUTO(classname, name, nameId, regFunc) - only differs that it creates a localized name using a string in the resource file
+        for (int i = 0; i < 20; ++i)
+        {
+            // Создание треугольной грани
+            AcDbFace* pFace = new AcDbFace(vertices[faces[i][0]], vertices[faces[i][1]], vertices[faces[i][2]]);
+            AcDbObjectId solidId;
+            if (pSpaceRecord->appendAcDbEntity(solidId, pFace) != Acad::eOk)
+            {
+                delete pFace;
+                return;
+            }
+            pFace->close();
+        }
 
-	// Lisp Function is similar to ARX Command but it creates a lisp 
-	// callable function. Many return types are supported not just string
-	// or integer.
-	// ACED_ADSFUNCTION_ENTRY_AUTO(CicosahedroninscribedinatetrahedronApp, MyLispFunction, false)
-	static int ads_MyLispFunction () {
-		//struct resbuf *args =acedGetArgs () ;
-		
-		// Put your command code here
+        //double length = 10; // TODO replace for 1.0 and use scale
+        //std::array < AcGePoint3d,4> vertices{
+        //    AcGePoint3d(-length / 2.0,-std::sqrt(3.0)/6.0*length,0),
+        //    AcGePoint3d(length / 2.0,-std::sqrt(3.0) / 6.0 * length,0),
+        //    AcGePoint3d(0,std::sqrt(3.0)/3.0* length,0),
+        //    AcGePoint3d(0,0,std::sqrt(33.0)/6.0* length)
+        //};
+        //std::array<std::array<int, 3>, 4> faces{
+        //    std::array<int, 3>{0, 1, 2},
+        //    std::array<int, 3>{0, 1, 3},
+        //    std::array<int, 3>{0, 2, 3},
+        //    std::array<int, 3>{1, 3, 2}
+        //};
 
-		//acutRelRb (args) ;
-		
-		// Return a value to the AutoCAD Lisp Interpreter
-		// acedRetNil, acedRetT, acedRetVoid, acedRetInt, acedRetReal, acedRetStr, acedRetPoint, acedRetName, acedRetList, acedRetVal
+        
+                
+        //for (const auto& face : faces) {
+        //    
+        //    AcDbFace* pFace = new AcDbFace(vertices[face[0]], vertices[face[1]], vertices[face[2]], Adesk::kTrue);
+        //    AcDbObjectId objId;
+        //    pSpaceRecord->appendAcDbEntity(objId, pFace);
+        //    pFace->close();
+        //}
+        
 
-		return (RTNORM) ;
-	}
-	
+    }
 } ;
 
 //-----------------------------------------------------------------------------
 IMPLEMENT_ARX_ENTRYPOINT(CicosahedroninscribedinatetrahedronApp)
 
-ACED_ARXCOMMAND_ENTRY_AUTO(CicosahedroninscribedinatetrahedronApp, ADSKMyGroup, MyCommand, MyCommandLocal, ACRX_CMD_MODAL, NULL)
-ACED_ARXCOMMAND_ENTRY_AUTO(CicosahedroninscribedinatetrahedronApp, ADSKMyGroup, MyPickFirst, MyPickFirstLocal, ACRX_CMD_MODAL | ACRX_CMD_USEPICKSET, NULL)
-ACED_ARXCOMMAND_ENTRY_AUTO(CicosahedroninscribedinatetrahedronApp, ADSKMyGroup, MySessionCmd, MySessionCmdLocal, ACRX_CMD_MODAL | ACRX_CMD_SESSION, NULL)
-ACED_ADSSYMBOL_ENTRY_AUTO(CicosahedroninscribedinatetrahedronApp, MyLispFunction, false)
+ACED_ARXCOMMAND_ENTRY_AUTO(CicosahedroninscribedinatetrahedronApp, ADSKMyGroup, _CREATE, CREATE, ACRX_CMD_TRANSPARENT, NULL)
 
