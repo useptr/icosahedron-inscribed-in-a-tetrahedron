@@ -24,7 +24,7 @@
 //-----------------------------------------------------------------------------
 #include "StdAfx.h"
 #include "ADSKTetrahedron.h"
-
+#include "Tchar.h"
 //-----------------------------------------------------------------------------
 Adesk::UInt32 ADSKTetrahedron::kCurrentVersionNumber = 1;
 
@@ -40,14 +40,13 @@ ACRX_DXF_DEFINE_MEMBERS(
 )
 
 //-----------------------------------------------------------------------------
-ADSKTetrahedron::ADSKTetrahedron() : AcDbEntity(), m_dLenght(5.0) {
+ADSKTetrahedron::ADSKTetrahedron() : AcDbEntity(), m_dEdgeLength(1.0) {
 	calculateVertices();
-	m_aFaces.at(0).appendList(0, 1, 2);
-	m_aFaces.at(1).appendList(0, 1, 3);
-	m_aFaces.at(2).appendList(0, 2, 3);
-	m_aFaces.at(3).appendList(1, 2, 3);
 }
 
+ADSKTetrahedron::ADSKTetrahedron(double adEdgeLength) : AcDbEntity(), m_dEdgeLength(adEdgeLength) {
+	calculateVertices();
+}
 ADSKTetrahedron::~ADSKTetrahedron() {
 
 }
@@ -65,7 +64,7 @@ Acad::ErrorStatus ADSKTetrahedron::dwgOutFields(AcDbDwgFiler * pFiler) const {
 	if ((es = pFiler->writeUInt32(ADSKTetrahedron::kCurrentVersionNumber)) != Acad::eOk)
 		return (es);
 	//----- Output params
-	//.....
+	pFiler->writeItem(m_dEdgeLength);
 
 	return (pFiler->filerStatus());
 }
@@ -87,7 +86,7 @@ Acad::ErrorStatus ADSKTetrahedron::dwgInFields(AcDbDwgFiler * pFiler) {
 	//if ( version < ADSKTetrahedron::kCurrentVersionNumber )
 	//	return (Acad::eMakeMeProxy) ;
 	//----- Read params
-	//.....
+	pFiler->readItem(&m_dEdgeLength);
 
 	return (pFiler->filerStatus());
 }
@@ -106,7 +105,7 @@ Acad::ErrorStatus ADSKTetrahedron::dxfOutFields(AcDbDxfFiler * pFiler) const {
 	if ((es = pFiler->writeUInt32(kDxfInt32, ADSKTetrahedron::kCurrentVersionNumber)) != Acad::eOk)
 		return (es);
 	//----- Output params
-	//.....
+	pFiler->writeItem(AcDb::kDxfReal + 1, m_dEdgeLength);
 
 	return (pFiler->filerStatus());
 }
@@ -134,24 +133,19 @@ Acad::ErrorStatus ADSKTetrahedron::dxfInFields(AcDbDxfFiler * pFiler) {
 	//	return (Acad::eMakeMeProxy) ;
 	//----- Read params in non order dependant manner
 
-	//while ( es == Acad::eOk && (es =pFiler->readResBuf (&rb)) == Acad::eOk ) {
-	//	switch ( rb.restype ) {
-	//		//----- Read params by looking at their DXF code (example below)
-	//		//case AcDb::kDxfXCoord:
-	//		//	if ( version == 1 )
-	//		//		cen3d =asPnt3d (rb.resval.rpoint) ;
-	//		//	else 
-	//		//		cen2d =asPnt2d (rb.resval.rpoint) ;
-	//		//	break ;
-	//		//.....
+	while ( es == Acad::eOk && (es =pFiler->readResBuf (&rb)) == Acad::eOk ) {
+		switch ( rb.restype ) {
+		case  AcDb::kDxfReal + 1:
+			m_dEdgeLength = rb.resval.rreal;
+			break;
 
-	//		default:
-	//			//----- An unrecognized group. Push it back so that the subclass can read it again.
-	//			pFiler->pushBackItem () ;
-	//			es =Acad::eEndOfFile ;
-	//			break ;
-	//	}
-	//}
+			default:
+				//----- An unrecognized group. Push it back so that the subclass can read it again.
+				pFiler->pushBackItem () ;
+				es =Acad::eEndOfFile ;
+				break ;
+		}
+	}
 
 	//----- At this point the es variable must contain eEndOfFile
 	//----- - either from readResBuf() or from pushback. If not,
@@ -162,12 +156,25 @@ Acad::ErrorStatus ADSKTetrahedron::dxfInFields(AcDbDxfFiler * pFiler) {
 
 	return (pFiler->filerStatus());
 }
-
+//#include <iostream>
 //-----------------------------------------------------------------------------
 //----- AcDbEntity protocols
 Adesk::Boolean ADSKTetrahedron::subWorldDraw(AcGiWorldDraw * mode) {
 	assertReadEnabled();
-	return (AcDbEntity::subWorldDraw(mode));
+
+	Adesk::UInt32 faceListSize = 4 * 4;
+
+	static Adesk::Int32 faceList[] = {
+		3, 0, 1, 2,
+		3, 0, 1, 3,
+		3, 0, 2, 3,
+		3, 1, 2, 3,
+	};
+	//mode->subEntityTraits().setColor(1);
+	mode->geometry().shell(m_aVertices.length(), m_aVertices.asArrayPtr(), faceListSize, faceList);
+
+	//return (AcDbEntity::subWorldDraw(mode));
+	return Adesk::kTrue;
 }
 
 
@@ -178,7 +185,9 @@ Adesk::UInt32 ADSKTetrahedron::subSetAttributes(AcGiDrawableTraits * traits) {
 
 Acad::ErrorStatus ADSKTetrahedron::subTransformBy(const AcGeMatrix3d& xform)
 {
-	for (auto vertex : m_aVertices) {
+	assertWriteEnabled();
+	// TODO if call scale need ubdate m_dEdgeLength
+	for (auto& vertex : m_aVertices) {
 		vertex.transformBy(xform);
 	}
 	return Acad::eOk;
@@ -260,9 +269,25 @@ void ADSKTetrahedron::calculateVertices() noexcept
 	//static double sqrt3 = std::sqrt(3.0); // TODO
 	if (m_aVertices.length() > 0) 
 		m_aVertices.removeAll();
-	m_aVertices.append(AcGePoint3d(-m_dLenght / 2.0, -std::sqrt(3.0) / 6.0 * m_dLenght, 0));
-	m_aVertices.append(AcGePoint3d(m_dLenght / 2.0, -std::sqrt(3.0) / 6.0 * m_dLenght, 0));
-	m_aVertices.append(AcGePoint3d(0, std::sqrt(3.0) / 3.0 * m_dLenght, 0));
-	m_aVertices.append(AcGePoint3d(0, 0, std::sqrt(33.0) / 6.0 * m_dLenght));
+	m_aVertices.append(AcGePoint3d(-m_dEdgeLength / 2.0, -std::sqrt(3.0) / 6.0 * m_dEdgeLength, 0));
+	m_aVertices.append(AcGePoint3d(m_dEdgeLength / 2.0, -std::sqrt(3.0) / 6.0 * m_dEdgeLength, 0));
+	m_aVertices.append(AcGePoint3d(0, std::sqrt(3.0) / 3.0 * m_dEdgeLength, 0));
+	m_aVertices.append(AcGePoint3d(0, 0, std::sqrt(33.0) / 6.0 * m_dEdgeLength));
 }
 
+double ADSKTetrahedron::insphereRadiusByEdgeLength(double adEdgeLenght) noexcept
+{
+	return adEdgeLenght * std::sqrt(6.0) / 12.0;
+}
+
+Acad::ErrorStatus ADSKTetrahedron::edgeLength(double& ardEdgeLenght) const {
+	assertReadEnabled();
+	ardEdgeLenght = m_dEdgeLength;
+	return Acad::eOk;
+}
+Acad::ErrorStatus ADSKTetrahedron::setEdgeLength(const double adEdgeLenght) {
+	assertWriteEnabled();
+	m_dEdgeLength = adEdgeLenght;
+	//calculateVertices();
+	return Acad::eOk;
+}

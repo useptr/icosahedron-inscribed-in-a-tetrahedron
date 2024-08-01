@@ -24,7 +24,8 @@
 //-----------------------------------------------------------------------------
 #include "StdAfx.h"
 #include "resource.h"
-
+#include "ADSKIcosahedron.h"
+#include "ADSKTetrahedron.h"
 //-----------------------------------------------------------------------------
 #define szRDS _RXST("ADSK")
 
@@ -40,7 +41,8 @@ public:
 
 		// You *must* call On_kInitAppMsg here
 		AcRx::AppRetCode retCode =AcRxDbxApp::On_kInitAppMsg (pkt) ;
-		
+		acrxRegisterService(ASDKICOSAHEDRON_DBXSERVICE);
+		acrxRegisterService(ASDKTETRAHEDRON_DBXSERVICE);
 		// TODO: Add your initialization code here
 
 		return (retCode) ;
@@ -53,6 +55,8 @@ public:
 		AcRx::AppRetCode retCode =AcRxDbxApp::On_kUnloadAppMsg (pkt) ;
 
 		// TODO: Unload dependencies here
+		delete acrxServiceDictionary->remove(ASDKICOSAHEDRON_DBXSERVICE);
+		delete acrxServiceDictionary->remove(ASDKTETRAHEDRON_DBXSERVICE);
 
 		return (retCode) ;
 	}

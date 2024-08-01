@@ -20,7 +20,7 @@
 //
 
 //-----------------------------------------------------------------------------
-//----- ADSKTetrahedron.h : Declaration of the ADSKTetrahedron
+//----- ADSKIcosahedron.h : Declaration of the ADSKIcosahedron
 //-----------------------------------------------------------------------------
 #pragma once
 
@@ -48,28 +48,25 @@
 
 #endif // !DLLIMPEXP
 
-
-
-
 //-----------------------------------------------------------------------------
 #include "dbmain.h"
 #include "Tchar.h"
-#define ASDKTETRAHEDRON_DBXSERVICE _T("ASDKTETRAHEDRON_DBXSERVICE")
-class ADSKTetrahedronWithInscribedIcosahedron;
+#define ASDKICOSAHEDRON_DBXSERVICE _T("ASDKICOSAHEDRON_DBXSERVICE")
 //-----------------------------------------------------------------------------
-class DLLIMPEXP ADSKTetrahedron : public AcDbEntity {
+class ADSKTetrahedronWithInscribedIcosahedron;
+class DLLIMPEXP ADSKIcosahedron : public AcDbEntity {
 
 public:
-	ACRX_DECLARE_MEMBERS(ADSKTetrahedron) ;
+	ACRX_DECLARE_MEMBERS(ADSKIcosahedron);
 
 protected:
 	static Adesk::UInt32 kCurrentVersionNumber ;
 
 public:
 	friend class ADSKTetrahedronWithInscribedIcosahedron;
-	ADSKTetrahedron () ;
-	ADSKTetrahedron(double adEdgeLength); // TODO
-	virtual ~ADSKTetrahedron () ;
+	ADSKIcosahedron () ;
+	ADSKIcosahedron(double adEdgeLength);
+	virtual ~ADSKIcosahedron () ;
 
 	//----- AcDbObject protocols
 	//- Dwg Filing protocol
@@ -85,7 +82,7 @@ public:
 protected:
 	virtual Adesk::Boolean subWorldDraw (AcGiWorldDraw *mode) ;
 	virtual Adesk::UInt32 subSetAttributes (AcGiDrawableTraits *traits) ;
-	virtual Acad::ErrorStatus   subTransformBy(const AcGeMatrix3d& xform);
+	virtual Acad::ErrorStatus subTransformBy(const AcGeMatrix3d& xform);
 	//- Osnap points protocol
 public:
 	virtual Acad::ErrorStatus subGetOsnapPoints (
@@ -114,28 +111,24 @@ public:
 		const AcGeVector3d &curViewDir, const int bitflags) const ;
 	virtual Acad::ErrorStatus subMoveGripPointsAt (const AcDbVoidPtrArray &gripAppData, const AcGeVector3d &offset, const int bitflags) ;
 
-	// for  Tetrahedro
+	// for Icosahedron
 	/*!
-		  \brief Вычисляет радиус вписанной сферы тетраэдра по длине ребра тетраэдра
-		  \param adEdgeLenght длина ребра тетраэдра
-		  \return Радиус вписанной сферы тетраэдра
+		  \brief Вычисляет длину ребра икосаэдра по радиусу описанной сферы 
+		  \param adCircumsphereRadius радиус описанной сферы икосаэдра
+		  \return Длина ребра икосаэдра
 	*/
-	static double insphereRadiusByEdgeLength(double adEdgeLenght) noexcept;
-	double volume() const;
+	static double edgeLengthByCircumsphereRadius(double adCircumsphereRadius) noexcept;
+	Acad::ErrorStatus setFaceColor(Adesk::Int32 aI, short anColor);
 	Acad::ErrorStatus edgeLength(double& ardEdgeLenght) const;
 	Acad::ErrorStatus setEdgeLength(const double adEdgeLenght);
 private:
 	void calculateVertices() noexcept;
-	//m_aEdges;
-	// m_aFaces;
-	double m_dEdgeLength; // длинна ребра // TODO remove use scale
-	//AcGePoint3d m_dCenter;
-	//AcArray<AcArray<int>> m_aFaces; // индексы вершин // TODO static atribute?
-	AcGePoint3dArray m_aVertices; 
-	
-	// TransformMatrix
+	double m_dEdgeLength;
+	AcGePoint3dArray m_aVertices;
+	std::unique_ptr<AcGiFaceData> m_pFaceData;
+	//AcArray<AcGePoint3dArray> m_aFaces;
 } ;
 
 #ifdef TETRAHEDRON_MODULE
-ACDB_REGISTER_OBJECT_ENTRY_AUTO(ADSKTetrahedron)
+ACDB_REGISTER_OBJECT_ENTRY_AUTO(ADSKIcosahedron)
 #endif

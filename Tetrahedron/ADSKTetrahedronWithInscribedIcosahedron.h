@@ -20,7 +20,7 @@
 //
 
 //-----------------------------------------------------------------------------
-//----- ADSKTetrahedron.h : Declaration of the ADSKTetrahedron
+//----- ADSKTetrahedronWithInscribedIcosahedron.h : Declaration of the ADSKTetrahedronWithInscribedIcosahedron
 //-----------------------------------------------------------------------------
 #pragma once
 
@@ -48,28 +48,22 @@
 
 #endif // !DLLIMPEXP
 
-
-
-
 //-----------------------------------------------------------------------------
 #include "dbmain.h"
-#include "Tchar.h"
-#define ASDKTETRAHEDRON_DBXSERVICE _T("ASDKTETRAHEDRON_DBXSERVICE")
-class ADSKTetrahedronWithInscribedIcosahedron;
+#include "ADSKIcosahedron.h"
+#include "ADSKTetrahedron.h"
 //-----------------------------------------------------------------------------
-class DLLIMPEXP ADSKTetrahedron : public AcDbEntity {
+class DLLIMPEXP ADSKTetrahedronWithInscribedIcosahedron : public AcDbEntity {
 
 public:
-	ACRX_DECLARE_MEMBERS(ADSKTetrahedron) ;
+	ACRX_DECLARE_MEMBERS(ADSKTetrahedronWithInscribedIcosahedron) ;
 
 protected:
 	static Adesk::UInt32 kCurrentVersionNumber ;
 
 public:
-	friend class ADSKTetrahedronWithInscribedIcosahedron;
-	ADSKTetrahedron () ;
-	ADSKTetrahedron(double adEdgeLength); // TODO
-	virtual ~ADSKTetrahedron () ;
+	ADSKTetrahedronWithInscribedIcosahedron () ;
+	virtual ~ADSKTetrahedronWithInscribedIcosahedron () ;
 
 	//----- AcDbObject protocols
 	//- Dwg Filing protocol
@@ -85,26 +79,26 @@ public:
 protected:
 	virtual Adesk::Boolean subWorldDraw (AcGiWorldDraw *mode) ;
 	virtual Adesk::UInt32 subSetAttributes (AcGiDrawableTraits *traits) ;
-	virtual Acad::ErrorStatus   subTransformBy(const AcGeMatrix3d& xform);
+	virtual Acad::ErrorStatus subTransformBy(const AcGeMatrix3d& xform);
 	//- Osnap points protocol
 public:
-	virtual Acad::ErrorStatus subGetOsnapPoints (
-		AcDb::OsnapMode osnapMode,
-		Adesk::GsMarker gsSelectionMark,
-		const AcGePoint3d &pickPoint,
-		const AcGePoint3d &lastPoint,
-		const AcGeMatrix3d &viewXform,
-		AcGePoint3dArray &snapPoints,
-		AcDbIntArray &geomIds) const ;
-	virtual Acad::ErrorStatus subGetOsnapPoints (
-		AcDb::OsnapMode osnapMode,
-		Adesk::GsMarker gsSelectionMark,
-		const AcGePoint3d &pickPoint,
-		const AcGePoint3d &lastPoint,
-		const AcGeMatrix3d &viewXform,
-		AcGePoint3dArray &snapPoints,
-		AcDbIntArray &geomIds,
-		const AcGeMatrix3d &insertionMat) const ;
+	//virtual Acad::ErrorStatus subGetOsnapPoints (
+	//	AcDb::OsnapMode osnapMode,
+	//	Adesk::GsMarker gsSelectionMark,
+	//	const AcGePoint3d &pickPoint,
+	//	const AcGePoint3d &lastPoint,
+	//	const AcGeMatrix3d &viewXform,
+	//	AcGePoint3dArray &snapPoints,
+	//	AcDbIntArray &geomIds) const ;
+	//virtual Acad::ErrorStatus subGetOsnapPoints (
+	//	AcDb::OsnapMode osnapMode,
+	//	Adesk::GsMarker gsSelectionMark,
+	//	const AcGePoint3d &pickPoint,
+	//	const AcGePoint3d &lastPoint,
+	//	const AcGeMatrix3d &viewXform,
+	//	AcGePoint3dArray &snapPoints,
+	//	AcDbIntArray &geomIds,
+	//	const AcGeMatrix3d &insertionMat) const ;
 
 	//- Grip points protocol
 	virtual Acad::ErrorStatus subGetGripPoints (AcGePoint3dArray &gripPoints, AcDbIntArray &osnapModes, AcDbIntArray &geomIds) const ;
@@ -114,28 +108,16 @@ public:
 		const AcGeVector3d &curViewDir, const int bitflags) const ;
 	virtual Acad::ErrorStatus subMoveGripPointsAt (const AcDbVoidPtrArray &gripAppData, const AcGeVector3d &offset, const int bitflags) ;
 
-	// for  Tetrahedro
-	/*!
-		  \brief Вычисляет радиус вписанной сферы тетраэдра по длине ребра тетраэдра
-		  \param adEdgeLenght длина ребра тетраэдра
-		  \return Радиус вписанной сферы тетраэдра
-	*/
-	static double insphereRadiusByEdgeLength(double adEdgeLenght) noexcept;
-	double volume() const;
-	Acad::ErrorStatus edgeLength(double& ardEdgeLenght) const;
-	Acad::ErrorStatus setEdgeLength(const double adEdgeLenght);
 private:
-	void calculateVertices() noexcept;
-	//m_aEdges;
-	// m_aFaces;
-	double m_dEdgeLength; // длинна ребра // TODO remove use scale
-	//AcGePoint3d m_dCenter;
-	//AcArray<AcArray<int>> m_aFaces; // индексы вершин // TODO static atribute?
-	AcGePoint3dArray m_aVertices; 
+	double getInscribedIcosahedronEdgeLength(double adTetrahedronEdgeLenght) const noexcept;
+	AcGePoint3d m_ptMoveGripPoint; ///< Точка для перемещения entity (находиться в центре)
+	ADSKTetrahedron m_Tetrahedron;
+	ADSKIcosahedron m_Icosahedron;
+	// Grip points
+	//AcGeSphere
 	
-	// TransformMatrix
 } ;
 
 #ifdef TETRAHEDRON_MODULE
-ACDB_REGISTER_OBJECT_ENTRY_AUTO(ADSKTetrahedron)
+ACDB_REGISTER_OBJECT_ENTRY_AUTO(ADSKTetrahedronWithInscribedIcosahedron)
 #endif
