@@ -1,4 +1,4 @@
-// (C) Copyright 2002-2012 by Autodesk, Inc. 
+// (C) Copyright 2002-2007 by Autodesk, Inc. 
 //
 // Permission to use, copy, modify, and distribute this software in
 // object code form for any purpose and without fee is hereby granted, 
@@ -20,29 +20,33 @@
 //
 
 //-----------------------------------------------------------------------------
-//----- DocData.h : include file for document specific data. An instance of this
-//----- class is automatically created and managed by the AsdkDataManager class.
-//----- See the AsdkDmgr.h / DocData.cpp for more datails
+//----- ADSKTetrahedronWithInscribedIcosahedronReactor.cpp : Implementation of ADSKTetrahedronWithInscribedIcosahedronReactor
 //-----------------------------------------------------------------------------
-#pragma once
-#include "ADSKTetrahedronWithInscribedIcosahedron.h"
-#include "ADSKDatabaseReactor.h"
+#include "StdAfx.h"
+#include "ADSKTetrahedronWithInscribedIcosahedronReactor.h"
+
 //-----------------------------------------------------------------------------
-//----- Here you can store the document / database related data.
-class CDocData {
+ACRX_CONS_DEFINE_MEMBERS(ADSKTetrahedronWithInscribedIcosahedronReactor, AcDbObjectReactor, 1)
 
-	//----- TODO: here you can add your variables
+//-----------------------------------------------------------------------------
+ADSKTetrahedronWithInscribedIcosahedronReactor::ADSKTetrahedronWithInscribedIcosahedronReactor () : AcDbObjectReactor() {
+}
 
-public:
-	CDocData () ;
-	CDocData (const CDocData &data) ;
-	~CDocData () ;
+//-----------------------------------------------------------------------------
+ADSKTetrahedronWithInscribedIcosahedronReactor::~ADSKTetrahedronWithInscribedIcosahedronReactor () {
+}
 
-	bool m_bScaleCommand;
-	bool m_bDoRepainting;
-	ADSKDatabaseReactor* m_pDatabaseReactor;
-	AcDbObjectIdArray m_aChangedObjects;
-	
-} ;
+void ADSKTetrahedronWithInscribedIcosahedronReactor::openedForModify(const AcDbObject* pDbObj)
+{
+	if (DocVars.docData().m_bDoRepainting)
+		return;
+	if (!DocVars.docData().m_bScaleCommand)
+		return;
 
-void detachAllTetrahedronWithInscribedIcosahedronReactors();
+	ADSKTetrahedronWithInscribedIcosahedron* pEntity = ADSKTetrahedronWithInscribedIcosahedron::cast(pDbObj);
+	if (nullptr == pEntity)
+		return;
+	//pDbObj->objectId()
+	DocVars.docData().m_aChangedObjects.append(pDbObj->objectId());
+}
+

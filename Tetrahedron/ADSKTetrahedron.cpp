@@ -25,6 +25,7 @@
 #include "StdAfx.h"
 #include "ADSKTetrahedron.h"
 #include "Tchar.h"
+#include <memory>
 //-----------------------------------------------------------------------------
 Adesk::UInt32 ADSKTetrahedron::kCurrentVersionNumber = 1;
 
@@ -43,6 +44,22 @@ ACRX_DXF_DEFINE_MEMBERS(
 ADSKTetrahedron::ADSKTetrahedron() : AcDbEntity(), m_dEdgeLength(1.0) {
 	calculateVertices();
 }
+
+//ADSKTetrahedron::ADSKTetrahedron(const ADSKTetrahedron& other)
+//{
+//	m_dEdgeLength = other.m_dEdgeLength;
+//	m_aVertices = other.m_aVertices;
+//}
+//
+//ADSKTetrahedron& ADSKTetrahedron::operator=(const ADSKTetrahedron& other)
+//{
+//	if (this == std::addressof(other))
+//		return *this;
+//	m_dEdgeLength = other.m_dEdgeLength;
+//	m_aVertices = other.m_aVertices;
+//
+//	return *this;
+//}
 
 ADSKTetrahedron::ADSKTetrahedron(double adEdgeLength) : AcDbEntity(), m_dEdgeLength(adEdgeLength) {
 	calculateVertices();
@@ -170,7 +187,7 @@ Adesk::Boolean ADSKTetrahedron::subWorldDraw(AcGiWorldDraw * mode) {
 		3, 0, 2, 3,
 		3, 1, 2, 3,
 	};
-	//mode->subEntityTraits().setColor(1);
+	
 	mode->geometry().shell(m_aVertices.length(), m_aVertices.asArrayPtr(), faceListSize, faceList);
 
 	//return (AcDbEntity::subWorldDraw(mode));
@@ -245,11 +262,11 @@ Acad::ErrorStatus ADSKTetrahedron::subGetGripPoints(
 	const AcGeVector3d & curViewDir, const int bitflags
 ) const {
 	assertReadEnabled();
-
+	return Acad::eOk;
 	//----- If you return eNotImplemented here, that will force AutoCAD to call
 	//----- the older getGripPoints() implementation. The call below may return
 	//----- eNotImplemented depending of your base class.
-	return (AcDbEntity::subGetGripPoints(grips, curViewUnitSize, gripSize, curViewDir, bitflags));
+	//return (AcDbEntity::subGetGripPoints(grips, curViewUnitSize, gripSize, curViewDir, bitflags));
 }
 
 Acad::ErrorStatus ADSKTetrahedron::subMoveGripPointsAt(
@@ -257,11 +274,15 @@ Acad::ErrorStatus ADSKTetrahedron::subMoveGripPointsAt(
 	const int bitflags
 ) {
 	assertWriteEnabled();
-
+	assertWriteEnabled();
+	for (auto& vertex : m_aVertices) {
+		vertex += offset;
+	}
+	return Acad::eOk;
 	//----- If you return eNotImplemented here, that will force AutoCAD to call
 	//----- the older getGripPoints() implementation. The call below may return
 	//----- eNotImplemented depending of your base class.
-	return (AcDbEntity::subMoveGripPointsAt(gripAppData, offset, bitflags));
+	//return (AcDbEntity::subMoveGripPointsAt(gripAppData, offset, bitflags));
 }
 #include <cmath>
 void ADSKTetrahedron::calculateVertices() noexcept
@@ -280,6 +301,12 @@ double ADSKTetrahedron::insphereRadiusByEdgeLength(double adEdgeLenght) noexcept
 	return adEdgeLenght * std::sqrt(6.0) / 12.0;
 }
 
+double ADSKTetrahedron::volume() const noexcept
+{
+	
+	return  std::pow(m_dEdgeLength, 3)/(6.0*std::sqrt(3.0));
+}
+
 Acad::ErrorStatus ADSKTetrahedron::edgeLength(double& ardEdgeLenght) const {
 	assertReadEnabled();
 	ardEdgeLenght = m_dEdgeLength;
@@ -290,4 +317,10 @@ Acad::ErrorStatus ADSKTetrahedron::setEdgeLength(const double adEdgeLenght) {
 	m_dEdgeLength = adEdgeLenght;
 	//calculateVertices();
 	return Acad::eOk;
+}
+
+AcGePoint3d ADSKTetrahedron::pointAt(Adesk::Int32 ai) const
+{
+	assertReadEnabled();
+	return m_aVertices.at(ai);
 }

@@ -51,6 +51,7 @@
 //-----------------------------------------------------------------------------
 #include "dbmain.h"
 #include "Tchar.h"
+#include "AcGiFaceDataManager.h"
 #define ASDKICOSAHEDRON_DBXSERVICE _T("ASDKICOSAHEDRON_DBXSERVICE")
 //-----------------------------------------------------------------------------
 class ADSKTetrahedronWithInscribedIcosahedron;
@@ -66,6 +67,8 @@ public:
 	friend class ADSKTetrahedronWithInscribedIcosahedron;
 	ADSKIcosahedron () ;
 	ADSKIcosahedron(double adEdgeLength);
+	//ADSKIcosahedron(const ADSKIcosahedron& other);
+	//ADSKIcosahedron& operator=(const ADSKIcosahedron& other);
 	virtual ~ADSKIcosahedron () ;
 
 	//----- AcDbObject protocols
@@ -114,18 +117,24 @@ public:
 	// for Icosahedron
 	/*!
 		  \brief Вычисляет длину ребра икосаэдра по радиусу описанной сферы 
-		  \param adCircumsphereRadius радиус описанной сферы икосаэдра
-		  \return Длина ребра икосаэдра
+		  \param[in] adCircumsphereRadius радиус описанной сферы икосаэдра
+		  \return Длину ребра икосаэдра
 	*/
 	static double edgeLengthByCircumsphereRadius(double adCircumsphereRadius) noexcept;
 	Acad::ErrorStatus setFaceColor(Adesk::Int32 aI, short anColor);
 	Acad::ErrorStatus edgeLength(double& ardEdgeLenght) const;
 	Acad::ErrorStatus setEdgeLength(const double adEdgeLenght);
+	/*!
+		  \brief Вычисляет объём тетраэдра
+		  \details https://en.wikipedia.org/wiki/Regular_icosahedron#Mensuration
+		  \return Объём тетраэдра
+	*/
+	double volume() const noexcept;
 private:
 	void calculateVertices() noexcept;
 	double m_dEdgeLength;
 	AcGePoint3dArray m_aVertices;
-	std::unique_ptr<AcGiFaceData> m_pFaceData;
+	AcGiFaceDataManager m_faceDataManager;
 	//AcArray<AcGePoint3dArray> m_aFaces;
 } ;
 

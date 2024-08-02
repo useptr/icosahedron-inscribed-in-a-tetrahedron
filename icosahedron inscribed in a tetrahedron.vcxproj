@@ -81,21 +81,33 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="acrxEntryPoint.cpp" />
+    <ClCompile Include="ADSKDatabaseReactor.cpp" />
+    <ClCompile Include="ADSKEditorReactor.cpp" />
+    <ClCompile Include="ADSKTetrahedronWithInscribedIcosahedronReactor.cpp" />
     <ClCompile Include="DocData.cpp" />
     <ClCompile Include="icosahedron inscribed in a tetrahedron.cpp" />
     <ClCompile Include="StdAfx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="Tetrahedron\AcGiFaceDataManager.cpp" />
     <ClCompile Include="Tetrahedron\ADSKIcosahedron.cpp" />
-    <ClCompile Include="utilities.cpp" />
+    <ClCompile Include="Tetrahedron\ADSKTetrahedron.cpp" />
+    <ClCompile Include="Tetrahedron\ADSKTetrahedronWithInscribedIcosahedron.cpp" />
+    <ClCompile Include="Tetrahedron\utilities.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="ADSKDatabaseReactor.h" />
+    <ClInclude Include="ADSKEditorReactor.h" />
+    <ClInclude Include="ADSKTetrahedronWithInscribedIcosahedronReactor.h" />
     <ClInclude Include="DocData.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="StdAfx.h" />
+    <ClInclude Include="Tetrahedron\AcGiFaceDataManager.h" />
     <ClInclude Include="Tetrahedron\ADSKIcosahedron.h" />
-    <ClInclude Include="utilities.h" />
+    <ClInclude Include="Tetrahedron\ADSKTetrahedron.h" />
+    <ClInclude Include="Tetrahedron\ADSKTetrahedronWithInscribedIcosahedron.h" />
+    <ClInclude Include="Tetrahedron\utilities.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="icosahedron inscribed in a tetrahedron.rc" />

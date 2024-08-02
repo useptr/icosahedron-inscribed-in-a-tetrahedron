@@ -68,6 +68,8 @@ protected:
 public:
 	friend class ADSKTetrahedronWithInscribedIcosahedron;
 	ADSKTetrahedron () ;
+	//ADSKTetrahedron(const ADSKTetrahedron& other);
+	//ADSKTetrahedron& operator=(const ADSKTetrahedron& other);
 	ADSKTetrahedron(double adEdgeLength); // TODO
 	virtual ~ADSKTetrahedron () ;
 
@@ -114,16 +116,23 @@ public:
 		const AcGeVector3d &curViewDir, const int bitflags) const ;
 	virtual Acad::ErrorStatus subMoveGripPointsAt (const AcDbVoidPtrArray &gripAppData, const AcGeVector3d &offset, const int bitflags) ;
 
-	// for  Tetrahedro
+	// for  Tetrahedron
+	AcGePoint3d pointAt(Adesk::Int32 ai) const;
 	/*!
 		  \brief Вычисляет радиус вписанной сферы тетраэдра по длине ребра тетраэдра
-		  \param adEdgeLenght длина ребра тетраэдра
+		  \param[in] adEdgeLenght длина ребра тетраэдра
 		  \return Радиус вписанной сферы тетраэдра
 	*/
 	static double insphereRadiusByEdgeLength(double adEdgeLenght) noexcept;
-	double volume() const;
+	/*!
+		  \brief Вычисляет объём тетраэдра
+		  \details https://en.wikipedia.org/wiki/Tetrahedron#Measurement
+		  \return Объём тетраэдра
+	*/
+	double volume() const noexcept;
 	Acad::ErrorStatus edgeLength(double& ardEdgeLenght) const;
 	Acad::ErrorStatus setEdgeLength(const double adEdgeLenght);
+	
 private:
 	void calculateVertices() noexcept;
 	//m_aEdges;

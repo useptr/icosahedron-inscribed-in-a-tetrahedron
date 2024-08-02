@@ -25,9 +25,12 @@
 #include "StdAfx.h"
 #include "ADSKTetrahedronWithInscribedIcosahedron.h"
 #include "Tchar.h"
+#include "utilities.h" 
 #include <cmath>
 #include <numbers>
 #include <ranges>
+#include <algorithm>
+#include <random>
 //-----------------------------------------------------------------------------
 Adesk::UInt32 ADSKTetrahedronWithInscribedIcosahedron::kCurrentVersionNumber =1 ;
 
@@ -43,9 +46,15 @@ ADSKTETRAHEDRONAPP
 )
 
 //-----------------------------------------------------------------------------
-ADSKTetrahedronWithInscribedIcosahedron::ADSKTetrahedronWithInscribedIcosahedron () : AcDbEntity (), m_ptMoveGripPoint(AcGePoint3d::kOrigin), m_Tetrahedron(), m_Icosahedron(getInscribedIcosahedronEdgeLength(1.0/* m_Tetrahedron.edgeLenght()*/)) {
+ADSKTetrahedronWithInscribedIcosahedron::ADSKTetrahedronWithInscribedIcosahedron () : AcDbEntity (), m_ptMoveGripPoint(AcGePoint3d::kOrigin), m_Tetrahedron(), m_Icosahedron(getInscribedIcosahedronEdgeLength(1.0/* m_Tetrahedron.edgeLenght()*/)), m_bNeedTranfomTransformMatrix(true) {
 
 }
+
+//ADSKTetrahedronWithInscribedIcosahedron::ADSKTetrahedronWithInscribedIcosahedron(const ADSKTetrahedronWithInscribedIcosahedron& other)
+//{
+//	m_Tetrahedron = other.m_Tetrahedron;
+//	m_Icosahedron = other.m_Icosahedron;
+//}
 
 ADSKTetrahedronWithInscribedIcosahedron::~ADSKTetrahedronWithInscribedIcosahedron () {
 }
@@ -63,6 +72,15 @@ Acad::ErrorStatus ADSKTetrahedronWithInscribedIcosahedron::dwgOutFields (AcDbDwg
 	if ( (es =pFiler->writeUInt32 (ADSKTetrahedronWithInscribedIcosahedron::kCurrentVersionNumber)) != Acad::eOk )
 		return (es) ;
 	//----- Output params
+	auto transformMatrix = m_translation * m_scaling;
+	//m_transform = m_translation * m_scaling; // m_rotation *
+	for (int r : std::views::iota(0, 4)) {
+		for (int c : std::views::iota(0, 4)) {
+			pFiler->writeItem(transformMatrix(r,c));
+		}
+	}
+	
+	
 	/*double dTetrahedronEdgeLenght{ 0 };
 	m_Tetrahedron.edgeLength(dTetrahedronEdgeLenght);
 	pFiler->writeItem(dTetrahedronEdgeLenght);*/
@@ -87,9 +105,16 @@ Acad::ErrorStatus ADSKTetrahedronWithInscribedIcosahedron::dwgInFields (AcDbDwgF
 	//if ( version < ADSKTetrahedronWithInscribedIcosahedron::kCurrentVersionNumber )
 	//	return (Acad::eMakeMeProxy) ;
 	//----- Read params
-	double dTetrahedronEdgeLenght{ 0 };
-
-	// TODO call recalculation
+	AcGeMatrix3d transformMatrix;
+	for (int r : std::views::iota(0, 4)) {
+		for (int c : std::views::iota(0, 4)) {
+			pFiler->readItem(&transformMatrix(r, c));
+		}
+	}
+	m_bNeedTranfomTransformMatrix = false;
+	subTransformBy(transformMatrix);
+	//myTransformBy(m_transform);
+	
 
 	return (pFiler->filerStatus ()) ;
 }
@@ -162,8 +187,12 @@ Acad::ErrorStatus ADSKTetrahedronWithInscribedIcosahedron::dxfInFields (AcDbDxfF
 Adesk::Boolean ADSKTetrahedronWithInscribedIcosahedron::subWorldDraw (AcGiWorldDraw *mode) {
 	assertReadEnabled () ;
 	//acutPrintf(_T("ADSKTetrahedronWithInscribedIcosahedron::subWorldDraw\n"));
-	
+	AcCmTransparency transparency(0.5);
+	mode->subEntityTraits().setTransparency(transparency);
 	m_Tetrahedron.subWorldDraw(mode);
+
+	transparency.setAlphaPercent(1.0);
+	mode->subEntityTraits().setTransparency(transparency);
 	m_Icosahedron.subWorldDraw(mode);
 	//return (AcDbEntity::subWorldDraw (mode)) ;
 	return Adesk::kTrue;
@@ -172,10 +201,30 @@ Adesk::Boolean ADSKTetrahedronWithInscribedIcosahedron::subWorldDraw (AcGiWorldD
 
 Adesk::UInt32 ADSKTetrahedronWithInscribedIcosahedron::subSetAttributes (AcGiDrawableTraits *traits) {
 	assertReadEnabled () ;
+	//acutPrintf(_T("::subSetAttributes CALLED\n"));
+	
 	return (AcDbEntity::subSetAttributes (traits)) ;
 }
 
-Acad::ErrorStatus ADSKTetrahedronWithInscribedIcosahedron::subTransformBy(const AcGeMatrix3d& xform)
+Acad::ErrorStatus ADSKTetrahedronWithInscribedIcosahedron::setFaceOfIcosahedronToRandomColor()
+{
+	assertWriteEnabled();
+	acutPrintf(_T("setFaceOfIcosahedronToRandomColor CALLED\n"));
+	// TODO create global class which returns a number in the range or static function
+	static std::default_random_engine engine;
+	static std::uniform_int_distribution<short> dist(0, 19); // [a,b]
+	short nColor{ getRandomColor() };
+	Adesk::Int32 i{ dist(engine) };
+	acutPrintf(_T("%d %d\n"), (int)i, (int)nColor);
+	return m_Icosahedron.setFaceColor(i, nColor);
+}
+
+double ADSKTetrahedronWithInscribedIcosahedron::volumesDifference() const noexcept
+{
+	return m_Icosahedron.volume() - m_Tetrahedron.volume();
+}
+
+Acad::ErrorStatus ADSKTetrahedronWithInscribedIcosahedron::myTransformBy(const AcGeMatrix3d& xform)
 {
 	assertWriteEnabled();
 	m_Icosahedron.subTransformBy(xform);
@@ -184,35 +233,75 @@ Acad::ErrorStatus ADSKTetrahedronWithInscribedIcosahedron::subTransformBy(const 
 	return Acad::eOk;
 }
 
+Acad::ErrorStatus ADSKTetrahedronWithInscribedIcosahedron::subTransformBy(const AcGeMatrix3d& xform)
+{
+	assertWriteEnabled();
+	m_translation *= AcGeMatrix3d::translation(xform.translation());
+	m_scaling *= AcGeMatrix3d::scaling(xform.scale());
+	//m_rotation *= 
+
+	m_Icosahedron.subTransformBy(xform);
+	m_Tetrahedron.subTransformBy(xform);
+	m_ptMoveGripPoint.transformBy(xform);
+	if (m_bNeedTranfomTransformMatrix) {
+		m_transform *= xform;
+		m_bNeedTranfomTransformMatrix = true;
+	}
+		
+	//return Acad::eOk;
+	return (AcDbEntity::subTransformBy(xform));
+}
+
 	//- Osnap points protocol
-//Acad::ErrorStatus ADSKTetrahedronWithInscribedIcosahedron::subGetOsnapPoints (
-//	AcDb::OsnapMode osnapMode,
-//	Adesk::GsMarker gsSelectionMark,
-//	const AcGePoint3d &pickPoint,
-//	const AcGePoint3d &lastPoint,
-//	const AcGeMatrix3d &viewXform,
-//	AcGePoint3dArray &snapPoints,
-//	AcDbIntArray &geomIds) const
-//{
-//	assertReadEnabled () ;
-//	return (AcDbEntity::subGetOsnapPoints (osnapMode, gsSelectionMark, pickPoint, lastPoint, viewXform, snapPoints, geomIds)) ;
-//}
-//
-//Acad::ErrorStatus ADSKTetrahedronWithInscribedIcosahedron::subGetOsnapPoints (
-//	AcDb::OsnapMode osnapMode,
-//	Adesk::GsMarker gsSelectionMark,
-//	const AcGePoint3d &pickPoint,
-//	const AcGePoint3d &lastPoint,
-//	const AcGeMatrix3d &viewXform,
-//	AcGePoint3dArray &snapPoints,
-//	AcDbIntArray &geomIds,
-//	const AcGeMatrix3d &insertionMat) const
-//{
-//	assertReadEnabled () ;
-//	return (AcDbEntity::subGetOsnapPoints (osnapMode, gsSelectionMark, pickPoint, lastPoint, viewXform, snapPoints, geomIds, insertionMat)) ;
-//}
+Acad::ErrorStatus ADSKTetrahedronWithInscribedIcosahedron::subGetOsnapPoints (
+	AcDb::OsnapMode osnapMode,
+	Adesk::GsMarker gsSelectionMark,
+	const AcGePoint3d &pickPoint,
+	const AcGePoint3d &lastPoint,
+	const AcGeMatrix3d &viewXform,
+	AcGePoint3dArray &snapPoints,
+	AcDbIntArray &geomIds) const
+{
+	assertReadEnabled () ;
+	return (AcDbEntity::subGetOsnapPoints (osnapMode, gsSelectionMark, pickPoint, lastPoint, viewXform, snapPoints, geomIds)) ;
+}
+
+Acad::ErrorStatus ADSKTetrahedronWithInscribedIcosahedron::subGetOsnapPoints (
+	AcDb::OsnapMode osnapMode,
+	Adesk::GsMarker gsSelectionMark,
+	const AcGePoint3d &pickPoint,
+	const AcGePoint3d &lastPoint,
+	const AcGeMatrix3d &viewXform,
+	AcGePoint3dArray &snapPoints,
+	AcDbIntArray &geomIds,
+	const AcGeMatrix3d &insertionMat) const
+{
+	assertReadEnabled () ;
+	return (AcDbEntity::subGetOsnapPoints (osnapMode, gsSelectionMark, pickPoint, lastPoint, viewXform, snapPoints, geomIds, insertionMat)) ;
+}
 
 //- Grip points protocol
+Acad::ErrorStatus ADSKTetrahedronWithInscribedIcosahedron::subGetStretchPoints(AcGePoint3dArray& stretchPoints) const
+{
+	assertReadEnabled();
+	acutPrintf(_T("subGetStretchPoints CALLED!"));
+	stretchPoints.appendList(m_Tetrahedron.pointAt(0), m_Tetrahedron.pointAt(1), m_Tetrahedron.pointAt(2));
+	return Acad::eOk;
+	//return Acad::eNotImplemented;
+}
+
+Acad::ErrorStatus ADSKTetrahedronWithInscribedIcosahedron::subMoveStretchPointsAt(const AcDbIntArray& indices, const AcGeVector3d& offset)
+{
+	assertWriteEnabled();
+	for (int i : std::views::iota(0, indices.length())) {
+		// max from windows.h
+		auto dMaxOffset = max(max(offset.x, offset.y), offset.z);
+		subTransformBy(AcGeMatrix3d::scaling(dMaxOffset));
+	}
+	return Acad::eOk;
+	//return Acad::eNotImplemented;
+}
+
 Acad::ErrorStatus ADSKTetrahedronWithInscribedIcosahedron::subGetGripPoints (
 	AcGePoint3dArray &gripPoints, AcDbIntArray &osnapModes, AcDbIntArray &geomIds
 ) const {
@@ -220,32 +309,26 @@ Acad::ErrorStatus ADSKTetrahedronWithInscribedIcosahedron::subGetGripPoints (
 	//----- This method is never called unless you return eNotImplemented 
 	//----- from the new getGripPoints() method below (which is the default implementation)
 	gripPoints.append(m_ptMoveGripPoint);
-
+	//gripPoints.appendList(m_Tetrahedron.pointAt(0), m_Tetrahedron.pointAt(1), m_Tetrahedron.pointAt(2));
 	return Acad::eOk;
 	//return (AcDbEntity::subGetGripPoints (gripPoints, osnapModes, geomIds)) ;
 }
 
-Acad::ErrorStatus ADSKTetrahedronWithInscribedIcosahedron::subGetGripPoints(
-	AcDbGripDataPtrArray& grips, const double curViewUnitSize, const int gripSize,
-	const AcGeVector3d& curViewDir, const int bitflags
-) const {
-	assertReadEnabled();
 
-	//----- If you return eNotImplemented here, that will force AutoCAD to call
-	//----- the older getGripPoints() implementation. The call below may return
-	//----- eNotImplemented depending of your base class.
-	//return Acad::eNotImplemented;
-	//return (AcDbEntity::subGetGripPoints (grips, curViewUnitSize, gripSize, curViewDir, bitflags)) ;
-	return Acad::eNotImplemented;
-}
 
 Acad::ErrorStatus ADSKTetrahedronWithInscribedIcosahedron::subMoveGripPointsAt (const AcDbIntArray &indices, const AcGeVector3d &offset) {
+	if (indices.length() == 0 || offset.isZeroLength())
+		return Acad::eOk;
 	assertWriteEnabled () ;
+
 	//----- This method is never called unless you return eNotImplemented 
 	//----- from the new moveGripPointsAt() method below (which is the default implementation)
 	
-	for (int i : std::views::iota(0, indices.length()) ) {
-		subTransformBy(AcGeMatrix3d::translation(offset));
+	for (auto i : indices) {
+		if (0 == i)
+			subTransformBy(AcGeMatrix3d::translation(offset));
+		/*else {
+		}*/
 	}
 	//switch (m_pCurrentGripMode) {
 
@@ -255,20 +338,43 @@ Acad::ErrorStatus ADSKTetrahedronWithInscribedIcosahedron::subMoveGripPointsAt (
 	//return (AcDbEntity::subMoveGripPointsAt (indices, offset)) ;
 }
 
-
+Acad::ErrorStatus ADSKTetrahedronWithInscribedIcosahedron::subGetGripPoints(
+	AcDbGripDataPtrArray& grips, const double curViewUnitSize, const int gripSize,
+	const AcGeVector3d& curViewDir, const int bitflags
+) const {
+	assertReadEnabled();
+	auto pGripData = new AcDbGripData();
+	//pGripData->setAppData();
+	pGripData->setGripPoint(m_ptMoveGripPoint);
+	grips.append(pGripData);
+	return Acad::eOk;
+	//----- If you return eNotImplemented here, that will force AutoCAD to call
+	//----- the older getGripPoints() implementation. The call below may return
+	//----- eNotImplemented depending of your base class.
+	//return (AcDbEntity::subGetGripPoints (grips, curViewUnitSize, gripSize, curViewDir, bitflags)) ;
+	//return Acad::eNotImplemented;
+}
 
 Acad::ErrorStatus ADSKTetrahedronWithInscribedIcosahedron::subMoveGripPointsAt (
 	const AcDbVoidPtrArray &gripAppData, const AcGeVector3d &offset,
 	const int bitflags
 ) {
 	assertWriteEnabled () ;
+	m_translation *= AcGeMatrix3d::translation(offset);
 
+	m_ptMoveGripPoint += offset;
+	m_transform *= AcGeMatrix3d::translation(offset);
+	m_Icosahedron.subMoveGripPointsAt(gripAppData, offset, bitflags);
+	m_Tetrahedron.subMoveGripPointsAt(gripAppData, offset, bitflags);
+	return Acad::eOk;
 	//----- If you return eNotImplemented here, that will force AutoCAD to call
 	//----- the older getGripPoints() implementation. The call below may return
 	//----- eNotImplemented depending of your base class.
 	//return (AcDbEntity::subMoveGripPointsAt (gripAppData, offset, bitflags)) ;
-	return Acad::eNotImplemented;
+	//return Acad::eNotImplemented;
 }
+
+
 
 double ADSKTetrahedronWithInscribedIcosahedron::getInscribedIcosahedronEdgeLength(double adTetrahedronEdgeLenght) const noexcept
 {

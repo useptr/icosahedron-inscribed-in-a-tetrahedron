@@ -27,10 +27,28 @@
     <ClCompile Include="icosahedron inscribed in a tetrahedron.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="utilities.cpp">
+    <ClCompile Include="Tetrahedron\ADSKIcosahedron.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Tetrahedron\ADSKIcosahedron.cpp">
+    <ClCompile Include="Tetrahedron\AcGiFaceDataManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ADSKEditorReactor.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ADSKDatabaseReactor.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Tetrahedron\ADSKTetrahedronWithInscribedIcosahedron.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Tetrahedron\utilities.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Tetrahedron\ADSKTetrahedron.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ADSKTetrahedronWithInscribedIcosahedronReactor.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -44,10 +62,28 @@
     <ClInclude Include="Resource.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="utilities.h">
+    <ClInclude Include="Tetrahedron\ADSKIcosahedron.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Tetrahedron\ADSKIcosahedron.h">
+    <ClInclude Include="Tetrahedron\AcGiFaceDataManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ADSKEditorReactor.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ADSKDatabaseReactor.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Tetrahedron\ADSKTetrahedronWithInscribedIcosahedron.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Tetrahedron\utilities.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Tetrahedron\ADSKTetrahedron.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ADSKTetrahedronWithInscribedIcosahedronReactor.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

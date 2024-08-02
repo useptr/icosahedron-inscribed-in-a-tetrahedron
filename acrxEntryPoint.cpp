@@ -31,9 +31,14 @@
 #include "ADSKIcosahedron.h"
 #include "ADSKTetrahedron.h"
 #include "ADSKTetrahedronWithInscribedIcosahedron.h"
+#include "ADSKEditorReactor.h"
+//#include "ADSKDatabaseReactor.h"
+#include "ADSKTetrahedronWithInscribedIcosahedronReactor.h"
 //-----------------------------------------------------------------------------
 #define szRDS _RXST("ADSK")
 
+std::unique_ptr<ADSKEditorReactor> g_pEditorReactor;
+std::unique_ptr <ADSKTetrahedronWithInscribedIcosahedronReactor> g_pTetrahedronWithInscribedIcosahedronReactor;
 //-----------------------------------------------------------------------------
 //----- ObjectARX EntryPoint
 class CicosahedroninscribedinatetrahedronApp : public AcRxArxApp {
@@ -66,9 +71,17 @@ public:
             }
         }
 		// TODO: Add your initialization code here
+        g_pEditorReactor = std::move(std::make_unique<ADSKEditorReactor>(true));
+        g_pTetrahedronWithInscribedIcosahedronReactor = std::move(std::make_unique<ADSKTetrahedronWithInscribedIcosahedronReactor>());
 
 		return (retCode) ;
 	}
+    virtual AcRx::AppRetCode On_kLoadDwgMsg(void* pkt) {
+        AcRx::AppRetCode retCode = AcRxArxApp::On_kLoadDwgMsg(pkt);
+        // Create a new instance of  the database reactor for every new drawing
+        DocVars.docData().m_pDatabaseReactor = new ADSKDatabaseReactor(acdbHostApplicationServices()->workingDatabase());
+        return (retCode);
+    }
 
 	virtual AcRx::AppRetCode On_kUnloadAppMsg (void *pkt) {
 		// TODO: Add your code here
@@ -77,6 +90,9 @@ public:
 		AcRx::AppRetCode retCode =AcRxArxApp::On_kUnloadAppMsg (pkt) ;
 
 		// TODO: Unload dependencies here
+        detachAllTetrahedronWithInscribedIcosahedronReactors();
+        g_pEditorReactor.release();
+        g_pTetrahedronWithInscribedIcosahedronReactor.release();
 
 		return (retCode) ;
 	}

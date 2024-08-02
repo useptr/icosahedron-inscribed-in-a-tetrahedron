@@ -27,6 +27,7 @@
 #include <cmath>
 #include <numbers>
 #include <memory>
+#include <utility>
 //-----------------------------------------------------------------------------
 Adesk::UInt32 ADSKIcosahedron::kCurrentVersionNumber =1 ;
 
@@ -42,21 +43,32 @@ ADSKPOLYHEDRONSAPP
 )
 
 //-----------------------------------------------------------------------------
-ADSKIcosahedron::ADSKIcosahedron () : AcDbEntity (), m_dEdgeLength(1.0), m_pFaceData(std::make_unique<AcGiFaceData>()) {
+ADSKIcosahedron::ADSKIcosahedron () : AcDbEntity (), m_dEdgeLength(1.0) {
 	calculateVertices();
-	short* faceColors = new short[20] {}; // TODO SOLID create custom AcGiFaceData
-	m_pFaceData->setColors(faceColors);
+	m_faceDataManager.setColors(std::move(std::make_unique<short[]>(20)));
 }
 
-ADSKIcosahedron::ADSKIcosahedron(double adEdgeLength) : AcDbEntity(), m_dEdgeLength(adEdgeLength), m_pFaceData(std::make_unique<AcGiFaceData>()) {
+//ADSKIcosahedron::ADSKIcosahedron(const ADSKIcosahedron& other)
+//{
+//	m_dEdgeLength = other.m_dEdgeLength;
+//	m_aVertices = other.m_aVertices;
+//}
+//
+//ADSKIcosahedron& ADSKIcosahedron::operator=(const ADSKIcosahedron& other)
+//{
+//	if (this == std::addressof(other))
+//		return *this;
+//	m_dEdgeLength = other.m_dEdgeLength;
+//	m_aVertices = other.m_aVertices;
+//	return *this;
+//}
+
+ADSKIcosahedron::ADSKIcosahedron(double adEdgeLength) : AcDbEntity(), m_dEdgeLength(adEdgeLength) {
 	calculateVertices();
-	short* faceColors = new short[20] {}; // TODO SOLID create custom AcGiFaceData
-	m_pFaceData->setColors(faceColors);
+	m_faceDataManager.setColors(std::move(std::make_unique<short[]>(20)));
 }
 
 ADSKIcosahedron::~ADSKIcosahedron () {
-	if (m_pFaceData->colors() != nullptr)
-		delete[] m_pFaceData->colors();
 }
 
 //-----------------------------------------------------------------------------
@@ -195,8 +207,7 @@ Adesk::Boolean ADSKIcosahedron::subWorldDraw (AcGiWorldDraw *mode) {
 		3, 7, 2, 11 
 	};
 	mode->subEntityTraits().setColor(1);
-	mode->geometry().shell(m_aVertices.length(), m_aVertices.asArrayPtr(), faceListSize, faceList, nullptr, m_pFaceData.get());
-	
+	mode->geometry().shell(m_aVertices.length(), m_aVertices.asArrayPtr(), faceListSize, faceList, nullptr, m_faceDataManager.faceData());
 	//return (AcDbEntity::subWorldDraw (mode)) ;
 	return Adesk::kTrue;
 }
@@ -269,11 +280,11 @@ Acad::ErrorStatus ADSKIcosahedron::subGetGripPoints (
 	const AcGeVector3d &curViewDir, const int bitflags
 ) const {
 	assertReadEnabled () ;
-
+	return Acad::eOk;
 	//----- If you return eNotImplemented here, that will force AutoCAD to call
 	//----- the older getGripPoints() implementation. The call below may return
 	//----- eNotImplemented depending of your base class.
-	return (AcDbEntity::subGetGripPoints (grips, curViewUnitSize, gripSize, curViewDir, bitflags)) ;
+	//return (AcDbEntity::subGetGripPoints (grips, curViewUnitSize, gripSize, curViewDir, bitflags)) ;
 }
 
 Acad::ErrorStatus ADSKIcosahedron::subMoveGripPointsAt (
@@ -281,11 +292,19 @@ Acad::ErrorStatus ADSKIcosahedron::subMoveGripPointsAt (
 	const int bitflags
 ) {
 	assertWriteEnabled () ;
-
+	for (auto& vertex : m_aVertices) {
+		vertex += offset;
+	}
 	//----- If you return eNotImplemented here, that will force AutoCAD to call
 	//----- the older getGripPoints() implementation. The call below may return
 	//----- eNotImplemented depending of your base class.
-	return (AcDbEntity::subMoveGripPointsAt (gripAppData, offset, bitflags)) ;
+	//return (AcDbEntity::subMoveGripPointsAt (gripAppData, offset, bitflags)) ;
+	return Acad::eOk;
+}
+
+double ADSKIcosahedron::volume() const noexcept
+{
+	return 5.0*std::sqrt(3.0)*std::pow(m_dEdgeLength,2.0);
 }
 
 void ADSKIcosahedron::calculateVertices() noexcept
@@ -310,7 +329,7 @@ Acad::ErrorStatus ADSKIcosahedron::setFaceColor(Adesk::Int32 aI, short anColor)
 {
 	assertWriteEnabled();
 	//static_assert(aI > 0 && aI < 20);
-	m_pFaceData->colors()[aI] = anColor;
+	m_faceDataManager.colors()[aI] = anColor;
 	return Acad::eOk;
 }
 

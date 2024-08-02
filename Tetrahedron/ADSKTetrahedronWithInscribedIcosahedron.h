@@ -63,6 +63,7 @@ protected:
 
 public:
 	ADSKTetrahedronWithInscribedIcosahedron () ;
+	//ADSKTetrahedronWithInscribedIcosahedron(const ADSKTetrahedronWithInscribedIcosahedron& other);
 	virtual ~ADSKTetrahedronWithInscribedIcosahedron () ;
 
 	//----- AcDbObject protocols
@@ -82,23 +83,23 @@ protected:
 	virtual Acad::ErrorStatus subTransformBy(const AcGeMatrix3d& xform);
 	//- Osnap points protocol
 public:
-	//virtual Acad::ErrorStatus subGetOsnapPoints (
-	//	AcDb::OsnapMode osnapMode,
-	//	Adesk::GsMarker gsSelectionMark,
-	//	const AcGePoint3d &pickPoint,
-	//	const AcGePoint3d &lastPoint,
-	//	const AcGeMatrix3d &viewXform,
-	//	AcGePoint3dArray &snapPoints,
-	//	AcDbIntArray &geomIds) const ;
-	//virtual Acad::ErrorStatus subGetOsnapPoints (
-	//	AcDb::OsnapMode osnapMode,
-	//	Adesk::GsMarker gsSelectionMark,
-	//	const AcGePoint3d &pickPoint,
-	//	const AcGePoint3d &lastPoint,
-	//	const AcGeMatrix3d &viewXform,
-	//	AcGePoint3dArray &snapPoints,
-	//	AcDbIntArray &geomIds,
-	//	const AcGeMatrix3d &insertionMat) const ;
+	virtual Acad::ErrorStatus subGetOsnapPoints (
+		AcDb::OsnapMode osnapMode,
+		Adesk::GsMarker gsSelectionMark,
+		const AcGePoint3d &pickPoint,
+		const AcGePoint3d &lastPoint,
+		const AcGeMatrix3d &viewXform,
+		AcGePoint3dArray &snapPoints,
+		AcDbIntArray &geomIds) const ;
+	virtual Acad::ErrorStatus subGetOsnapPoints (
+		AcDb::OsnapMode osnapMode,
+		Adesk::GsMarker gsSelectionMark,
+		const AcGePoint3d &pickPoint,
+		const AcGePoint3d &lastPoint,
+		const AcGeMatrix3d &viewXform,
+		AcGePoint3dArray &snapPoints,
+		AcDbIntArray &geomIds,
+		const AcGeMatrix3d &insertionMat) const ;
 
 	//- Grip points protocol
 	virtual Acad::ErrorStatus subGetGripPoints (AcGePoint3dArray &gripPoints, AcDbIntArray &osnapModes, AcDbIntArray &geomIds) const ;
@@ -107,15 +108,39 @@ public:
 		AcDbGripDataPtrArray &grips, const double curViewUnitSize, const int gripSize, 
 		const AcGeVector3d &curViewDir, const int bitflags) const ;
 	virtual Acad::ErrorStatus subMoveGripPointsAt (const AcDbVoidPtrArray &gripAppData, const AcGeVector3d &offset, const int bitflags) ;
+	virtual Acad::ErrorStatus   subGetStretchPoints(
+		AcGePoint3dArray& stretchPoints) const override;
+	virtual Acad::ErrorStatus   subMoveStretchPointsAt(const AcDbIntArray& indices,
+		const AcGeVector3d& offset) override;
 
+	// ADSKTetrahedronWithInscribedIcosahedron methods
+	/*!
+		  \brief Меняет цвет случайной грани вписанного икосаэдра на один из стандартных цветов AutoCAD'а (1-6)
+		  \return Acad::eOk в случае успешного выполнения, иначе другую ошибку типа Acad::ErrorStatus
+	*/
+	Acad::ErrorStatus setFaceOfIcosahedronToRandomColor();
+	/*!
+		  \brief Вычисляет разницу объемов икосаэдра и вписанного тетраэдра
+		  \return Разницу объемов икосаэдра и вписанного тетраэдра
+	*/
+	double volumesDifference() const noexcept;
 private:
+	Acad::ErrorStatus myTransformBy(const AcGeMatrix3d& xform);
+	/*!
+		  \brief Вычисляет длину ребра вписанного икосаэдра по длине ребра тетраэдра
+		  \param[in] adEdgeLenght длина ребра тетраэдра
+		  \return Длину ребра вписанного икосаэдра тетраэдра
+	*/
 	double getInscribedIcosahedronEdgeLength(double adTetrahedronEdgeLenght) const noexcept;
 	AcGePoint3d m_ptMoveGripPoint; ///< Точка для перемещения entity (находиться в центре)
 	ADSKTetrahedron m_Tetrahedron;
 	ADSKIcosahedron m_Icosahedron;
+	bool m_bNeedTranfomTransformMatrix;
 	// Grip points
-	//AcGeSphere
-	
+	AcGeMatrix3d m_transform;
+	AcGeMatrix3d m_translation;
+	AcGeMatrix3d m_scaling;
+	AcGeMatrix3d m_rotation;
 } ;
 
 #ifdef TETRAHEDRON_MODULE
