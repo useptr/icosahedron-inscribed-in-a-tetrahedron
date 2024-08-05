@@ -20,7 +20,7 @@
 //
 
 //-----------------------------------------------------------------------------
-//----- ADSKTetrahedronWithInscribedIcosahedronReactor.h : Declaration of the ADSKTetrahedronWithInscribedIcosahedronReactor
+//----- ADSKPyramidReactor.h : Declaration of the ADSKTetrahedronWithInscribedIcosahedronReactor
 //-----------------------------------------------------------------------------
 #pragma once
 
@@ -54,14 +54,14 @@
 //-----------------------------------------------------------------------------
 //----- Note: Uncomment the DLLIMPEXP symbol below if you wish exporting
 //----- your class to other ARX/DBX modules
-class /*DLLIMPEXP*/ ADSKTetrahedronWithInscribedIcosahedronReactor : public AcDbObjectReactor {
+class /*DLLIMPEXP*/ ADSKPyramidReactor : public AcDbObjectReactor {
 
 public:
-	ACRX_DECLARE_MEMBERS(ADSKTetrahedronWithInscribedIcosahedronReactor) ;
+	ACRX_DECLARE_MEMBERS(ADSKPyramidReactor) ;
 
 public:
-	ADSKTetrahedronWithInscribedIcosahedronReactor () ;
-	virtual ~ADSKTetrahedronWithInscribedIcosahedronReactor () ;
+	ADSKPyramidReactor () ;
+	virtual ~ADSKPyramidReactor () ;
 
 	void openedForModify(const AcDbObject* pDbObj) override;
 } ;

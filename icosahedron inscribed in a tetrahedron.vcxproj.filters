@@ -48,10 +48,10 @@
     <ClCompile Include="Tetrahedron\ADSKTetrahedron.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="ADSKTetrahedronWithInscribedIcosahedronReactor.cpp">
+    <ClCompile Include="ADSKPyramidReactor.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="ADSKTetrahedronWithInscribedIcosahedronJig.cpp">
+    <ClCompile Include="ADSKPyramidJig.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -86,10 +86,10 @@
     <ClInclude Include="Tetrahedron\ADSKTetrahedron.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="ADSKTetrahedronWithInscribedIcosahedronReactor.h">
+    <ClInclude Include="ADSKPyramidReactor.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="ADSKTetrahedronWithInscribedIcosahedronJig.h">
+    <ClInclude Include="ADSKPyramidJig.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

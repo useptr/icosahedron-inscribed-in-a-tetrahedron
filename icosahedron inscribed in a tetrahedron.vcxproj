@@ -83,8 +83,8 @@
     <ClCompile Include="acrxEntryPoint.cpp" />
     <ClCompile Include="ADSKDatabaseReactor.cpp" />
     <ClCompile Include="ADSKEditorReactor.cpp" />
-    <ClCompile Include="ADSKTetrahedronWithInscribedIcosahedronJig.cpp" />
-    <ClCompile Include="ADSKTetrahedronWithInscribedIcosahedronReactor.cpp" />
+    <ClCompile Include="ADSKPyramidJig.cpp" />
+    <ClCompile Include="ADSKPyramidReactor.cpp" />
     <ClCompile Include="DocData.cpp" />
     <ClCompile Include="icosahedron inscribed in a tetrahedron.cpp" />
     <ClCompile Include="StdAfx.cpp">
@@ -100,8 +100,8 @@
   <ItemGroup>
     <ClInclude Include="ADSKDatabaseReactor.h" />
     <ClInclude Include="ADSKEditorReactor.h" />
-    <ClInclude Include="ADSKTetrahedronWithInscribedIcosahedronJig.h" />
-    <ClInclude Include="ADSKTetrahedronWithInscribedIcosahedronReactor.h" />
+    <ClInclude Include="ADSKPyramidJig.h" />
+    <ClInclude Include="ADSKPyramidReactor.h" />
     <ClInclude Include="DocData.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="StdAfx.h" />

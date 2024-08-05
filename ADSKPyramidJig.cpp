@@ -21,18 +21,18 @@
 
 //-----------------------------------------------------------------------------
 #include "StdAfx.h"
-#include "ADSKTetrahedronWithInscribedIcosahedronJig.h"
+#include "ADSKPyramidJig.h"
 //-----------------------------------------------------------------------------
-ADSKTetrahedronWithInscribedIcosahedronJig::ADSKTetrahedronWithInscribedIcosahedronJig (AcGePoint3d& ptCenter) : AcEdJig(),
+ADSKPyramidJig::ADSKPyramidJig (AcGePoint3d& ptCenter) : AcEdJig(),
 mptCenter(ptCenter), mdEdgeLenght(1.0), mCurrentInputLevel(0), mpEntity(nullptr)
 {
 }
 
-ADSKTetrahedronWithInscribedIcosahedronJig::~ADSKTetrahedronWithInscribedIcosahedronJig () {
+ADSKPyramidJig::~ADSKPyramidJig () {
 }
 
 //-----------------------------------------------------------------------------
-AcEdJig::DragStatus ADSKTetrahedronWithInscribedIcosahedronJig::startJig (ADSKCustomPyramid *pEntity) {
+AcEdJig::DragStatus ADSKPyramidJig::startJig (ADSKCustomPyramid *pEntity) {
 	//- Store the new entity pointer
 	mpEntity =pEntity ;
 	mpEntity->setTransformMatrix(AcGeMatrix3d::translation(AcGeVector3d(mptCenter.x, mptCenter.y, mptCenter.z)));
@@ -104,7 +104,7 @@ AcEdJig::DragStatus ADSKTetrahedronWithInscribedIcosahedronJig::startJig (ADSKCu
 
 //-----------------------------------------------------------------------------
 //- Input sampler
-AcEdJig::DragStatus ADSKTetrahedronWithInscribedIcosahedronJig::sampler () {
+AcEdJig::DragStatus ADSKPyramidJig::sampler () {
 	//- Setup the user input controls for each input
 	AcEdJig::UserInputControls userInputControls [1] ={
 		/*AcEdJig::UserInputControls::*/(AcEdJig::UserInputControls)0
@@ -137,7 +137,7 @@ AcEdJig::DragStatus ADSKTetrahedronWithInscribedIcosahedronJig::sampler () {
 
 //-----------------------------------------------------------------------------
 //- Jigged entity update
-Adesk::Boolean ADSKTetrahedronWithInscribedIcosahedronJig::update () {
+Adesk::Boolean ADSKPyramidJig::update () {
 	//- Check the current input number to see which update to do
 	//switch ( mCurrentInputLevel+1 ) {
 	//	case 1:
@@ -156,13 +156,13 @@ Adesk::Boolean ADSKTetrahedronWithInscribedIcosahedronJig::update () {
 
 //-----------------------------------------------------------------------------
 //- Jigged entity pointer return
-AcDbEntity *ADSKTetrahedronWithInscribedIcosahedronJig::entity () const {
+AcDbEntity *ADSKPyramidJig::entity () const {
 	return ((AcDbEntity *)mpEntity) ;
 }
 
 //-----------------------------------------------------------------------------
 //- Dynamic dimension data setup
-AcDbDimDataPtrArray *ADSKTetrahedronWithInscribedIcosahedronJig::dimData (const double dimScale) {
+AcDbDimDataPtrArray *ADSKPyramidJig::dimData (const double dimScale) {
 
 	/* SAMPLE CODE:
 	AcDbAlignedDimension *dim =new AcDbAlignedDimension () ;
@@ -201,7 +201,7 @@ AcDbDimDataPtrArray *ADSKTetrahedronWithInscribedIcosahedronJig::dimData (const 
 
 //-----------------------------------------------------------------------------
 //- Dynamic dimension data update
-Acad::ErrorStatus ADSKTetrahedronWithInscribedIcosahedronJig::setDimValue (const AcDbDimData *pDimData, const double dimValue) {
+Acad::ErrorStatus ADSKPyramidJig::setDimValue (const AcDbDimData *pDimData, const double dimValue) {
 	Acad::ErrorStatus es =Acad::eOk ;
 
 	/* SAMPLE CODE:
@@ -233,7 +233,7 @@ Acad::ErrorStatus ADSKTetrahedronWithInscribedIcosahedronJig::setDimValue (const
 //-----------------------------------------------------------------------------
 //- Various helper functions
 //- Dynamic dimdata update function
-Adesk::Boolean ADSKTetrahedronWithInscribedIcosahedronJig::updateDimData () {
+Adesk::Boolean ADSKPyramidJig::updateDimData () {
 	//- Check the dim data store for validity
 	if ( mDimData.length () <= 0 )
 		return (true) ;
@@ -264,7 +264,7 @@ Adesk::Boolean ADSKTetrahedronWithInscribedIcosahedronJig::updateDimData () {
 
 //-----------------------------------------------------------------------------
 //- Std input to get a point with no rubber band
-AcEdJig::DragStatus ADSKTetrahedronWithInscribedIcosahedronJig::GetStartPoint () {
+AcEdJig::DragStatus ADSKPyramidJig::GetStartPoint () {
 	AcGePoint3d newPnt ;
 	//- Get the point 
 	AcEdJig::DragStatus status =acquirePoint (newPnt) ;
@@ -281,7 +281,7 @@ AcEdJig::DragStatus ADSKTetrahedronWithInscribedIcosahedronJig::GetStartPoint ()
 
 //-----------------------------------------------------------------------------
 //- Std input to get a point with rubber band from point
-AcEdJig::DragStatus ADSKTetrahedronWithInscribedIcosahedronJig::GetNextPoint () {
+AcEdJig::DragStatus ADSKPyramidJig::GetNextPoint () {
 	AcGePoint3d oldPnt =mInputPoints [mCurrentInputLevel] ;
 	AcGePoint3d newPnt ;
 	//- Get the point 

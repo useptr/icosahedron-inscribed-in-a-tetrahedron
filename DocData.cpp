@@ -23,9 +23,9 @@
 //----- DocData.cpp : Implementation file
 //-----------------------------------------------------------------------------
 #include "StdAfx.h"
-#include "ADSKTetrahedronWithInscribedIcosahedronReactor.h"
+#include "ADSKPyramidReactor.h"
 
-extern std::unique_ptr <ADSKTetrahedronWithInscribedIcosahedronReactor> g_pTetrahedronWithInscribedIcosahedronReactor;
+extern std::unique_ptr <ADSKPyramidReactor> g_pPyramidReactor;
 //-----------------------------------------------------------------------------
 //----- The one and only document manager object. You can use the DocVars object to retrieve
 //----- document specific data throughout your application
@@ -56,11 +56,11 @@ Acad::ErrorStatus attachToAllTetrahedronWithInscribedIcosahedron(bool attach) {
 
 		if (attach) {
 			acutPrintf(_T("INFO: addReactor\n"));
-			pEntity->addReactor(g_pTetrahedronWithInscribedIcosahedronReactor.get());
+			pEntity->addReactor(g_pPyramidReactor.get());
 		}
 		else {
 			acutPrintf(_T("INFO: removeReactor\n"));
-			pEntity->removeReactor(g_pTetrahedronWithInscribedIcosahedronReactor.get());
+			pEntity->removeReactor(g_pPyramidReactor.get());
 		}
 
 	}

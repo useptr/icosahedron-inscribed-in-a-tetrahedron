@@ -19,11 +19,11 @@
 // (Rights in Technical Data and Computer Software), as applicable.
 
 //-----------------------------------------------------------------------------
-//- ADSKTetrahedronWithInscribedIcosahedronJig.h
+//- ADSKPyramidJig.h
 #pragma once
 #include "ADSKCustomPyramid.h"
 //-----------------------------------------------------------------------------
-class ADSKTetrahedronWithInscribedIcosahedronJig : public AcEdJig {
+class ADSKPyramidJig : public AcEdJig {
 
 private:
 
@@ -42,8 +42,8 @@ public:
 	ADSKCustomPyramid *mpEntity ;
 
 public:
-	ADSKTetrahedronWithInscribedIcosahedronJig (AcGePoint3d&) ;
-	~ADSKTetrahedronWithInscribedIcosahedronJig () ;
+	ADSKPyramidJig (AcGePoint3d&) ;
+	~ADSKPyramidJig () ;
 	//- Command invoke the jig, call passing a new'd instance of the object to jig
 	AcEdJig::DragStatus startJig (ADSKCustomPyramid *pEntityToJig) ;
 

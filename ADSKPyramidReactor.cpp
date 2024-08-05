@@ -23,20 +23,20 @@
 //----- ADSKTetrahedronWithInscribedIcosahedronReactor.cpp : Implementation of ADSKTetrahedronWithInscribedIcosahedronReactor
 //-----------------------------------------------------------------------------
 #include "StdAfx.h"
-#include "ADSKTetrahedronWithInscribedIcosahedronReactor.h"
+#include "ADSKPyramidReactor.h"
 
 //-----------------------------------------------------------------------------
-ACRX_CONS_DEFINE_MEMBERS(ADSKTetrahedronWithInscribedIcosahedronReactor, AcDbObjectReactor, 1)
+ACRX_CONS_DEFINE_MEMBERS(ADSKPyramidReactor, AcDbObjectReactor, 1)
 
 //-----------------------------------------------------------------------------
-ADSKTetrahedronWithInscribedIcosahedronReactor::ADSKTetrahedronWithInscribedIcosahedronReactor () : AcDbObjectReactor() {
+ADSKPyramidReactor::ADSKPyramidReactor () : AcDbObjectReactor() {
 }
 
 //-----------------------------------------------------------------------------
-ADSKTetrahedronWithInscribedIcosahedronReactor::~ADSKTetrahedronWithInscribedIcosahedronReactor () {
+ADSKPyramidReactor::~ADSKPyramidReactor () {
 }
 
-void ADSKTetrahedronWithInscribedIcosahedronReactor::openedForModify(const AcDbObject* pDbObj)
+void ADSKPyramidReactor::openedForModify(const AcDbObject* pDbObj)
 {
 	if (DocVars.docData().m_bDoRepainting)
 		return;

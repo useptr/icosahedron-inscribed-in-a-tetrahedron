@@ -33,13 +33,14 @@
 #include "ADSKCustomPyramid.h"
 #include "ADSKEditorReactor.h"
 //#include "ADSKDatabaseReactor.h"
-#include "ADSKTetrahedronWithInscribedIcosahedronReactor.h"
-#include "ADSKTetrahedronWithInscribedIcosahedronJig.h"
+#include "ADSKPyramidReactor.h"
+#include "ADSKPyramidJig.h"
 //-----------------------------------------------------------------------------
 #define szRDS _RXST("ADSK")
 
 std::unique_ptr<ADSKEditorReactor> g_pEditorReactor;
-std::unique_ptr <ADSKTetrahedronWithInscribedIcosahedronReactor> g_pTetrahedronWithInscribedIcosahedronReactor;
+std::unique_ptr <ADSKPyramidReactor> g_pPyramidReactor;
+
 //-----------------------------------------------------------------------------
 //----- ObjectARX EntryPoint
 class CicosahedroninscribedinatetrahedronApp : public AcRxArxApp {
@@ -73,7 +74,7 @@ public:
         }
 		// TODO: Add your initialization code here
         g_pEditorReactor = std::move(std::make_unique<ADSKEditorReactor>(true));
-        g_pTetrahedronWithInscribedIcosahedronReactor = std::move(std::make_unique<ADSKTetrahedronWithInscribedIcosahedronReactor>());
+        g_pPyramidReactor = std::move(std::make_unique<ADSKPyramidReactor>());
 
 		return (retCode) ;
 	}
@@ -93,7 +94,7 @@ public:
 		// TODO: Unload dependencies here
         detachAllTetrahedronWithInscribedIcosahedronReactors();
         g_pEditorReactor.release();
-        g_pTetrahedronWithInscribedIcosahedronReactor.release();
+        g_pPyramidReactor.release();
 
 		return (retCode) ;
 	}
@@ -155,7 +156,7 @@ public:
             acutPrintf(_T("\nERROR: Cannot open BlockTableRecord for write"));
             return;
         }
-        ADSKTetrahedronWithInscribedIcosahedronJig entityJig(ptCenter);
+        ADSKPyramidJig entityJig(ptCenter);
         entityJig.startJig(new ADSKCustomPyramid);
         //pJig->doIt();
     }

@@ -24,8 +24,8 @@
 //-----------------------------------------------------------------------------
 #include "StdAfx.h"
 #include "ADSKDatabaseReactor.h"
-#include "ADSKTetrahedronWithInscribedIcosahedronReactor.h"
-extern std::unique_ptr <ADSKTetrahedronWithInscribedIcosahedronReactor> g_pTetrahedronWithInscribedIcosahedronReactor;
+#include "ADSKPyramidReactor.h"
+extern std::unique_ptr <ADSKPyramidReactor> g_pPyramidReactor;
 //-----------------------------------------------------------------------------
 ACRX_CONS_DEFINE_MEMBERS(ADSKDatabaseReactor, AcDbDatabaseReactor, 1)
 
@@ -69,5 +69,5 @@ void ADSKDatabaseReactor::objectAppended(const AcDbDatabase* , const AcDbObject*
 	auto* pEntity = ADSKCustomPyramid::cast(apDbObj);
 	if (nullptr == pEntity)
 		return;
-	apDbObj->addReactor(g_pTetrahedronWithInscribedIcosahedronReactor.get());
+	apDbObj->addReactor(g_pPyramidReactor.get());
 }

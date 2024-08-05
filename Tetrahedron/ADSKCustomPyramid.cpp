@@ -501,8 +501,14 @@ Acad::ErrorStatus ADSKCustomPyramid::subMoveGripPointsAt(
 				break;
 			}
 			default: {
-				double dMax = max(max(offset.x, offset.y), offset.z);
-				subTransformBy(AcGeMatrix3d::scaling(dMax));
+				/*m_transform.invert();
+				auto mat = AcGeMatrix3d::kIdentity;
+				
+				mat.setTranslation(offset);
+				mat
+				AcGeVector3d localOffset = offset.transformBy(transformation.inverse());
+				double dMax = max(max(offset.x, offset.y), offset.z);*/
+				subTransformBy(AcGeMatrix3d::scaling(offset.length()));
 			}
 		}
 	}
