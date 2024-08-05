@@ -25,7 +25,7 @@
 //----- See the AsdkDmgr.h / DocData.cpp for more datails
 //-----------------------------------------------------------------------------
 #pragma once
-#include "ADSKTetrahedronWithInscribedIcosahedron.h"
+#include "ADSKCustomPyramid.h"
 #include "ADSKDatabaseReactor.h"
 //-----------------------------------------------------------------------------
 //----- Here you can store the document / database related data.

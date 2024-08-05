@@ -20,7 +20,7 @@
 //
 
 //-----------------------------------------------------------------------------
-//----- ADSKTetrahedronWithInscribedIcosahedron.h : Declaration of the ADSKTetrahedronWithInscribedIcosahedron
+//----- ADSKCustomPyramid.h : Declaration of the ADSKTetrahedronWithInscribedIcosahedron
 //-----------------------------------------------------------------------------
 #pragma once
 
@@ -53,66 +53,67 @@
 #include "ADSKIcosahedron.h"
 #include "ADSKTetrahedron.h"
 //-----------------------------------------------------------------------------
-class DLLIMPEXP ADSKTetrahedronWithInscribedIcosahedron : public AcDbEntity {
+class DLLIMPEXP ADSKCustomPyramid : public AcDbEntity {
 
 public:
-	ACRX_DECLARE_MEMBERS(ADSKTetrahedronWithInscribedIcosahedron) ;
+	ACRX_DECLARE_MEMBERS(ADSKCustomPyramid);
 
 protected:
-	static Adesk::UInt32 kCurrentVersionNumber ;
+	static Adesk::UInt32 kCurrentVersionNumber;
 
 public:
-	ADSKTetrahedronWithInscribedIcosahedron () ;
+	ADSKCustomPyramid();
+	ADSKCustomPyramid(double adEdgeLength);
 	//ADSKTetrahedronWithInscribedIcosahedron(const ADSKTetrahedronWithInscribedIcosahedron& other);
-	virtual ~ADSKTetrahedronWithInscribedIcosahedron () ;
+	virtual ~ADSKCustomPyramid();
 
 	//----- AcDbObject protocols
 	//- Dwg Filing protocol
-	virtual Acad::ErrorStatus dwgOutFields (AcDbDwgFiler *pFiler) const ;
-	virtual Acad::ErrorStatus dwgInFields (AcDbDwgFiler *pFiler) ;
+	virtual Acad::ErrorStatus dwgOutFields(AcDbDwgFiler* pFiler) const;
+	virtual Acad::ErrorStatus dwgInFields(AcDbDwgFiler* pFiler);
 
 	//- Dxf Filing protocol
-	virtual Acad::ErrorStatus dxfOutFields (AcDbDxfFiler *pFiler) const ;
-	virtual Acad::ErrorStatus dxfInFields (AcDbDxfFiler *pFiler) ;
+	virtual Acad::ErrorStatus dxfOutFields(AcDbDxfFiler* pFiler) const;
+	virtual Acad::ErrorStatus dxfInFields(AcDbDxfFiler* pFiler);
 
 	//----- AcDbEntity protocols
 	//- Graphics protocol
 protected:
-	virtual Adesk::Boolean subWorldDraw (AcGiWorldDraw *mode) ;
-	virtual Adesk::UInt32 subSetAttributes (AcGiDrawableTraits *traits) ;
+	virtual Adesk::Boolean subWorldDraw(AcGiWorldDraw* mode);
+	virtual Adesk::UInt32 subSetAttributes(AcGiDrawableTraits* traits);
 	virtual Acad::ErrorStatus subTransformBy(const AcGeMatrix3d& xform);
 	//- Osnap points protocol
 public:
-	virtual Acad::ErrorStatus subGetOsnapPoints (
+	virtual Acad::ErrorStatus subGetOsnapPoints(
 		AcDb::OsnapMode osnapMode,
 		Adesk::GsMarker gsSelectionMark,
-		const AcGePoint3d &pickPoint,
-		const AcGePoint3d &lastPoint,
-		const AcGeMatrix3d &viewXform,
-		AcGePoint3dArray &snapPoints,
-		AcDbIntArray &geomIds) const ;
-	virtual Acad::ErrorStatus subGetOsnapPoints (
+		const AcGePoint3d& pickPoint,
+		const AcGePoint3d& lastPoint,
+		const AcGeMatrix3d& viewXform,
+		AcGePoint3dArray& snapPoints,
+		AcDbIntArray& geomIds) const;
+	virtual Acad::ErrorStatus subGetOsnapPoints(
 		AcDb::OsnapMode osnapMode,
 		Adesk::GsMarker gsSelectionMark,
-		const AcGePoint3d &pickPoint,
-		const AcGePoint3d &lastPoint,
-		const AcGeMatrix3d &viewXform,
-		AcGePoint3dArray &snapPoints,
-		AcDbIntArray &geomIds,
-		const AcGeMatrix3d &insertionMat) const ;
+		const AcGePoint3d& pickPoint,
+		const AcGePoint3d& lastPoint,
+		const AcGeMatrix3d& viewXform,
+		AcGePoint3dArray& snapPoints,
+		AcDbIntArray& geomIds,
+		const AcGeMatrix3d& insertionMat) const;
 
 	//- Grip points protocol
-	virtual Acad::ErrorStatus subGetGripPoints (AcGePoint3dArray &gripPoints, AcDbIntArray &osnapModes, AcDbIntArray &geomIds) const ;
-	virtual Acad::ErrorStatus subMoveGripPointsAt (const AcDbIntArray &indices, const AcGeVector3d &offset) ;
-	virtual Acad::ErrorStatus subGetGripPoints (
-		AcDbGripDataPtrArray &grips, const double curViewUnitSize, const int gripSize, 
-		const AcGeVector3d &curViewDir, const int bitflags) const ;
-	virtual Acad::ErrorStatus subMoveGripPointsAt (const AcDbVoidPtrArray &gripAppData, const AcGeVector3d &offset, const int bitflags) ;
-	virtual Acad::ErrorStatus   subGetStretchPoints(
+	virtual Acad::ErrorStatus subGetGripPoints(
+		AcDbGripDataPtrArray& grips, const double curViewUnitSize, const int gripSize,
+		const AcGeVector3d& curViewDir, const int bitflags) const;
+	virtual Acad::ErrorStatus subMoveGripPointsAt(const AcDbVoidPtrArray& gripAppData, const AcGeVector3d& offset, const int bitflags);
+	/*virtual Acad::ErrorStatus   subGetStretchPoints(
 		AcGePoint3dArray& stretchPoints) const override;
 	virtual Acad::ErrorStatus   subMoveStretchPointsAt(const AcDbIntArray& indices,
-		const AcGeVector3d& offset) override;
+		const AcGeVector3d& offset) override;*/
 
+	//virtual Acad::ErrorStatus subGetGeomExtents( AcDbExtents& extents) const;
+	//virtual Acad::ErrorStatus subGetTransformedCopy( const AcGeMatrix3d& xform, AcDbEntity*& ent) const;
 	// ADSKTetrahedronWithInscribedIcosahedron methods
 	/*!
 		  \brief Меняет цвет случайной грани вписанного икосаэдра на один из стандартных цветов AutoCAD'а (1-6)
@@ -124,25 +125,25 @@ public:
 		  \return Разницу объемов икосаэдра и вписанного тетраэдра
 	*/
 	double volumesDifference() const noexcept;
+	Acad::ErrorStatus setEdgeLength(const double adEdgeLenght);
+	Acad::ErrorStatus setTransformMatrix(const AcGeMatrix3d& aTransform);
 private:
-	Acad::ErrorStatus myTransformBy(const AcGeMatrix3d& xform);
+	Acad::ErrorStatus applyTransformMatrix(const AcGeMatrix3d& xform);
 	/*!
 		  \brief Вычисляет длину ребра вписанного икосаэдра по длине ребра тетраэдра
 		  \param[in] adEdgeLenght длина ребра тетраэдра
 		  \return Длину ребра вписанного икосаэдра тетраэдра
 	*/
 	double getInscribedIcosahedronEdgeLength(double adTetrahedronEdgeLenght) const noexcept;
-	AcGePoint3d m_ptMoveGripPoint; ///< Точка для перемещения entity (находиться в центре)
-	ADSKTetrahedron m_Tetrahedron;
-	ADSKIcosahedron m_Icosahedron;
-	bool m_bNeedTranfomTransformMatrix;
-	// Grip points
-	AcGeMatrix3d m_transform;
-	AcGeMatrix3d m_translation;
-	AcGeMatrix3d m_scaling;
-	AcGeMatrix3d m_rotation;
-} ;
+	AcGePoint3d m_ptCenterGripPoint; ///< Точка для перемещения entity
+	ADSKTetrahedron m_Tetrahedron; ///< Тетраэдр
+	ADSKIcosahedron m_Icosahedron; ///< Вписанный икосаэдр
+	AcGeMatrix3d m_transform; ///< Матрица преобразований (TRS matrix)
+	//AcGeMatrix3d m_translation;
+	//AcGeMatrix3d m_scaling;
+	//AcGeMatrix3d m_rotation;
+};
 
 #ifdef TETRAHEDRON_MODULE
-ACDB_REGISTER_OBJECT_ENTRY_AUTO(ADSKTetrahedronWithInscribedIcosahedron)
+ACDB_REGISTER_OBJECT_ENTRY_AUTO(ADSKCustomPyramid)
 #endif

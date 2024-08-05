@@ -48,7 +48,7 @@ Acad::ErrorStatus attachToAllTetrahedronWithInscribedIcosahedron(bool attach) {
 		es = pIt->getEntityId(entityId);
 		if (es != Acad::eOk)
 			continue;
-		AcDbObjectPointer<ADSKTetrahedronWithInscribedIcosahedron> pEntity(entityId);
+		AcDbObjectPointer<ADSKCustomPyramid> pEntity(entityId);
 		if (pEntity.openStatus() != Acad::eOk)
 			continue;
 

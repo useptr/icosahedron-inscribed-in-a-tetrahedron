@@ -55,7 +55,7 @@
 #include "dbmain.h"
 #include "Tchar.h"
 #define ASDKTETRAHEDRON_DBXSERVICE _T("ASDKTETRAHEDRON_DBXSERVICE")
-class ADSKTetrahedronWithInscribedIcosahedron;
+class ADSKCustomPyramid;
 //-----------------------------------------------------------------------------
 class DLLIMPEXP ADSKTetrahedron : public AcDbEntity {
 
@@ -66,7 +66,7 @@ protected:
 	static Adesk::UInt32 kCurrentVersionNumber ;
 
 public:
-	friend class ADSKTetrahedronWithInscribedIcosahedron;
+	friend class ADSKCustomPyramid;
 	ADSKTetrahedron () ;
 	//ADSKTetrahedron(const ADSKTetrahedron& other);
 	//ADSKTetrahedron& operator=(const ADSKTetrahedron& other);
@@ -75,22 +75,22 @@ public:
 
 	//----- AcDbObject protocols
 	//- Dwg Filing protocol
-	virtual Acad::ErrorStatus dwgOutFields (AcDbDwgFiler *pFiler) const ;
-	virtual Acad::ErrorStatus dwgInFields (AcDbDwgFiler *pFiler) ;
+	//virtual Acad::ErrorStatus dwgOutFields (AcDbDwgFiler *pFiler) const ;
+	//virtual Acad::ErrorStatus dwgInFields (AcDbDwgFiler *pFiler) ;
 
-	//- Dxf Filing protocol
-	virtual Acad::ErrorStatus dxfOutFields (AcDbDxfFiler *pFiler) const ;
-	virtual Acad::ErrorStatus dxfInFields (AcDbDxfFiler *pFiler) ;
+	////- Dxf Filing protocol
+	//virtual Acad::ErrorStatus dxfOutFields (AcDbDxfFiler *pFiler) const ;
+	//virtual Acad::ErrorStatus dxfInFields (AcDbDxfFiler *pFiler) ;
 
 	//----- AcDbEntity protocols
 	//- Graphics protocol
 protected:
 	virtual Adesk::Boolean subWorldDraw (AcGiWorldDraw *mode) ;
-	virtual Adesk::UInt32 subSetAttributes (AcGiDrawableTraits *traits) ;
+	//virtual Adesk::UInt32 subSetAttributes (AcGiDrawableTraits *traits) ;
 	virtual Acad::ErrorStatus   subTransformBy(const AcGeMatrix3d& xform);
 	//- Osnap points protocol
 public:
-	virtual Acad::ErrorStatus subGetOsnapPoints (
+	/*virtual Acad::ErrorStatus subGetOsnapPoints (
 		AcDb::OsnapMode osnapMode,
 		Adesk::GsMarker gsSelectionMark,
 		const AcGePoint3d &pickPoint,
@@ -106,15 +106,13 @@ public:
 		const AcGeMatrix3d &viewXform,
 		AcGePoint3dArray &snapPoints,
 		AcDbIntArray &geomIds,
-		const AcGeMatrix3d &insertionMat) const ;
+		const AcGeMatrix3d &insertionMat) const ;*/
 
 	//- Grip points protocol
-	virtual Acad::ErrorStatus subGetGripPoints (AcGePoint3dArray &gripPoints, AcDbIntArray &osnapModes, AcDbIntArray &geomIds) const ;
-	virtual Acad::ErrorStatus subMoveGripPointsAt (const AcDbIntArray &indices, const AcGeVector3d &offset) ;
-	virtual Acad::ErrorStatus subGetGripPoints (
+	/*virtual Acad::ErrorStatus subGetGripPoints (
 		AcDbGripDataPtrArray &grips, const double curViewUnitSize, const int gripSize, 
 		const AcGeVector3d &curViewDir, const int bitflags) const ;
-	virtual Acad::ErrorStatus subMoveGripPointsAt (const AcDbVoidPtrArray &gripAppData, const AcGeVector3d &offset, const int bitflags) ;
+	virtual Acad::ErrorStatus subMoveGripPointsAt (const AcDbVoidPtrArray &gripAppData, const AcGeVector3d &offset, const int bitflags) ;*/
 
 	// for  Tetrahedron
 	AcGePoint3d pointAt(Adesk::Int32 ai) const;
@@ -123,7 +121,7 @@ public:
 		  \param[in] adEdgeLenght длина ребра тетраэдра
 		  \return Радиус вписанной сферы тетраэдра
 	*/
-	static double insphereRadiusByEdgeLength(double adEdgeLenght) noexcept;
+	static double insphereRadius(double adEdgeLength) noexcept;
 	/*!
 		  \brief Вычисляет объём тетраэдра
 		  \details https://en.wikipedia.org/wiki/Tetrahedron#Measurement
@@ -135,14 +133,8 @@ public:
 	
 private:
 	void calculateVertices() noexcept;
-	//m_aEdges;
-	// m_aFaces;
-	double m_dEdgeLength; // длинна ребра // TODO remove use scale
-	//AcGePoint3d m_dCenter;
-	//AcArray<AcArray<int>> m_aFaces; // индексы вершин // TODO static atribute?
-	AcGePoint3dArray m_aVertices; 
-	
-	// TransformMatrix
+	double m_dEdgeLength; // длинна ребра
+	AcGePoint3dArray m_aVertices;
 } ;
 
 #ifdef TETRAHEDRON_MODULE

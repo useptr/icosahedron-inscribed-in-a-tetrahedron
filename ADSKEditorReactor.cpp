@@ -89,7 +89,7 @@ void ADSKEditorReactor::commandEnded(const ACHAR* aszCmdStr)
 		if (pEntity.openStatus() != Acad::eOk)
 			continue;
 
-		ADSKTetrahedronWithInscribedIcosahedron* pTetrahedronWithInscribedIcosahedron = ADSKTetrahedronWithInscribedIcosahedron::cast(pEntity);
+		auto* pTetrahedronWithInscribedIcosahedron = ADSKCustomPyramid::cast(pEntity);
 		if (nullptr == pTetrahedronWithInscribedIcosahedron)
 			continue;
 
@@ -99,7 +99,7 @@ void ADSKEditorReactor::commandEnded(const ACHAR* aszCmdStr)
 
 		
 		pTetrahedronWithInscribedIcosahedron->setFaceOfIcosahedronToRandomColor();
-		acutPrintf(_T("SUCCESS!!"));
+		acutPrintf(_T("SUCCESS!!\n\n\n\n\n\n\n"));
 	}
 
 }

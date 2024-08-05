@@ -33,13 +33,13 @@
     <ClCompile Include="ADSKTemp.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="ADSKTetrahedronWithInscribedIcosahedron.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="AcGiFaceDataManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="utilities.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ADSKCustomPyramid.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -62,13 +62,13 @@
     <ClInclude Include="ADSKTemp.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="ADSKTetrahedronWithInscribedIcosahedron.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="AcGiFaceDataManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="utilities.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ADSKCustomPyramid.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

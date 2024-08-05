@@ -54,7 +54,7 @@
 #include "AcGiFaceDataManager.h"
 #define ASDKICOSAHEDRON_DBXSERVICE _T("ASDKICOSAHEDRON_DBXSERVICE")
 //-----------------------------------------------------------------------------
-class ADSKTetrahedronWithInscribedIcosahedron;
+class ADSKCustomPyramid;
 class DLLIMPEXP ADSKIcosahedron : public AcDbEntity {
 
 public:
@@ -64,7 +64,7 @@ protected:
 	static Adesk::UInt32 kCurrentVersionNumber ;
 
 public:
-	friend class ADSKTetrahedronWithInscribedIcosahedron;
+	friend class ADSKCustomPyramid;
 	ADSKIcosahedron () ;
 	ADSKIcosahedron(double adEdgeLength);
 	//ADSKIcosahedron(const ADSKIcosahedron& other);
@@ -73,22 +73,22 @@ public:
 
 	//----- AcDbObject protocols
 	//- Dwg Filing protocol
-	virtual Acad::ErrorStatus dwgOutFields (AcDbDwgFiler *pFiler) const ;
-	virtual Acad::ErrorStatus dwgInFields (AcDbDwgFiler *pFiler) ;
+	//virtual Acad::ErrorStatus dwgOutFields (AcDbDwgFiler *pFiler) const ;
+	//virtual Acad::ErrorStatus dwgInFields (AcDbDwgFiler *pFiler) ;
 
-	//- Dxf Filing protocol
-	virtual Acad::ErrorStatus dxfOutFields (AcDbDxfFiler *pFiler) const ;
-	virtual Acad::ErrorStatus dxfInFields (AcDbDxfFiler *pFiler) ;
+	////- Dxf Filing protocol
+	//virtual Acad::ErrorStatus dxfOutFields (AcDbDxfFiler *pFiler) const ;
+	//virtual Acad::ErrorStatus dxfInFields (AcDbDxfFiler *pFiler) ;
 
 	//----- AcDbEntity protocols
 	//- Graphics protocol
 protected:
 	virtual Adesk::Boolean subWorldDraw (AcGiWorldDraw *mode) ;
-	virtual Adesk::UInt32 subSetAttributes (AcGiDrawableTraits *traits) ;
+	//virtual Adesk::UInt32 subSetAttributes (AcGiDrawableTraits *traits) ;
 	virtual Acad::ErrorStatus subTransformBy(const AcGeMatrix3d& xform);
 	//- Osnap points protocol
 public:
-	virtual Acad::ErrorStatus subGetOsnapPoints (
+	/*virtual Acad::ErrorStatus subGetOsnapPoints (
 		AcDb::OsnapMode osnapMode,
 		Adesk::GsMarker gsSelectionMark,
 		const AcGePoint3d &pickPoint,
@@ -104,15 +104,13 @@ public:
 		const AcGeMatrix3d &viewXform,
 		AcGePoint3dArray &snapPoints,
 		AcDbIntArray &geomIds,
-		const AcGeMatrix3d &insertionMat) const ;
+		const AcGeMatrix3d &insertionMat) const ;*/
 
 	//- Grip points protocol
-	virtual Acad::ErrorStatus subGetGripPoints (AcGePoint3dArray &gripPoints, AcDbIntArray &osnapModes, AcDbIntArray &geomIds) const ;
-	virtual Acad::ErrorStatus subMoveGripPointsAt (const AcDbIntArray &indices, const AcGeVector3d &offset) ;
-	virtual Acad::ErrorStatus subGetGripPoints (
+	/*virtual Acad::ErrorStatus subGetGripPoints (
 		AcDbGripDataPtrArray &grips, const double curViewUnitSize, const int gripSize, 
 		const AcGeVector3d &curViewDir, const int bitflags) const ;
-	virtual Acad::ErrorStatus subMoveGripPointsAt (const AcDbVoidPtrArray &gripAppData, const AcGeVector3d &offset, const int bitflags) ;
+	virtual Acad::ErrorStatus subMoveGripPointsAt (const AcDbVoidPtrArray &gripAppData, const AcGeVector3d &offset, const int bitflags) ;*/
 
 	// for Icosahedron
 	/*!
@@ -135,7 +133,6 @@ private:
 	double m_dEdgeLength;
 	AcGePoint3dArray m_aVertices;
 	AcGiFaceDataManager m_faceDataManager;
-	//AcArray<AcGePoint3dArray> m_aFaces;
 } ;
 
 #ifdef TETRAHEDRON_MODULE

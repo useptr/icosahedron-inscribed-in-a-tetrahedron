@@ -30,10 +30,11 @@
 #include <numbers>
 #include "ADSKIcosahedron.h"
 #include "ADSKTetrahedron.h"
-#include "ADSKTetrahedronWithInscribedIcosahedron.h"
+#include "ADSKCustomPyramid.h"
 #include "ADSKEditorReactor.h"
 //#include "ADSKDatabaseReactor.h"
 #include "ADSKTetrahedronWithInscribedIcosahedronReactor.h"
+#include "ADSKTetrahedronWithInscribedIcosahedronJig.h"
 //-----------------------------------------------------------------------------
 #define szRDS _RXST("ADSK")
 
@@ -134,14 +135,29 @@ public:
             acutPrintf(_T("\nERROR: Cannot open BlockTableRecord for write"));
             return;
         }
-        AcDbObjectPointer<ADSKTetrahedronWithInscribedIcosahedron> pEntity;
+        AcDbObjectPointer<ADSKCustomPyramid> pEntity;
         pEntity.create();
         AcDbObjectId idObj;
         if (pSpaceBlockTableRecord->appendAcDbEntity(idObj, pEntity) != Acad::eOk) {
             acutPrintf(_T("ERROR: Cannot append ADSKTetrahedronWithInscribedIcosahedron to BlockTable"));
             return;
         }
+        acutPrintf(_T("Volume is equal to %f"), pEntity->volumesDifference());
         acutPrintf(_T("CREATED ADSKTetrahedronWithInscribedIcosahedron!"));
+    }
+    static void ADSKMyGroup_JIGCREATE(void) {
+        AcGePoint3d ptCenter;
+        if (acedGetPoint(nullptr, _T("\nEllipse center point: "), asDblArray(ptCenter)) != RTNORM)
+            return;
+
+        AcDbBlockTableRecordPointer pSpaceBlockTableRecord(acdbHostApplicationServices()->workingDatabase()->currentSpaceId(), AcDb::kForWrite);
+        if (pSpaceBlockTableRecord.openStatus() != Acad::eOk) {
+            acutPrintf(_T("\nERROR: Cannot open BlockTableRecord for write"));
+            return;
+        }
+        ADSKTetrahedronWithInscribedIcosahedronJig entityJig(ptCenter);
+        entityJig.startJig(new ADSKCustomPyramid);
+        //pJig->doIt();
     }
     //static void ADSKMyGroup_CREATE(void) // createIcosahedron
     //{
@@ -236,6 +252,7 @@ public:
 //-----------------------------------------------------------------------------
 IMPLEMENT_ARX_ENTRYPOINT(CicosahedroninscribedinatetrahedronApp)
 
+ACED_ARXCOMMAND_ENTRY_AUTO(CicosahedroninscribedinatetrahedronApp, ADSKMyGroup, _JIGCREATE, JIGCREATE, ACRX_CMD_TRANSPARENT, NULL)
 ACED_ARXCOMMAND_ENTRY_AUTO(CicosahedroninscribedinatetrahedronApp, ADSKMyGroup, _ICOSAHEDRON, ICOSAHEDRON, ACRX_CMD_TRANSPARENT, NULL)
 ACED_ARXCOMMAND_ENTRY_AUTO(CicosahedroninscribedinatetrahedronApp, ADSKMyGroup, _TETRAHEDRON, TETRAHEDRON, ACRX_CMD_TRANSPARENT, NULL)
 ACED_ARXCOMMAND_ENTRY_AUTO(CicosahedroninscribedinatetrahedronApp, ADSKMyGroup, _CREATE, CREATE, ACRX_CMD_TRANSPARENT, NULL)

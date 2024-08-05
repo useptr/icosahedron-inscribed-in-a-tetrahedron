@@ -66,7 +66,7 @@ bool ADSKDatabaseReactor::IsAttached () const {
 
 void ADSKDatabaseReactor::objectAppended(const AcDbDatabase* , const AcDbObject* apDbObj)
 {
-	ADSKTetrahedronWithInscribedIcosahedron* pEntity = ADSKTetrahedronWithInscribedIcosahedron::cast(apDbObj);
+	auto* pEntity = ADSKCustomPyramid::cast(apDbObj);
 	if (nullptr == pEntity)
 		return;
 	apDbObj->addReactor(g_pTetrahedronWithInscribedIcosahedronReactor.get());

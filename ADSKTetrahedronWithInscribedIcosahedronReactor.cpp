@@ -43,7 +43,7 @@ void ADSKTetrahedronWithInscribedIcosahedronReactor::openedForModify(const AcDbO
 	if (!DocVars.docData().m_bScaleCommand)
 		return;
 
-	ADSKTetrahedronWithInscribedIcosahedron* pEntity = ADSKTetrahedronWithInscribedIcosahedron::cast(pDbObj);
+	auto* pEntity = ADSKCustomPyramid::cast(pDbObj);
 	if (nullptr == pEntity)
 		return;
 	//pDbObj->objectId()
