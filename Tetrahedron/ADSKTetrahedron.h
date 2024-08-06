@@ -70,7 +70,7 @@ public:
 	ADSKTetrahedron () ;
 	//ADSKTetrahedron(const ADSKTetrahedron& other);
 	//ADSKTetrahedron& operator=(const ADSKTetrahedron& other);
-	ADSKTetrahedron(double adEdgeLength); // TODO
+	ADSKTetrahedron(AcGePoint3d aptCenter, double adEdgeLength);
 	virtual ~ADSKTetrahedron () ;
 
 	//----- AcDbObject protocols
@@ -121,21 +121,27 @@ public:
 		  \param[in] adEdgeLenght длина ребра тетраэдра
 		  \return Радиус вписанной сферы тетраэдра
 	*/
-	static double insphereRadius(double adEdgeLength) noexcept;
+	static double inradius(double adEdgeLength) noexcept;
 	/*!
 		  \brief Вычисляет объём тетраэдра
 		  \details https://en.wikipedia.org/wiki/Tetrahedron#Measurement
 		  \return Объём тетраэдра
 	*/
+	double inradius() const noexcept;
 	double volume() const noexcept;
-	Acad::ErrorStatus edgeLength(double& ardEdgeLenght) const;
-	Acad::ErrorStatus setEdgeLength(const double adEdgeLenght);
+	static double height(double adEdgeLenght) noexcept;
+	double height() const noexcept;
+	Acad::ErrorStatus setCenter(const AcGePoint3d& aptCenter);
+	const AcGePoint3d& center() const;
+	double edgeLength() const;
+	Acad::ErrorStatus setEdgeLength(double adEdgeLenght);
 	const AcGePoint3dArray& vertices() const;
 	Acad::ErrorStatus setVertexAt(int aI, AcGePoint3d& arPt);
 private:
 	void updateEdgeLength();
 	void calculateVertices() noexcept;
 	double m_dEdgeLength; // длинна ребра
+	AcGePoint3d m_ptCenter;
 	AcGePoint3dArray m_aVertices;
 } ;
 

@@ -61,10 +61,10 @@ ADSKPOLYHEDRONSAPP
 //	return *this;
 //}
 
-ADSKIcosahedron::ADSKIcosahedron() : ADSKIcosahedron(1.0) {
+ADSKIcosahedron::ADSKIcosahedron() : ADSKIcosahedron(AcGePoint3d::kOrigin, 1.0) {
 }
 
-ADSKIcosahedron::ADSKIcosahedron(double adEdgeLength) : AcDbEntity(), m_dEdgeLength(adEdgeLength) {
+ADSKIcosahedron::ADSKIcosahedron(AcGePoint3d aptCenter, double adEdgeLength) : AcDbEntity(), m_dEdgeLength(adEdgeLength), m_ptCenter(aptCenter) {
 	calculateVertices();
 	m_faceDataManager.setColors(std::move(std::make_unique<short[]>(20)));
 }
@@ -238,6 +238,7 @@ Acad::ErrorStatus ADSKIcosahedron::subTransformBy(const AcGeMatrix3d& xform)
 	for (auto& vertex : m_aVertices) {
 		vertex.transformBy(xform);
 	}
+	m_ptCenter.transformBy(xform);
 	updateEdgeLength();
 	
 	return Acad::eOk;
@@ -302,7 +303,8 @@ Acad::ErrorStatus ADSKIcosahedron::subTransformBy(const AcGeMatrix3d& xform)
 
 double ADSKIcosahedron::volume() const noexcept
 {
-	return 5.0*std::sqrt(3.0)*std::pow(m_dEdgeLength,2.0);
+	// https://en.wikipedia.org/wiki/Regular_icosahedron#Mensuration
+	return 5.0* std::pow(std::numbers::phi_v<double>, 2.0) / 6.0*std::pow(m_dEdgeLength,3.0);
 }
 
 const AcGePoint3dArray& ADSKIcosahedron::vertices() const
@@ -327,21 +329,26 @@ void ADSKIcosahedron::updateEdgeLength()
 void ADSKIcosahedron::calculateVertices() noexcept
 {
 	assertWriteEnabled();
-
-	auto phi = std::numbers::phi_v<double>;
 	double t = m_dEdgeLength / 2.0;
-	double s = m_dEdgeLength * phi / 2.0;
+	double s = m_dEdgeLength * std::numbers::phi_v<double> / 2.0;
 	if (m_aVertices.length() > 0)
 		m_aVertices.removeAll();
-	m_aVertices.appendList(AcGePoint3d(-t, 0, s), AcGePoint3d(t, 0, s), AcGePoint3d(-t, 0, -s), AcGePoint3d(t, 0, -s),
-		AcGePoint3d(0, s, t), AcGePoint3d(0, s, -t), AcGePoint3d(0, -s, t), AcGePoint3d(0, -s, -t),
-		AcGePoint3d(s, t, 0), AcGePoint3d(-s, t, 0), AcGePoint3d(s, -t, 0), AcGePoint3d(-s, -t, 0));
+	m_aVertices.appendList(AcGePoint3d(m_ptCenter.x -t, m_ptCenter.y, m_ptCenter.z+ s), AcGePoint3d(m_ptCenter.x + t, m_ptCenter.y, m_ptCenter.z+ s), AcGePoint3d(m_ptCenter.x -t, m_ptCenter.y, m_ptCenter.z -s), AcGePoint3d(m_ptCenter.x+ t, m_ptCenter.y, m_ptCenter.z -s),
+		AcGePoint3d(m_ptCenter.x, m_ptCenter.y+ s, m_ptCenter.z+ t), AcGePoint3d(m_ptCenter.x, m_ptCenter.y+ s, m_ptCenter.z -t), AcGePoint3d(m_ptCenter.x, m_ptCenter.y -s, m_ptCenter.z+ t), AcGePoint3d(m_ptCenter.x, m_ptCenter.y -s, m_ptCenter.z -t),
+		AcGePoint3d(m_ptCenter.x+ s, m_ptCenter.y+ t, m_ptCenter.z), AcGePoint3d(m_ptCenter.x -s, m_ptCenter.y+ t, m_ptCenter.z), AcGePoint3d(m_ptCenter.x+ s, m_ptCenter.y -t, m_ptCenter.z), AcGePoint3d(m_ptCenter.x -s, m_ptCenter.y -t, m_ptCenter.z));
 	
 }
 
-double ADSKIcosahedron::edgeLengthByCircumsphereRadius(double adCircumsphereRadius) noexcept
+double ADSKIcosahedron::circumradius(double adEdgeLenght) noexcept
 {
-	return 2.0 * adCircumsphereRadius / std::sqrt(std::numbers::phi_v<double> +1.0);
+	// https://en.wikipedia.org/wiki/Regular_icosahedron#Mensuration
+	return std::sqrt(std::pow(std::numbers::phi_v<double>, 2.0)+1.0)/2.0*adEdgeLenght;
+}
+
+double ADSKIcosahedron::edgeLengthByCircumradius(double adCircumsphereRadius) noexcept
+{
+	// https://en.wikipedia.org/wiki/Regular_icosahedron#Mensuration
+	return 2.0 * adCircumsphereRadius / std::sqrt(std::pow(std::numbers::phi_v<double>, 2.0) +1.0);
 }
 
 Acad::ErrorStatus ADSKIcosahedron::setFaceColor(Adesk::Int32 aI, short anColor)
@@ -352,12 +359,25 @@ Acad::ErrorStatus ADSKIcosahedron::setFaceColor(Adesk::Int32 aI, short anColor)
 	return Acad::eOk;
 }
 
-Acad::ErrorStatus ADSKIcosahedron::edgeLength(double& ardEdgeLenght) const {
-	assertReadEnabled();
-	ardEdgeLenght = m_dEdgeLength;
+Acad::ErrorStatus ADSKIcosahedron::setCenter(const AcGePoint3d& aptCenter)
+{
+	assertWriteEnabled();
+	m_ptCenter = aptCenter;
+	calculateVertices();
 	return Acad::eOk;
 }
-Acad::ErrorStatus ADSKIcosahedron::setEdgeLength(const double adEdgeLenght) {
+
+const AcGePoint3d& ADSKIcosahedron::center() const
+{
+	assertReadEnabled();
+	return m_ptCenter;
+}
+
+double ADSKIcosahedron::edgeLength() const {
+	assertReadEnabled();
+	return m_dEdgeLength;
+}
+Acad::ErrorStatus ADSKIcosahedron::setEdgeLength(double adEdgeLenght) {
 	assertWriteEnabled();
 	m_dEdgeLength = adEdgeLenght;
 	calculateVertices();

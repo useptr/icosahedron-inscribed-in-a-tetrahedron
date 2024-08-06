@@ -66,7 +66,7 @@ protected:
 public:
 	friend class ADSKCustomPyramid;
 	ADSKIcosahedron () ;
-	ADSKIcosahedron(double adEdgeLength);
+	ADSKIcosahedron(AcGePoint3d aptCenter, double adEdgeLength);
 	//ADSKIcosahedron(const ADSKIcosahedron& other);
 	//ADSKIcosahedron& operator=(const ADSKIcosahedron& other);
 	virtual ~ADSKIcosahedron () ;
@@ -118,10 +118,13 @@ public:
 		  \param[in] adCircumsphereRadius радиус описанной сферы икосаэдра
 		  \return Длину ребра икосаэдра
 	*/
-	static double edgeLengthByCircumsphereRadius(double adCircumsphereRadius) noexcept;
+	static double circumradius(double adEdgeLenght) noexcept;
+	static double edgeLengthByCircumradius(double adCircumsphereRadius) noexcept;
 	Acad::ErrorStatus setFaceColor(Adesk::Int32 aI, short anColor);
-	Acad::ErrorStatus edgeLength(double& ardEdgeLenght) const;
-	Acad::ErrorStatus setEdgeLength(const double adEdgeLenght);
+	Acad::ErrorStatus setCenter(const AcGePoint3d& aptCenter);
+	const AcGePoint3d& center() const;
+	double edgeLength() const;
+	Acad::ErrorStatus setEdgeLength(double adEdgeLenght);
 	/*!
 		  \brief Вычисляет объём тетраэдра
 		  \details https://en.wikipedia.org/wiki/Regular_icosahedron#Mensuration
@@ -134,6 +137,7 @@ private:
 	void updateEdgeLength();
 	void calculateVertices() noexcept;
 	double m_dEdgeLength;
+	AcGePoint3d m_ptCenter;
 	AcGePoint3dArray m_aVertices;
 	AcGiFaceDataManager m_faceDataManager;
 } ;

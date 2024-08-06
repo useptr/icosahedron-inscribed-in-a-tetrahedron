@@ -23,8 +23,7 @@
 #include "StdAfx.h"
 #include "ADSKPyramidJig.h"
 //-----------------------------------------------------------------------------
-ADSKPyramidJig::ADSKPyramidJig (AcGePoint3d& ptCenter) : AcEdJig(), mptCenter(ptCenter),
-mvecTranslation(mptCenter.x, mptCenter.y, mptCenter.z), mdEdgeLenght(1.0), mCurrentInputLevel(0), mpEntity(nullptr)
+ADSKPyramidJig::ADSKPyramidJig (AcGePoint3d& ptCenter) : AcEdJig(), mptCenter(ptCenter), mdEdgeLenght(1.0), mCurrentInputLevel(0), mpEntity(nullptr)
 {
 }
 
@@ -35,7 +34,7 @@ ADSKPyramidJig::~ADSKPyramidJig () {
 AcEdJig::DragStatus ADSKPyramidJig::startJig (ADSKCustomPyramid *pEntity) {
 	//- Store the new entity pointer
 	mpEntity =pEntity ;
-	mpEntity->setTransformMatrix(AcGeMatrix3d::translation(mvecTranslation));
+	mpEntity->setCenter(mptCenter);
 	//- Setup each input prompt
 	AcString inputPrompts [1] ={
 		_T("\nPick point")
@@ -148,7 +147,7 @@ Adesk::Boolean ADSKPyramidJig::update () {
 	//		break ;
 	//}
 	mpEntity->setEdgeLength(mdEdgeLenght);
-	mpEntity->setTransformMatrix(AcGeMatrix3d::translation(mvecTranslation));
+	mpEntity->setCenter(mptCenter);
 	return Adesk::kTrue;
 	//return (updateDimData ()) ;
 }

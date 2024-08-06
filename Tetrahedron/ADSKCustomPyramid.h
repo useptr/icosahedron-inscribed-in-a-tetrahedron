@@ -63,7 +63,7 @@ protected:
 
 public:
 	ADSKCustomPyramid();
-	ADSKCustomPyramid(double adEdgeLength);
+	ADSKCustomPyramid(AcGePoint3d aptCenter, double adEdgeLength);
 	//ADSKTetrahedronWithInscribedIcosahedron(const ADSKTetrahedronWithInscribedIcosahedron& other);
 	virtual ~ADSKCustomPyramid();
 
@@ -101,17 +101,15 @@ public:
 		AcGePoint3dArray& snapPoints,
 		AcDbIntArray& geomIds,
 		const AcGeMatrix3d& insertionMat) const;
-
 	//- Grip points protocol
 	virtual Acad::ErrorStatus subGetGripPoints(
 		AcDbGripDataPtrArray& grips, const double curViewUnitSize, const int gripSize,
 		const AcGeVector3d& curViewDir, const int bitflags) const;
 	virtual Acad::ErrorStatus subMoveGripPointsAt(const AcDbVoidPtrArray& gripAppData, const AcGeVector3d& offset, const int bitflags);
-	/*virtual Acad::ErrorStatus   subGetStretchPoints(
-		AcGePoint3dArray& stretchPoints) const override;
-	virtual Acad::ErrorStatus   subMoveStretchPointsAt(const AcDbIntArray& indices,
-		const AcGeVector3d& offset) override;*/
-
+	//virtual Acad::ErrorStatus   subGetStretchPoints(
+	//	AcGePoint3dArray& stretchPoints) const override;
+	//virtual Acad::ErrorStatus   subMoveStretchPointsAt(const AcDbIntArray& indices,
+	//	const AcGeVector3d& offset) override;
 	//virtual Acad::ErrorStatus subGetGeomExtents( AcDbExtents& extents) const;
 	//virtual Acad::ErrorStatus subGetTransformedCopy( const AcGeMatrix3d& xform, AcDbEntity*& ent) const;
 	// ADSKTetrahedronWithInscribedIcosahedron methods
@@ -126,7 +124,8 @@ public:
 	*/
 	double volumesDifference() const noexcept;
 	Acad::ErrorStatus setEdgeLength(const double adEdgeLength);
-	Acad::ErrorStatus setTransformMatrix(const AcGeMatrix3d& aTransform);
+	Acad::ErrorStatus setCenter(const AcGePoint3d& aptCenter);
+	const AcGePoint3d& center() const;
 private:
 	Acad::ErrorStatus applyTransformMatrix(const AcGeMatrix3d& xform);
 	/*!
@@ -134,7 +133,7 @@ private:
 		  \param[in] adEdgeLenght длина ребра тетраэдра
 		  \return Длину ребра вписанного икосаэдра тетраэдра
 	*/
-	double getInscribedIcosahedronEdgeLength(double adTetrahedronEdgeLenght) const noexcept;
+	double icosahedronEdgeLength(double adTetrahedronEdgeLenght) const noexcept;
 	AcGePoint3d m_ptBottomFaceCenter; ///< Точка для перемещения entity
 	ADSKTetrahedron m_Tetrahedron; ///< Тетраэдр
 	ADSKIcosahedron m_Icosahedron; ///< Вписанный икосаэдр

@@ -42,9 +42,9 @@ ACRX_DXF_DEFINE_MEMBERS(
 )
 
 //-----------------------------------------------------------------------------
-ADSKTetrahedron::ADSKTetrahedron() : ADSKTetrahedron(1.0) {
+ADSKTetrahedron::ADSKTetrahedron() : ADSKTetrahedron(AcGePoint3d::kOrigin, 1.0) {
 }
-ADSKTetrahedron::ADSKTetrahedron(double adEdgeLength) : AcDbEntity(), m_dEdgeLength(adEdgeLength) {
+ADSKTetrahedron::ADSKTetrahedron(AcGePoint3d aptCenter, double adEdgeLength) : AcDbEntity(), m_dEdgeLength(adEdgeLength), m_ptCenter(aptCenter) {
 	calculateVertices();
 }
 //ADSKTetrahedron::ADSKTetrahedron(const ADSKTetrahedron& other)
@@ -217,6 +217,7 @@ Acad::ErrorStatus ADSKTetrahedron::subTransformBy(const AcGeMatrix3d& xform)
 	for (auto& vertex : m_aVertices) {
 		vertex.transformBy(xform);
 	}
+	m_ptCenter.transformBy(xform);
 	updateEdgeLength();
 	return Acad::eOk;
 }
@@ -285,38 +286,75 @@ void ADSKTetrahedron::updateEdgeLength()
 	assertWriteEnabled();
 	m_dEdgeLength = m_aVertices[0].distanceTo(m_aVertices[1]);
 }
+double ADSKTetrahedron::height(double adEdgeLenght) noexcept
+{
+	return std::sqrt(6.0) / 3.0 * adEdgeLenght;
+}
+
+double ADSKTetrahedron::height() const noexcept
+{
+	assertReadEnabled();
+	return height(m_dEdgeLength);
+	//return std::sqrt(6.0) / 3.0 * m_dEdgeLength;
+}
+
 void ADSKTetrahedron::calculateVertices() noexcept
 {
 	assertWriteEnabled();
-	//static double sqrt3 = std::sqrt(3.0); // TODO
+	double dHalfHeight = height() / 2.0;
+	//static double sqrt3 = std::sqrt(3.0); // TODO       
 	if (m_aVertices.length() > 0) 
 		m_aVertices.removeAll();
 	
-	m_aVertices.append(AcGePoint3d(-m_dEdgeLength / 2.0, -std::sqrt(3.0) / 6.0 * m_dEdgeLength, 0));
+	m_aVertices.append(AcGePoint3d(m_ptCenter.x -m_dEdgeLength / 2.0, m_ptCenter.y -std::sqrt(3.0) / 6.0 * m_dEdgeLength, m_ptCenter.z - dHalfHeight));
+	m_aVertices.append(AcGePoint3d(m_ptCenter.x + m_dEdgeLength / 2.0, m_ptCenter.y -std::sqrt(3.0) / 6.0 * m_dEdgeLength, m_ptCenter.z - dHalfHeight));
+	m_aVertices.append(AcGePoint3d(m_ptCenter.x, m_ptCenter.y + std::sqrt(3.0) / 3.0 * m_dEdgeLength, m_ptCenter.z - dHalfHeight));
+	m_aVertices.append(AcGePoint3d(m_ptCenter.x, m_ptCenter.y, m_ptCenter.z + dHalfHeight));
+
+	/*m_aVertices.append(AcGePoint3d(-m_dEdgeLength / 2.0, -std::sqrt(3.0) / 6.0 * m_dEdgeLength, 0));
 	m_aVertices.append(AcGePoint3d(m_dEdgeLength / 2.0, -std::sqrt(3.0) / 6.0 * m_dEdgeLength, 0));
 	m_aVertices.append(AcGePoint3d(0, std::sqrt(3.0) / 3.0 * m_dEdgeLength, 0));
-	m_aVertices.append(AcGePoint3d(0, 0, std::sqrt(33.0) / 6.0 * m_dEdgeLength));    
+	m_aVertices.append(AcGePoint3d(0, 0, std::sqrt(33.0) / 6.0 * m_dEdgeLength)); */   
 
 
 }
 
-double ADSKTetrahedron::insphereRadius(double adEdgeLength) noexcept
+double ADSKTetrahedron::inradius(double adEdgeLength) noexcept
 {
-	return adEdgeLength * std::sqrt(6.0) / 12.0;
+	// https://en.wikipedia.org/wiki/Tetrahedron#Measurement
+	return adEdgeLength / std::sqrt(24.0);
+}
+
+double ADSKTetrahedron::inradius() const noexcept
+{
+	return inradius(m_dEdgeLength);
 }
 
 double ADSKTetrahedron::volume() const noexcept
 {
+	// https://en.wikipedia.org/wiki/Tetrahedron#Measurement
 	assertReadEnabled();
-	return  std::pow(m_dEdgeLength, 3)/(6.0*std::sqrt(3.0));
+	return  std::pow(m_dEdgeLength, 3.0)/(6.0*std::sqrt(2.0));
 }
 
-Acad::ErrorStatus ADSKTetrahedron::edgeLength(double& ardEdgeLenght) const {
+const AcGePoint3d& ADSKTetrahedron::center() const
+{
 	assertReadEnabled();
-	ardEdgeLenght = m_dEdgeLength;
+	return m_ptCenter;
+}
+Acad::ErrorStatus ADSKTetrahedron::setCenter(const AcGePoint3d& aptCenter)
+{
+	assertWriteEnabled();
+	m_ptCenter = aptCenter;
+	calculateVertices();
 	return Acad::eOk;
 }
-Acad::ErrorStatus ADSKTetrahedron::setEdgeLength(const double adEdgeLenght) {
+
+double ADSKTetrahedron::edgeLength() const {
+	assertReadEnabled();
+	return m_dEdgeLength;
+}
+Acad::ErrorStatus ADSKTetrahedron::setEdgeLength(double adEdgeLenght) {
 	assertWriteEnabled();
 	m_dEdgeLength = adEdgeLenght;
 	calculateVertices();

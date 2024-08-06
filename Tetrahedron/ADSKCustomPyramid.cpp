@@ -46,11 +46,12 @@ ACRX_DXF_DEFINE_MEMBERS(
 )
 
 //-----------------------------------------------------------------------------
-ADSKCustomPyramid::ADSKCustomPyramid() : ADSKCustomPyramid(1.0) {
+ADSKCustomPyramid::ADSKCustomPyramid() : ADSKCustomPyramid(AcGePoint3d(0.0, 0.0, ADSKTetrahedron::height(1.0)/2.0), 1.0) {
 }
 
-ADSKCustomPyramid::ADSKCustomPyramid(double adEdgeLength) : AcDbEntity(), m_ptBottomFaceCenter(AcGePoint3d::kOrigin), m_Tetrahedron(adEdgeLength), m_Icosahedron(getInscribedIcosahedronEdgeLength(adEdgeLength)), m_transform(AcGeMatrix3d::kIdentity) {
-	m_Icosahedron.subTransformBy(AcGeMatrix3d::translation(AcGeVector3d(0.0, 0.0, ADSKTetrahedron::insphereRadius(adEdgeLength))));
+ADSKCustomPyramid::ADSKCustomPyramid(AcGePoint3d aptCenter, double adEdgeLength) : AcDbEntity(), m_ptBottomFaceCenter(AcGePoint3d(aptCenter.x, aptCenter.y, aptCenter.z-(ADSKTetrahedron::height(adEdgeLength) / 2.0))), m_Tetrahedron(aptCenter, adEdgeLength), m_Icosahedron(AcGePoint3d(aptCenter.x, aptCenter.y, m_ptBottomFaceCenter.z+ADSKTetrahedron::inradius(adEdgeLength)), icosahedronEdgeLength(adEdgeLength)) {
+	//m_Icosahedron.subTransformBy(AcGeMatrix3d::translation(AcGeVector3d(0.0, 0.0, ADSKTetrahedron::insphereRadius(adEdgeLength))));
+	//m_Icosahedron.subTransformBy(AcGeMatrix3d::rotation(45.0 * std::numbers::pi_v<double> / 180.0, AcGeVector3d::kZAxis, m_Icosahedron.center()));
 }
 
 //ADSKTetrahedronWithInscribedIcosahedron::ADSKTetrahedronWithInscribedIcosahedron(const ADSKTetrahedronWithInscribedIcosahedron& other)
@@ -75,38 +76,30 @@ Acad::ErrorStatus ADSKCustomPyramid::dwgOutFields(AcDbDwgFiler * pFiler) const {
 	if ((es = pFiler->writeUInt32(ADSKCustomPyramid::kCurrentVersionNumber)) != Acad::eOk)
 		return (es);
 	//----- Output params
-	// 
-	//acutPrintf(_T("dwgOutFields:\n%f %f %f %f\n%f %f %f %f\n%f %f %f %f\n%f %f %f %f\n\n"), m_transform(0, 0), m_transform(0, 1), m_transform(0, 2), m_transform(0, 3),
-	//	m_transform(1, 0), m_transform(1, 1), m_transform(1, 2), m_transform(1, 3),
-	//	m_transform(2, 0), m_transform(2, 1), m_transform(2, 2), m_transform(2, 3),
-	//	m_transform(3, 0), m_transform(3, 1), m_transform(3, 2), m_transform(3, 3));
-	//auto transformMatrix = m_translation * m_scaling;
-	//m_transform = m_translation * m_scaling; // m_rotation *
-
-	//m_Tetrahedron.dwgOut(pFiler);
-	//m_Icosahedron.dwgOut(pFiler);
 	
+	// TODO maybe store only Icosahedron center and edge length and calculate Tetrahedron center and edge length
+	auto pt = m_Tetrahedron.center();
+	pFiler->writeItem(pt.x);
+	pFiler->writeItem(pt.y);
+	pFiler->writeItem(pt.z);
+	pFiler->writeItem(m_Tetrahedron.edgeLength());
 
-	for (auto& vertex : m_Icosahedron.vertices()) {
-		pFiler->writeItem(vertex.x);
-		pFiler->writeItem(vertex.y);
-		pFiler->writeItem(vertex.z);
-	}
-	for (auto& vertex : m_Tetrahedron.vertices()) {
-		pFiler->writeItem(vertex.x);
-		pFiler->writeItem(vertex.y);
-		pFiler->writeItem(vertex.z);
-	}
+	pt = m_Icosahedron.center();
+	pFiler->writeItem(pt.x);
+	pFiler->writeItem(pt.y);
+	pFiler->writeItem(pt.z);
+	pFiler->writeItem(m_Icosahedron.edgeLength());
 
-	//for (int r : std::views::iota(0, 4)) {
-	//	for (int c : std::views::iota(0, 4)) {
-	//		pFiler->writeItem(m_transform(r, c));
-	//	}
+	//for (auto& vertex : m_Icosahedron.vertices()) {
+	//	pFiler->writeItem(vertex.x);
+	//	pFiler->writeItem(vertex.y);
+	//	pFiler->writeItem(vertex.z);
 	//}
-
-	/*double dTetrahedronEdgeLenght{ 0 };
-	m_Tetrahedron.edgeLength(dTetrahedronEdgeLenght);
-	pFiler->writeItem(dTetrahedronEdgeLenght);*/
+	//for (auto& vertex : m_Tetrahedron.vertices()) {
+	//	pFiler->writeItem(vertex.x);
+	//	pFiler->writeItem(vertex.y);
+	//	pFiler->writeItem(vertex.z);
+	//}
 
 	return (pFiler->filerStatus());
 }
@@ -128,40 +121,40 @@ Acad::ErrorStatus ADSKCustomPyramid::dwgInFields(AcDbDwgFiler * pFiler) {
 	//if ( version < ADSKTetrahedronWithInscribedIcosahedron::kCurrentVersionNumber )
 	//	return (Acad::eMakeMeProxy) ;
 	//----- Read params
-	
-	//m_Tetrahedron.dwgInFields(pFiler);
-	//m_Icosahedron.dwgInFields(pFiler);
-	
 
-	for (int i : std::views::iota(0,12)) {
-		AcGePoint3d pt;
-		pFiler->readItem(&pt.x);
-		pFiler->readItem(&pt.y);
-		pFiler->readItem(&pt.z);
-		m_Icosahedron.setVertexAt(i, pt);
-	}
-	for (int i : std::views::iota(0, 4)) {
-		AcGePoint3d pt;
-		pFiler->readItem(&pt.x);
-		pFiler->readItem(&pt.y);
-		pFiler->readItem(&pt.z);
-		m_Tetrahedron.setVertexAt(i, pt);
-	}
+	// TODO maybe store only Icosahedron center and edge length and calculate Tetrahedron center and edge length
+	AcGePoint3d pt;
+	pFiler->readItem(&pt.x);
+	pFiler->readItem(&pt.y);
+	pFiler->readItem(&pt.z);
+	m_Tetrahedron.setCenter(pt);
+	double edgelength;
+	m_ptBottomFaceCenter = AcGePoint3d(pt.x, pt.y, pt.z - m_Tetrahedron.height() / 2.0);
+	pFiler->readItem(&edgelength);
+	m_Tetrahedron.setEdgeLength(edgelength);
 
-	//acutPrintf(_T("BEFORE dwgInFields:\n%f %f %f %f\n%f %f %f %f\n%f %f %f %f\n%f %f %f %f\n\n"), m_transform(0, 0), m_transform(0, 1), m_transform(0, 2), m_transform(0, 3),
-		//m_transform(1, 0), m_transform(1, 1), m_transform(1, 2), m_transform(1, 3),
-		//m_transform(2, 0), m_transform(2, 1), m_transform(2, 2), m_transform(2, 3),
-		//m_transform(3, 0), m_transform(3, 1), m_transform(3, 2), m_transform(3, 3));
-	/*for (int r : std::views::iota(0, 4)) {
-		for (int c : std::views::iota(0, 4)) {
-			pFiler->readItem(&m_transform(r, c));
-		}
-	}*/
-	/*applyTransformMatrix(m_transform);
-	acutPrintf(_T("AFTER dwgInFields:\n%f %f %f %f\n%f %f %f %f\n%f %f %f %f\n%f %f %f %f\n\n"), m_transform(0, 0), m_transform(0, 1), m_transform(0, 2), m_transform(0, 3),
-		m_transform(1, 0), m_transform(1, 1), m_transform(1, 2), m_transform(1, 3),
-		m_transform(2, 0), m_transform(2, 1), m_transform(2, 2), m_transform(2, 3),
-		m_transform(3, 0), m_transform(3, 1), m_transform(3, 2), m_transform(3, 3));*/
+	pFiler->readItem(&pt.x);
+	pFiler->readItem(&pt.y);
+	pFiler->readItem(&pt.z);
+	m_Icosahedron.setCenter(pt);
+	pFiler->readItem(&edgelength);
+	m_Icosahedron.setEdgeLength(edgelength);
+
+	//for (int i : std::views::iota(0, 12)) {
+	//	AcGePoint3d pt;
+	//	pFiler->readItem(&pt.x);
+	//	pFiler->readItem(&pt.y);
+	//	pFiler->readItem(&pt.z);
+	//	m_Icosahedron.setVertexAt(i, pt);
+	//}
+	//for (int i : std::views::iota(0, 4)) {
+	//	AcGePoint3d pt;
+	//	pFiler->readItem(&pt.x);
+	//	pFiler->readItem(&pt.y);
+	//	pFiler->readItem(&pt.z);
+	//	m_Tetrahedron.setVertexAt(i, pt);
+	//}
+
 	return (pFiler->filerStatus());
 }
 
@@ -291,7 +284,6 @@ Acad::ErrorStatus ADSKCustomPyramid::dxfInFields(AcDbDxfFiler * pFiler) {
 //----- AcDbEntity protocols
 Adesk::Boolean ADSKCustomPyramid::subWorldDraw(AcGiWorldDraw * mode) {
 	assertReadEnabled();
-	//acutPrintf(_T("ADSKTetrahedronWithInscribedIcosahedron::subWorldDraw\n"));
 	AcCmTransparency transparency(0.5);
 	mode->subEntityTraits().setTransparency(transparency);
 	m_Tetrahedron.subWorldDraw(mode);
@@ -299,7 +291,6 @@ Adesk::Boolean ADSKCustomPyramid::subWorldDraw(AcGiWorldDraw * mode) {
 	transparency.setAlphaPercent(1.0);
 	mode->subEntityTraits().setTransparency(transparency);
 	m_Icosahedron.subWorldDraw(mode);
-	//return (AcDbEntity::subWorldDraw (mode)) ;
 	return Adesk::kTrue;
 }
 
@@ -310,8 +301,6 @@ Adesk::UInt32 ADSKCustomPyramid::subSetAttributes(AcGiDrawableTraits * traits) {
 
 	return (AcDbEntity::subSetAttributes(traits));
 }
-
-
 
 Acad::ErrorStatus ADSKCustomPyramid::setFaceOfIcosahedronToRandomColor()
 {
@@ -328,7 +317,7 @@ Acad::ErrorStatus ADSKCustomPyramid::setFaceOfIcosahedronToRandomColor()
 
 double ADSKCustomPyramid::volumesDifference() const noexcept
 {
-	return m_Icosahedron.volume() - m_Tetrahedron.volume();
+	return m_Tetrahedron.volume() - m_Icosahedron.volume();
 }
 
 Acad::ErrorStatus ADSKCustomPyramid::applyTransformMatrix(const AcGeMatrix3d & xform)
@@ -365,32 +354,16 @@ Acad::ErrorStatus ADSKCustomPyramid::applyTransformMatrix(const AcGeMatrix3d & x
 Acad::ErrorStatus ADSKCustomPyramid::subTransformBy(const AcGeMatrix3d & xform)
 {
 	assertWriteEnabled();
-	acutPrintf(_T("subTransformBy CALLED\n"));
-	acutPrintf(_T("xform:\n%f %f %f %f\n%f %f %f %f\n%f %f %f %f\n%f %f %f %f\n\n"), xform(0, 0), xform(0, 1), xform(0, 2), xform(0, 3),
+	/*acutPrintf(_T("xform:\n%f %f %f %f\n%f %f %f %f\n%f %f %f %f\n%f %f %f %f\n\n"), xform(0, 0), xform(0, 1), xform(0, 2), xform(0, 3),
 		xform(1, 0), xform(1, 1), xform(1, 2), xform(1, 3),
 		xform(2, 0), xform(2, 1), xform(2, 2), xform(2, 3),
-		xform(3, 0), xform(3, 1), xform(3, 2), xform(3, 3));
-
-
+		xform(3, 0), xform(3, 1), xform(3, 2), xform(3, 3));*/
 
 	m_Icosahedron.subTransformBy(xform);
 	m_Tetrahedron.subTransformBy(xform);
 	m_ptBottomFaceCenter.transformBy(xform);
 
-	acutPrintf(_T("BEFORE subTransformBy:\n%f %f %f %f\n%f %f %f %f\n%f %f %f %f\n%f %f %f %f\n\n"), m_transform(0, 0), m_transform(0, 1), m_transform(0, 2), m_transform(0, 3),
-		m_transform(1, 0), m_transform(1, 1), m_transform(1, 2), m_transform(1, 3),
-		m_transform(2, 0), m_transform(2, 1), m_transform(2, 2), m_transform(2, 3),
-		m_transform(3, 0), m_transform(3, 1), m_transform(3, 2), m_transform(3, 3));
-	m_transform *= xform;
-
-	acutPrintf(_T("AFTER subTransformBy:\n%f %f %f %f\n%f %f %f %f\n%f %f %f %f\n%f %f %f %f\n\n"), m_transform(0, 0), m_transform(0, 1), m_transform(0, 2), m_transform(0, 3),
-		m_transform(1, 0), m_transform(1, 1), m_transform(1, 2), m_transform(1, 3),
-		m_transform(2, 0), m_transform(2, 1), m_transform(2, 2), m_transform(2, 3),
-		m_transform(3, 0), m_transform(3, 1), m_transform(3, 2), m_transform(3, 3));
-
-
-	//return Acad::eOk;
-	return (AcDbEntity::subTransformBy(xform));
+	return Acad::eOk;
 }
 
 //- Osnap points protocol
@@ -443,42 +416,6 @@ Acad::ErrorStatus ADSKCustomPyramid::subGetOsnapPoints(
 //	//return Acad::eNotImplemented;
 //}
 
-//Acad::ErrorStatus ADSKTetrahedronWithInscribedIcosahedron::subGetGripPoints (
-//	AcGePoint3dArray &gripPoints, AcDbIntArray &osnapModes, AcDbIntArray &geomIds
-//) const {
-//	assertReadEnabled () ;
-//	//----- This method is never called unless you return eNotImplemented 
-//	//----- from the new getGripPoints() method below (which is the default implementation)
-//	gripPoints.append(m_ptMoveGripPoint);
-//	//gripPoints.appendList(m_Tetrahedron.pointAt(0), m_Tetrahedron.pointAt(1), m_Tetrahedron.pointAt(2));
-//	return Acad::eOk;
-//	//return (AcDbEntity::subGetGripPoints (gripPoints, osnapModes, geomIds)) ;
-//}
-//
-//
-//
-//Acad::ErrorStatus ADSKTetrahedronWithInscribedIcosahedron::subMoveGripPointsAt (const AcDbIntArray &indices, const AcGeVector3d &offset) {
-//	if (indices.length() == 0 || offset.isZeroLength())
-//		return Acad::eOk;
-//	assertWriteEnabled () ;
-//
-//	//----- This method is never called unless you return eNotImplemented 
-//	//----- from the new moveGripPointsAt() method below (which is the default implementation)
-//	
-//	for (auto i : indices) {
-//		if (0 == i)
-//			subTransformBy(AcGeMatrix3d::translation(offset));
-//		/*else {
-//		}*/
-//	}
-//	//switch (m_pCurrentGripMode) {
-//
-//	//}
-//	return Acad::eOk;
-//
-//	//return (AcDbEntity::subMoveGripPointsAt (indices, offset)) ;
-//}
-
 class GripAppData final
 {
 private:
@@ -493,18 +430,16 @@ Acad::ErrorStatus ADSKCustomPyramid::subGetGripPoints(
 	const AcGeVector3d & curViewDir, const int bitflags
 ) const {
 	assertReadEnabled();
-	auto pGripData = new AcDbGripData(); // TODO add callbacks
-	//pGripData->setAppData();
-	pGripData->setGripPoint(m_ptBottomFaceCenter);
-	pGripData->setAppData(new GripAppData(0));
-	grips.append(pGripData);
 	for (auto i : std::views::iota(0, 4)) {
 		auto pGripData = new AcDbGripData();
-		pGripData->setGripPoint((m_Tetrahedron.pointAt(i)));
-		pGripData->setAppData(new GripAppData(i + 1));
+		pGripData->setGripPoint((m_Tetrahedron.vertices()[i]));
+		pGripData->setAppData(new GripAppData(i));
 		grips.append(pGripData);
 	}
-	//grips.appendList(m_Tetrahedron.pointAt(0), m_Tetrahedron.pointAt(1), m_Tetrahedron.pointAt(2), m_Tetrahedron.pointAt(3));
+	auto pGripData = new AcDbGripData();
+	pGripData->setGripPoint(m_ptBottomFaceCenter);
+	pGripData->setAppData(new GripAppData(4));
+	grips.append(pGripData);
 	return Acad::eOk;
 	//----- If you return eNotImplemented here, that will force AutoCAD to call
 	//----- the older getGripPoints() implementation. The call below may return
@@ -518,43 +453,26 @@ Acad::ErrorStatus ADSKCustomPyramid::subMoveGripPointsAt(
 	const int bitflags
 ) {
 	assertWriteEnabled();
-	acutPrintf(_T("BEFORE subMoveGripPointsAt:\n%f %f %f %f\n%f %f %f %f\n%f %f %f %f\n%f %f %f %f\n\n"), m_transform(0, 0), m_transform(0, 1), m_transform(0, 2), m_transform(0, 3),
-		m_transform(1, 0), m_transform(1, 1), m_transform(1, 2), m_transform(1, 3),
-		m_transform(2, 0), m_transform(2, 1), m_transform(2, 2), m_transform(2, 3),
-		m_transform(3, 0), m_transform(3, 1), m_transform(3, 2), m_transform(3, 3));
-
-
 	for (auto pGripAppData : gripAppData) {
 		auto pGripData = static_cast<GripAppData*>(pGripAppData);
 		if (pGripData == nullptr) {
 			continue;
 		}
-		switch (pGripData->index()) {
-			case 0: {
-				//auto es = 
-				subTransformBy(AcGeMatrix3d::translation(offset));
-				break;
-			}
-			default: {
-				/*m_transform.invert();
-				auto mat = AcGeMatrix3d::kIdentity;
-				
-				mat.setTranslation(offset);
-				mat
-				AcGeVector3d localOffset = offset.transformBy(transformation.inverse());
-				double dMax = max(max(offset.x, offset.y), offset.z);*/
-				subTransformBy(AcGeMatrix3d::scaling(offset.length()));
-			}
+		auto idx = pGripData->index();
+		if (4 == idx) { // botoom face center point
+			subTransformBy(AcGeMatrix3d::translation(offset));
+		}
+		else { // tetrahedron corner points
+			/*auto pt = m_Tetrahedron.vertices()[idx];
+			auto vec = m_Tetrahedron.center() - pt;
+			double originalLength = vec.length();
+			double newLength = (vec + offset).length();
+			double scaleFactor = newLength / originalLength;
+			subTransformBy(AcGeMatrix3d::scaling(scaleFactor, m_Tetrahedron.center()));
+			subTransformBy(offset);*/
+			subTransformBy(AcGeMatrix3d::scaling(offset.length(), m_Tetrahedron.center()));
 		}
 	}
-
-
-	acutPrintf(_T("AFTER subMoveGripPointsAt:\n%f %f %f %f\n%f %f %f %f\n%f %f %f %f\n%f %f %f %f\n\n"), m_transform(0, 0), m_transform(0, 1), m_transform(0, 2), m_transform(0, 3),
-		m_transform(1, 0), m_transform(1, 1), m_transform(1, 2), m_transform(1, 3),
-		m_transform(2, 0), m_transform(2, 1), m_transform(2, 2), m_transform(2, 3),
-		m_transform(3, 0), m_transform(3, 1), m_transform(3, 2), m_transform(3, 3));
-
-
 	return Acad::eOk;
 	//----- If you return eNotImplemented here, that will force AutoCAD to call
 	//----- the older getGripPoints() implementation. The call below may return
@@ -564,27 +482,31 @@ Acad::ErrorStatus ADSKCustomPyramid::subMoveGripPointsAt(
 }
 
 
-double ADSKCustomPyramid::getInscribedIcosahedronEdgeLength(double adTetrahedronEdgeLenght) const noexcept
+double ADSKCustomPyramid::icosahedronEdgeLength(double adTetrahedronEdgeLength) const noexcept
 {
 	// https://en.wikipedia.org/wiki/Tetrahedron
 	// https://en.wikipedia.org/wiki/Regular_icosahedron#Mensuration
-	double dTetrahedronInsphereRadius{ ADSKTetrahedron::insphereRadius(adTetrahedronEdgeLenght) };
-	return ADSKIcosahedron::edgeLengthByCircumsphereRadius(dTetrahedronInsphereRadius);
+	double dTetrahedronInsphereRadius{ ADSKTetrahedron::inradius(adTetrahedronEdgeLength) };
+	return ADSKIcosahedron::edgeLengthByCircumradius(dTetrahedronInsphereRadius);
 }
 
 Acad::ErrorStatus ADSKCustomPyramid::setEdgeLength(const double adEdgeLength) {
 	assertWriteEnabled();
-	m_Icosahedron.setEdgeLength(getInscribedIcosahedronEdgeLength(adEdgeLength));
-	m_Icosahedron.subTransformBy(AcGeMatrix3d::translation(AcGeVector3d(0.0, 0.0, ADSKTetrahedron::insphereRadius(adEdgeLength))));
 	m_Tetrahedron.setEdgeLength(adEdgeLength);
-	//applyTransformMatrix(m_transform);
+	m_Icosahedron.setEdgeLength(icosahedronEdgeLength(adEdgeLength));
 	return Acad::eOk;
 }
 
-Acad::ErrorStatus ADSKCustomPyramid::setTransformMatrix(const AcGeMatrix3d & aTransform)
+Acad::ErrorStatus ADSKCustomPyramid::setCenter(const AcGePoint3d& aptCenter)
 {
-	assertWriteEnabled();
-	m_transform = aTransform;
-	applyTransformMatrix(m_transform);
-	return Acad::eOk;
+	auto es = m_Tetrahedron.setCenter(aptCenter);
+	m_ptBottomFaceCenter = AcGePoint3d(aptCenter.x, aptCenter.y, aptCenter.z - (m_Tetrahedron.height() / 2.0));
+	if (Acad::eOk != es)
+		return es;
+	return m_Icosahedron.setCenter(AcGePoint3d(aptCenter.x, aptCenter.y, m_ptBottomFaceCenter.z + m_Tetrahedron.inradius()));
+}
+
+const AcGePoint3d& ADSKCustomPyramid::center() const
+{
+	return m_Tetrahedron.center();
 }

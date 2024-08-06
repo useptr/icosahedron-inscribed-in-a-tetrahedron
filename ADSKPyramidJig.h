@@ -55,7 +55,6 @@ private:
 
 	//- Member variables
 	AcGePoint3d mptCenter;
-	AcGeVector3d mvecTranslation;
 	double mdEdgeLenght;
 	//- current input level, increment for each input
 	int mCurrentInputLevel ;
