@@ -26,6 +26,7 @@
 #include "ADSKTetrahedron.h"
 #include "Tchar.h"
 #include <memory>
+#include <ranges>
 //-----------------------------------------------------------------------------
 Adesk::UInt32 ADSKTetrahedron::kCurrentVersionNumber = 1;
 
@@ -80,7 +81,12 @@ ADSKTetrahedron::~ADSKTetrahedron() {
 //	if ((es = pFiler->writeUInt32(ADSKTetrahedron::kCurrentVersionNumber)) != Acad::eOk)
 //		return (es);
 //	//----- Output params
-//	pFiler->writeItem(m_dEdgeLength);
+//	//pFiler->writeItem(m_dEdgeLength);
+//	for (auto& vertex : m_aVertices) {
+//		pFiler->writeItem(vertex.x);
+//		pFiler->writeItem(vertex.y);
+//		pFiler->writeItem(vertex.z);
+//	}
 //
 //	return (pFiler->filerStatus());
 //}
@@ -102,7 +108,15 @@ ADSKTetrahedron::~ADSKTetrahedron() {
 //	//if ( version < ADSKTetrahedron::kCurrentVersionNumber )
 //	//	return (Acad::eMakeMeProxy) ;
 //	//----- Read params
-//	pFiler->readItem(&m_dEdgeLength);
+//	//pFiler->readItem(&m_dEdgeLength);
+//	for (int i : std::views::iota(0, 4)) {
+//		AcGePoint3d pt;
+//		pFiler->readItem(&pt.x);
+//		pFiler->readItem(&pt.y);
+//		pFiler->readItem(&pt.z);
+//		m_aVertices.at(i) = pt;
+//	}
+//	m_dEdgeLength = m_aVertices[0].distanceTo(m_aVertices[1]);
 //
 //	return (pFiler->filerStatus());
 //}
@@ -203,6 +217,7 @@ Acad::ErrorStatus ADSKTetrahedron::subTransformBy(const AcGeMatrix3d& xform)
 	for (auto& vertex : m_aVertices) {
 		vertex.transformBy(xform);
 	}
+	updateEdgeLength();
 	return Acad::eOk;
 }
 
@@ -265,6 +280,11 @@ Acad::ErrorStatus ADSKTetrahedron::subTransformBy(const AcGeMatrix3d& xform)
 //	//return (AcDbEntity::subMoveGripPointsAt(gripAppData, offset, bitflags));
 //}
 #include <cmath>
+void ADSKTetrahedron::updateEdgeLength()
+{
+	assertWriteEnabled();
+	m_dEdgeLength = m_aVertices[0].distanceTo(m_aVertices[1]);
+}
 void ADSKTetrahedron::calculateVertices() noexcept
 {
 	assertWriteEnabled();
@@ -287,7 +307,7 @@ double ADSKTetrahedron::insphereRadius(double adEdgeLength) noexcept
 
 double ADSKTetrahedron::volume() const noexcept
 {
-	
+	assertReadEnabled();
 	return  std::pow(m_dEdgeLength, 3)/(6.0*std::sqrt(3.0));
 }
 
@@ -300,6 +320,19 @@ Acad::ErrorStatus ADSKTetrahedron::setEdgeLength(const double adEdgeLenght) {
 	assertWriteEnabled();
 	m_dEdgeLength = adEdgeLenght;
 	calculateVertices();
+	return Acad::eOk;
+}
+
+const AcGePoint3dArray& ADSKTetrahedron::vertices() const
+{
+	assertReadEnabled();
+	return m_aVertices;
+}
+
+Acad::ErrorStatus ADSKTetrahedron::setVertexAt(int aI, AcGePoint3d& arPt)
+{
+	assertWriteEnabled();
+	m_aVertices.at(aI) = arPt;
 	return Acad::eOk;
 }
 

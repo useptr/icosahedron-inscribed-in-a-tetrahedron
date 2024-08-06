@@ -10,17 +10,27 @@ EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
+		Debug|x86 = Debug|x86
 		Release|x64 = Release|x64
+		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{F87873B0-2B5D-4D52-8FD5-BE1CDC50B2E3}.Debug|x64.ActiveCfg = Debug|x64
 		{F87873B0-2B5D-4D52-8FD5-BE1CDC50B2E3}.Debug|x64.Build.0 = Debug|x64
+		{F87873B0-2B5D-4D52-8FD5-BE1CDC50B2E3}.Debug|x86.ActiveCfg = Debug|x64
+		{F87873B0-2B5D-4D52-8FD5-BE1CDC50B2E3}.Debug|x86.Build.0 = Debug|x64
 		{F87873B0-2B5D-4D52-8FD5-BE1CDC50B2E3}.Release|x64.ActiveCfg = Release|x64
 		{F87873B0-2B5D-4D52-8FD5-BE1CDC50B2E3}.Release|x64.Build.0 = Release|x64
+		{F87873B0-2B5D-4D52-8FD5-BE1CDC50B2E3}.Release|x86.ActiveCfg = Release|x64
+		{F87873B0-2B5D-4D52-8FD5-BE1CDC50B2E3}.Release|x86.Build.0 = Release|x64
 		{84CDCFAF-4290-4381-B3CA-16DD397E5430}.Debug|x64.ActiveCfg = Debug|x64
 		{84CDCFAF-4290-4381-B3CA-16DD397E5430}.Debug|x64.Build.0 = Debug|x64
+		{84CDCFAF-4290-4381-B3CA-16DD397E5430}.Debug|x86.ActiveCfg = Debug|x64
+		{84CDCFAF-4290-4381-B3CA-16DD397E5430}.Debug|x86.Build.0 = Debug|x64
 		{84CDCFAF-4290-4381-B3CA-16DD397E5430}.Release|x64.ActiveCfg = Release|x64
 		{84CDCFAF-4290-4381-B3CA-16DD397E5430}.Release|x64.Build.0 = Release|x64
+		{84CDCFAF-4290-4381-B3CA-16DD397E5430}.Release|x86.ActiveCfg = Release|x64
+		{84CDCFAF-4290-4381-B3CA-16DD397E5430}.Release|x86.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

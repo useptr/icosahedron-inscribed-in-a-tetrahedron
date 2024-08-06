@@ -75,8 +75,8 @@ public:
 
 	//----- AcDbObject protocols
 	//- Dwg Filing protocol
-	//virtual Acad::ErrorStatus dwgOutFields (AcDbDwgFiler *pFiler) const ;
-	//virtual Acad::ErrorStatus dwgInFields (AcDbDwgFiler *pFiler) ;
+	/*virtual Acad::ErrorStatus dwgOutFields (AcDbDwgFiler *pFiler) const ;
+	virtual Acad::ErrorStatus dwgInFields (AcDbDwgFiler *pFiler) ;*/
 
 	////- Dxf Filing protocol
 	//virtual Acad::ErrorStatus dxfOutFields (AcDbDxfFiler *pFiler) const ;
@@ -130,8 +130,10 @@ public:
 	double volume() const noexcept;
 	Acad::ErrorStatus edgeLength(double& ardEdgeLenght) const;
 	Acad::ErrorStatus setEdgeLength(const double adEdgeLenght);
-	
+	const AcGePoint3dArray& vertices() const;
+	Acad::ErrorStatus setVertexAt(int aI, AcGePoint3d& arPt);
 private:
+	void updateEdgeLength();
 	void calculateVertices() noexcept;
 	double m_dEdgeLength; // длинна ребра
 	AcGePoint3dArray m_aVertices;

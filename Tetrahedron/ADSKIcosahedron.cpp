@@ -27,6 +27,7 @@
 #include <cmath>
 #include <numbers>
 #include <memory>
+#include <ranges>
 #include <utility>
 //-----------------------------------------------------------------------------
 Adesk::UInt32 ADSKIcosahedron::kCurrentVersionNumber =1 ;
@@ -84,7 +85,12 @@ ADSKIcosahedron::~ADSKIcosahedron () {
 //	if ( (es =pFiler->writeUInt32 (ADSKIcosahedron::kCurrentVersionNumber)) != Acad::eOk )
 //		return (es) ;
 //	//----- Output params
-//	pFiler->writeItem(m_dEdgeLength);
+//	//pFiler->writeItem(m_dEdgeLength);
+//	for (auto& vertex : m_aVertices) {
+//		pFiler->writeItem(vertex.x);
+//		pFiler->writeItem(vertex.y);
+//		pFiler->writeItem(vertex.z);
+//	}
 //
 //	return (pFiler->filerStatus ()) ;
 //}
@@ -106,7 +112,14 @@ ADSKIcosahedron::~ADSKIcosahedron () {
 //	//if ( version < ADSKIcosahedron::kCurrentVersionNumber )
 //	//	return (Acad::eMakeMeProxy) ;
 //	//----- Read params
-//	pFiler->readItem(&m_dEdgeLength);
+//	//pFiler->readItem(&m_dEdgeLength);
+//	for (int i : std::views::iota(0, 12)) {
+//		AcGePoint3d pt;
+//		pFiler->readItem(&pt.x);
+//		pFiler->readItem(&pt.y);
+//		pFiler->readItem(&pt.z);
+//		m_aVertices.at(i) = pt;
+//	}
 //
 //	return (pFiler->filerStatus ()) ;
 //}
@@ -225,6 +238,8 @@ Acad::ErrorStatus ADSKIcosahedron::subTransformBy(const AcGeMatrix3d& xform)
 	for (auto& vertex : m_aVertices) {
 		vertex.transformBy(xform);
 	}
+	updateEdgeLength();
+	
 	return Acad::eOk;
 }
 
@@ -288,6 +303,25 @@ Acad::ErrorStatus ADSKIcosahedron::subTransformBy(const AcGeMatrix3d& xform)
 double ADSKIcosahedron::volume() const noexcept
 {
 	return 5.0*std::sqrt(3.0)*std::pow(m_dEdgeLength,2.0);
+}
+
+const AcGePoint3dArray& ADSKIcosahedron::vertices() const
+{
+	assertReadEnabled();
+	return m_aVertices;
+}
+
+Acad::ErrorStatus ADSKIcosahedron::setVertexAt(int aI, AcGePoint3d& arPt)
+{
+	assertWriteEnabled();
+	m_aVertices.at(aI) = arPt;
+	return Acad::eOk;
+}
+
+void ADSKIcosahedron::updateEdgeLength()
+{
+	assertWriteEnabled();
+	m_dEdgeLength = m_aVertices[0].distanceTo(m_aVertices[1]);
 }
 
 void ADSKIcosahedron::calculateVertices() noexcept

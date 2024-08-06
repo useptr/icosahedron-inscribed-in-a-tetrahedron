@@ -21,14 +21,41 @@
 //-----------------------------------------------------------------------------
 //- ADSKPyramidJig.h
 #pragma once
+#include "dbjig.h"
 #include "ADSKCustomPyramid.h"
 //-----------------------------------------------------------------------------
+//class ADSKPyramidJig : public AcEdJig
+//    // This class allows the user to create an ellipse by
+//    // picking its center point and then dragging to select the
+//    // desired major axis and minor axis lengths.  During the
+//    // drag operations, the user will be able to visually see
+//    // what the ellipse looks like at any time.
+//    //
+//{
+//public:
+//    ADSKPyramidJig();
+//    ~ADSKPyramidJig();
+//    void doIt();
+//    virtual DragStatus sampler();
+//    virtual Adesk::Boolean update();
+//    virtual AcDbEntity* entity() const;
+//private:
+//    ADSKCustomPyramid* mpEntity;
+//    //- current input level, increment for each input
+//	int mCurrentInputLevel ;
+//	//- Dynamic dimension info
+//	AcDbDimDataPtrArray mDimData ;
+//};
+
+
+
 class ADSKPyramidJig : public AcEdJig {
 
 private:
 
 	//- Member variables
 	AcGePoint3d mptCenter;
+	AcGeVector3d mvecTranslation;
 	double mdEdgeLenght;
 	//- current input level, increment for each input
 	int mCurrentInputLevel ;
@@ -56,16 +83,16 @@ protected:
 	//- jigged entity pointer return
 	virtual AcDbEntity *entity () const ;
 	//- dynamic dimension data setup
-	virtual AcDbDimDataPtrArray *dimData (const double dimScale) ;
-	//- dynamic dimension data update
-	virtual Acad::ErrorStatus setDimValue (const AcDbDimData *pDimData, const double dimValue) ;
+	//virtual AcDbDimDataPtrArray *dimData (const double dimScale) ;
+	////- dynamic dimension data update
+	//virtual Acad::ErrorStatus setDimValue (const AcDbDimData *pDimData, const double dimValue) ;
 
-	//- Standard helper functions
-	//- dynamic dimdata update function
-	virtual Adesk::Boolean updateDimData () ;
+	////- Standard helper functions
+	////- dynamic dimdata update function
+	//virtual Adesk::Boolean updateDimData () ;
 
-	//- Std input to get a point with no rubber band
-	AcEdJig::DragStatus GetStartPoint () ;
-	//- Std input to get a point with rubber band from point
-	AcEdJig::DragStatus GetNextPoint () ;
+	////- Std input to get a point with no rubber band
+	//AcEdJig::DragStatus GetStartPoint () ;
+	////- Std input to get a point with rubber band from point
+	//AcEdJig::DragStatus GetNextPoint () ;
 } ;

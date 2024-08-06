@@ -125,7 +125,7 @@ public:
 		  \return Разницу объемов икосаэдра и вписанного тетраэдра
 	*/
 	double volumesDifference() const noexcept;
-	Acad::ErrorStatus setEdgeLength(const double adEdgeLenght);
+	Acad::ErrorStatus setEdgeLength(const double adEdgeLength);
 	Acad::ErrorStatus setTransformMatrix(const AcGeMatrix3d& aTransform);
 private:
 	Acad::ErrorStatus applyTransformMatrix(const AcGeMatrix3d& xform);
@@ -135,7 +135,7 @@ private:
 		  \return Длину ребра вписанного икосаэдра тетраэдра
 	*/
 	double getInscribedIcosahedronEdgeLength(double adTetrahedronEdgeLenght) const noexcept;
-	AcGePoint3d m_ptCenterGripPoint; ///< Точка для перемещения entity
+	AcGePoint3d m_ptBottomFaceCenter; ///< Точка для перемещения entity
 	ADSKTetrahedron m_Tetrahedron; ///< Тетраэдр
 	ADSKIcosahedron m_Icosahedron; ///< Вписанный икосаэдр
 	AcGeMatrix3d m_transform; ///< Матрица преобразований (TRS matrix)

@@ -128,7 +128,10 @@ public:
 		  \return Объём тетраэдра
 	*/
 	double volume() const noexcept;
+	const AcGePoint3dArray& vertices() const;
+	Acad::ErrorStatus setVertexAt(int aI, AcGePoint3d& arPt);
 private:
+	void updateEdgeLength();
 	void calculateVertices() noexcept;
 	double m_dEdgeLength;
 	AcGePoint3dArray m_aVertices;

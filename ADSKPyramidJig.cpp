@@ -23,8 +23,8 @@
 #include "StdAfx.h"
 #include "ADSKPyramidJig.h"
 //-----------------------------------------------------------------------------
-ADSKPyramidJig::ADSKPyramidJig (AcGePoint3d& ptCenter) : AcEdJig(),
-mptCenter(ptCenter), mdEdgeLenght(1.0), mCurrentInputLevel(0), mpEntity(nullptr)
+ADSKPyramidJig::ADSKPyramidJig (AcGePoint3d& ptCenter) : AcEdJig(), mptCenter(ptCenter),
+mvecTranslation(mptCenter.x, mptCenter.y, mptCenter.z), mdEdgeLenght(1.0), mCurrentInputLevel(0), mpEntity(nullptr)
 {
 }
 
@@ -35,7 +35,7 @@ ADSKPyramidJig::~ADSKPyramidJig () {
 AcEdJig::DragStatus ADSKPyramidJig::startJig (ADSKCustomPyramid *pEntity) {
 	//- Store the new entity pointer
 	mpEntity =pEntity ;
-	mpEntity->setTransformMatrix(AcGeMatrix3d::translation(AcGeVector3d(mptCenter.x, mptCenter.y, mptCenter.z)));
+	mpEntity->setTransformMatrix(AcGeMatrix3d::translation(mvecTranslation));
 	//- Setup each input prompt
 	AcString inputPrompts [1] ={
 		_T("\nPick point")
@@ -44,7 +44,6 @@ AcEdJig::DragStatus ADSKPyramidJig::startJig (ADSKCustomPyramid *pEntity) {
 	AcString kwords [1] ={
 		_T("")
 	};
-
 	bool appendOk =true ;
 	AcEdJig::DragStatus status =AcEdJig::kNull ;
 	//- Loop the number of inputs
@@ -121,7 +120,6 @@ AcEdJig::DragStatus ADSKPyramidJig::sampler () {
 	//- Check the current input number to see which input to do
 	switch ( mCurrentInputLevel+1 ) {
 		case 1: // Длина ребра
-			// TODO : get an input here
 			static double dEdgeLenghtTemp = -1.0;
 			status = acquireDist(dEdgeLenghtTemp, mptCenter);
 			if (dEdgeLenghtTemp > 0) {
@@ -143,13 +141,14 @@ Adesk::Boolean ADSKPyramidJig::update () {
 	//	case 1:
 	//		// TODO : update your entity for this input
 	//		//mpEntity->setCenter (mInputPoints [mCurrentInputLevel]) ;
-	//		
+	//		//mpEntity->setEdgeLength(mdEdgeLenght);
 	//		break ;
 
 	//	default:
 	//		break ;
 	//}
 	mpEntity->setEdgeLength(mdEdgeLenght);
+	mpEntity->setTransformMatrix(AcGeMatrix3d::translation(mvecTranslation));
 	return Adesk::kTrue;
 	//return (updateDimData ()) ;
 }
@@ -157,142 +156,143 @@ Adesk::Boolean ADSKPyramidJig::update () {
 //-----------------------------------------------------------------------------
 //- Jigged entity pointer return
 AcDbEntity *ADSKPyramidJig::entity () const {
-	return ((AcDbEntity *)mpEntity) ;
+	return mpEntity ;
 }
 
 //-----------------------------------------------------------------------------
 //- Dynamic dimension data setup
-AcDbDimDataPtrArray *ADSKPyramidJig::dimData (const double dimScale) {
 
-	/* SAMPLE CODE:
-	AcDbAlignedDimension *dim =new AcDbAlignedDimension () ;
-	dim->setDatabaseDefaults () ;
-	dim->setNormal (AcGeVector3d::kZAxis) ;
-	dim->setElevation (0.0) ;
-	dim->setHorizontalRotation (0.0) ;
-	dim->setXLine1Point (m_originPoint) ;
-	dim->setXLine2Point (m_lastPoint) ;
-	//- Get the dimPoint, first the midpoint
-	AcGePoint3d dimPoint =m_originPoint + ((m_lastPoint - m_originPoint) / 2.0) ;
-	//- Then the offset
-	dim->setDimLinePoint (dimPoint) ;
-	dim->setDimtad (1) ;
-
-	AcDbDimData *dimData = new AcDbDimData (dim) ;
-	//AppData *appData =new AppData (1, dimScale) ;
-	//dimData.setAppData (appData) ;
-	dimData->setDimFocal (true) ;
-	dimData->setDimHideIfValueIsZero (true) ;
-
-	//- Check to see if it is required
-	if ( getDynDimensionRequired (m_inputNumber) )
-		dimData->setDimInvisible (false) ;
-	else
-		dimData->setDimInvisible (true) ;
-
-	//- Make sure it is editable TODO: 
-	dimData->setDimEditable (true) ;
-	mDimData.append (dimData) ;
-
-	return (&mDimData) ;
-	*/
-	return (NULL) ;
-}
-
-//-----------------------------------------------------------------------------
-//- Dynamic dimension data update
-Acad::ErrorStatus ADSKPyramidJig::setDimValue (const AcDbDimData *pDimData, const double dimValue) {
-	Acad::ErrorStatus es =Acad::eOk ;
-
-	/* SAMPLE CODE:
-	//- Convert the const pointer to non const
-	AcDbDimData *dimDataNC =const_cast<AcDbDimData *>(pDimData) ;
-	int inputNumber =-1 ;
-	//- Find the dim data being passed so we can determine the input number
-	if ( mDimData.find (dimDataNC, inputNumber) ) {
-		//- Now get the dimension
-		AcDbDimension *pDim =(AcDbDimension *)dimDataNC->dimension () ;
-		//- Check it's the type of dimension we want
-		AcDbAlignedDimension *pAlnDim =AcDbAlignedDimension::cast (pDim) ;
-		//- If ok
-		if ( pAlnDim ) {
-			//- Extract the dimensions as they are now
-			AcGePoint3d dimStart =pAlnDim->xLine1Point () ;
-			AcGePoint3d dimEnd =pAlnDim->xLine2Point () ;
-			//- Lets get the new point entered by the user 
-			AcGePoint3d dimEndNew =dimStart + (dimEnd - dimStart).normalize () * dimValue ;
-			//- Finally set the end dim point
-			pAlnDim->setXLine2Point (dimEndNew) ;
-			//- Now update the jig data to reflect the dynamic dimension input
-			mInputPoints [mCurrentInputLevel] =dimEndNew ;
-		}
-	}*/
-	return (es) ;
-}
-
-//-----------------------------------------------------------------------------
-//- Various helper functions
-//- Dynamic dimdata update function
-Adesk::Boolean ADSKPyramidJig::updateDimData () {
-	//- Check the dim data store for validity
-	if ( mDimData.length () <= 0 )
-		return (true) ;
-
-	/* SAMPLE CODE :
-	//- Extract the individual dimData
-	AcDbDimData *dimData =mDimData [m_inputNumber] ;
-	//- Now get the dimension
-	AcDbDimension *pDim =(AcDbDimension *)dimData->dimension () ;
-	//- Check it's the type of dimension we want
-	AcDbAlignedDimension *pAlnDim =AcDbAlignedDimension::cast (pDim) ;
-	//- If ok
-	if ( pAlnDim ) {
-		//- Check to see if it is required
-		if ( getDynDimensionRequired (m_inputNumber) )
-			dimData->setDimInvisible (false) ;
-		else
-			dimData->setDimInvisible (true) ;
-		pAlnDim->setXLine1Point (m_originPoint) ;
-		pAlnDim->setXLine2Point (m_lastPoint) ;
-		//- Get the dimPoint, first the midpoint
-		AcGePoint3d dimPoint =m_originPoint + ((m_lastPoint - m_originPoint) / 2.0) ;
-		//- Then the offset
-		pAlnDim->setDimLinePoint (dimPoint) ;
-	} */
-	return (true) ;
-}
-
-//-----------------------------------------------------------------------------
-//- Std input to get a point with no rubber band
-AcEdJig::DragStatus ADSKPyramidJig::GetStartPoint () {
-	AcGePoint3d newPnt ;
-	//- Get the point 
-	AcEdJig::DragStatus status =acquirePoint (newPnt) ;
-	//- If valid input
-	if ( status == AcEdJig::kNormal ) {
-		//- If there is no difference
-		if ( newPnt.isEqualTo (mInputPoints [mCurrentInputLevel]) )
-			return (AcEdJig::kNoChange) ;
-		//- Otherwise update the point
-		mInputPoints [mCurrentInputLevel] =newPnt ;
-	}
-	return (status) ;
-}
-
-//-----------------------------------------------------------------------------
-//- Std input to get a point with rubber band from point
-AcEdJig::DragStatus ADSKPyramidJig::GetNextPoint () {
-	AcGePoint3d oldPnt =mInputPoints [mCurrentInputLevel] ;
-	AcGePoint3d newPnt ;
-	//- Get the point 
-	AcEdJig::DragStatus status =acquirePoint (newPnt, oldPnt) ;
-	//- If valid input
-	if ( status == AcEdJig::kNormal ) {
-		//- If there is no difference
-		if ( newPnt.isEqualTo (mInputPoints [mCurrentInputLevel]) )
-			return (AcEdJig::kNoChange) ;
-		//- Otherwise update the point
-		mInputPoints [mCurrentInputLevel] =newPnt ;
-	}
-	return (status) ;
-}
+//AcDbDimDataPtrArray *ADSKPyramidJig::dimData (const double dimScale) {
+//
+//	/* SAMPLE CODE:
+//	AcDbAlignedDimension *dim =new AcDbAlignedDimension () ;
+//	dim->setDatabaseDefaults () ;
+//	dim->setNormal (AcGeVector3d::kZAxis) ;
+//	dim->setElevation (0.0) ;
+//	dim->setHorizontalRotation (0.0) ;
+//	dim->setXLine1Point (m_originPoint) ;
+//	dim->setXLine2Point (m_lastPoint) ;
+//	//- Get the dimPoint, first the midpoint
+//	AcGePoint3d dimPoint =m_originPoint + ((m_lastPoint - m_originPoint) / 2.0) ;
+//	//- Then the offset
+//	dim->setDimLinePoint (dimPoint) ;
+//	dim->setDimtad (1) ;
+//
+//	AcDbDimData *dimData = new AcDbDimData (dim) ;
+//	//AppData *appData =new AppData (1, dimScale) ;
+//	//dimData.setAppData (appData) ;
+//	dimData->setDimFocal (true) ;
+//	dimData->setDimHideIfValueIsZero (true) ;
+//
+//	//- Check to see if it is required
+//	if ( getDynDimensionRequired (m_inputNumber) )
+//		dimData->setDimInvisible (false) ;
+//	else
+//		dimData->setDimInvisible (true) ;
+//
+//	//- Make sure it is editable TODO: 
+//	dimData->setDimEditable (true) ;
+//	mDimData.append (dimData) ;
+//
+//	return (&mDimData) ;
+//	*/
+//	return (NULL) ;
+//}
+//
+////-----------------------------------------------------------------------------
+////- Dynamic dimension data update
+//Acad::ErrorStatus ADSKPyramidJig::setDimValue (const AcDbDimData *pDimData, const double dimValue) {
+//	Acad::ErrorStatus es =Acad::eOk ;
+//
+//	/* SAMPLE CODE:
+//	//- Convert the const pointer to non const
+//	AcDbDimData *dimDataNC =const_cast<AcDbDimData *>(pDimData) ;
+//	int inputNumber =-1 ;
+//	//- Find the dim data being passed so we can determine the input number
+//	if ( mDimData.find (dimDataNC, inputNumber) ) {
+//		//- Now get the dimension
+//		AcDbDimension *pDim =(AcDbDimension *)dimDataNC->dimension () ;
+//		//- Check it's the type of dimension we want
+//		AcDbAlignedDimension *pAlnDim =AcDbAlignedDimension::cast (pDim) ;
+//		//- If ok
+//		if ( pAlnDim ) {
+//			//- Extract the dimensions as they are now
+//			AcGePoint3d dimStart =pAlnDim->xLine1Point () ;
+//			AcGePoint3d dimEnd =pAlnDim->xLine2Point () ;
+//			//- Lets get the new point entered by the user 
+//			AcGePoint3d dimEndNew =dimStart + (dimEnd - dimStart).normalize () * dimValue ;
+//			//- Finally set the end dim point
+//			pAlnDim->setXLine2Point (dimEndNew) ;
+//			//- Now update the jig data to reflect the dynamic dimension input
+//			mInputPoints [mCurrentInputLevel] =dimEndNew ;
+//		}
+//	}*/
+//	return (es) ;
+//}
+//
+////-----------------------------------------------------------------------------
+////- Various helper functions
+////- Dynamic dimdata update function
+//Adesk::Boolean ADSKPyramidJig::updateDimData () {
+//	//- Check the dim data store for validity
+//	if ( mDimData.length () <= 0 )
+//		return (true) ;
+//
+//	/* SAMPLE CODE :
+//	//- Extract the individual dimData
+//	AcDbDimData *dimData =mDimData [m_inputNumber] ;
+//	//- Now get the dimension
+//	AcDbDimension *pDim =(AcDbDimension *)dimData->dimension () ;
+//	//- Check it's the type of dimension we want
+//	AcDbAlignedDimension *pAlnDim =AcDbAlignedDimension::cast (pDim) ;
+//	//- If ok
+//	if ( pAlnDim ) {
+//		//- Check to see if it is required
+//		if ( getDynDimensionRequired (m_inputNumber) )
+//			dimData->setDimInvisible (false) ;
+//		else
+//			dimData->setDimInvisible (true) ;
+//		pAlnDim->setXLine1Point (m_originPoint) ;
+//		pAlnDim->setXLine2Point (m_lastPoint) ;
+//		//- Get the dimPoint, first the midpoint
+//		AcGePoint3d dimPoint =m_originPoint + ((m_lastPoint - m_originPoint) / 2.0) ;
+//		//- Then the offset
+//		pAlnDim->setDimLinePoint (dimPoint) ;
+//	} */
+//	return (true) ;
+//}
+//
+////-----------------------------------------------------------------------------
+////- Std input to get a point with no rubber band
+//AcEdJig::DragStatus ADSKPyramidJig::GetStartPoint () {
+//	AcGePoint3d newPnt ;
+//	//- Get the point 
+//	AcEdJig::DragStatus status =acquirePoint (newPnt) ;
+//	//- If valid input
+//	if ( status == AcEdJig::kNormal ) {
+//		//- If there is no difference
+//		if ( newPnt.isEqualTo (mInputPoints [mCurrentInputLevel]) )
+//			return (AcEdJig::kNoChange) ;
+//		//- Otherwise update the point
+//		mInputPoints [mCurrentInputLevel] =newPnt ;
+//	}
+//	return (status) ;
+//}
+//
+////-----------------------------------------------------------------------------
+////- Std input to get a point with rubber band from point
+//AcEdJig::DragStatus ADSKPyramidJig::GetNextPoint () {
+//	AcGePoint3d oldPnt =mInputPoints [mCurrentInputLevel] ;
+//	AcGePoint3d newPnt ;
+//	//- Get the point 
+//	AcEdJig::DragStatus status =acquirePoint (newPnt, oldPnt) ;
+//	//- If valid input
+//	if ( status == AcEdJig::kNormal ) {
+//		//- If there is no difference
+//		if ( newPnt.isEqualTo (mInputPoints [mCurrentInputLevel]) )
+//			return (AcEdJig::kNoChange) ;
+//		//- Otherwise update the point
+//		mInputPoints [mCurrentInputLevel] =newPnt ;
+//	}
+//	return (status) ;
+//}

@@ -147,18 +147,22 @@ public:
         acutPrintf(_T("CREATED ADSKTetrahedronWithInscribedIcosahedron!"));
     }
     static void ADSKMyGroup_JIGCREATE(void) {
-        AcGePoint3d ptCenter;
+        auto ptCenter = AcGePoint3d::kOrigin;
         if (acedGetPoint(nullptr, _T("\nEllipse center point: "), asDblArray(ptCenter)) != RTNORM)
             return;
 
-        AcDbBlockTableRecordPointer pSpaceBlockTableRecord(acdbHostApplicationServices()->workingDatabase()->currentSpaceId(), AcDb::kForWrite);
-        if (pSpaceBlockTableRecord.openStatus() != Acad::eOk) {
-            acutPrintf(_T("\nERROR: Cannot open BlockTableRecord for write"));
-            return;
-        }
         ADSKPyramidJig entityJig(ptCenter);
         entityJig.startJig(new ADSKCustomPyramid);
+
+        //auto* pJig
+        //    = new ADSKPyramidJig();
+        //// Now start up the jig to interactively get the major
+        //// and minor axes lengths.
+        ////
         //pJig->doIt();
+        //// Now delete the jig object, since it is no longer needed.
+        ////
+        //delete pJig;
     }
     //static void ADSKMyGroup_CREATE(void) // createIcosahedron
     //{
@@ -253,8 +257,7 @@ public:
 //-----------------------------------------------------------------------------
 IMPLEMENT_ARX_ENTRYPOINT(CicosahedroninscribedinatetrahedronApp)
 
-ACED_ARXCOMMAND_ENTRY_AUTO(CicosahedroninscribedinatetrahedronApp, ADSKMyGroup, _JIGCREATE, JIGCREATE, ACRX_CMD_TRANSPARENT, NULL)
 ACED_ARXCOMMAND_ENTRY_AUTO(CicosahedroninscribedinatetrahedronApp, ADSKMyGroup, _ICOSAHEDRON, ICOSAHEDRON, ACRX_CMD_TRANSPARENT, NULL)
 ACED_ARXCOMMAND_ENTRY_AUTO(CicosahedroninscribedinatetrahedronApp, ADSKMyGroup, _TETRAHEDRON, TETRAHEDRON, ACRX_CMD_TRANSPARENT, NULL)
 ACED_ARXCOMMAND_ENTRY_AUTO(CicosahedroninscribedinatetrahedronApp, ADSKMyGroup, _CREATE, CREATE, ACRX_CMD_TRANSPARENT, NULL)
-
+ACED_ARXCOMMAND_ENTRY_AUTO(CicosahedroninscribedinatetrahedronApp, ADSKMyGroup, _JIGCREATE, JIGCREATE, ACRX_CMD_MODAL, NULL)
