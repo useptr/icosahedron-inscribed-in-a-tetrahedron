@@ -131,7 +131,7 @@ Acad::ErrorStatus ADSKCustomPyramid::dxfOutFields(AcDbDxfFiler * pFiler) const {
 	Acad::ErrorStatus es = AcDbEntity::dxfOutFields(pFiler);
 	if (es != Acad::eOk)
 		return (es);
-	es = pFiler->writeItem(AcDb::kDxfSubclass, _RXST("ADSKTetrahedronWithInscribedIcosahedron"));
+	es = pFiler->writeItem(AcDb::kDxfSubclass, _RXST("ADSKCustomPyramid"));
 	if (es != Acad::eOk)
 		return (es);
 	//----- Object version number needs to be saved first
@@ -151,7 +151,7 @@ Acad::ErrorStatus ADSKCustomPyramid::dxfInFields(AcDbDxfFiler * pFiler) {
 	assertWriteEnabled();
 	//----- Read parent class information first.
 	Acad::ErrorStatus es = AcDbEntity::dxfInFields(pFiler);
-	if (es != Acad::eOk || !pFiler->atSubclassData(_RXST("ADSKTetrahedronWithInscribedIcosahedron")))
+	if (es != Acad::eOk || !pFiler->atSubclassData(_RXST("ADSKCustomPyramid")))
 		return (pFiler->filerStatus());
 	//----- Object version number needs to be read first
 	struct resbuf rb;
@@ -211,13 +211,21 @@ Acad::ErrorStatus ADSKCustomPyramid::dxfInFields(AcDbDxfFiler * pFiler) {
 //----- AcDbEntity protocols
 Adesk::Boolean ADSKCustomPyramid::subWorldDraw(AcGiWorldDraw * mode) {
 	assertReadEnabled();
+	auto status{ Adesk::kTrue };
 	AcCmTransparency transparency(0.5);
 	mode->subEntityTraits().setTransparency(transparency);
-	m_Tetrahedron.subWorldDraw(mode);
+
+	status = m_Tetrahedron.subWorldDraw(mode);
+	if (status != Adesk::kTrue)
+		return status;
 
 	transparency.setAlphaPercent(1.0);
 	mode->subEntityTraits().setTransparency(transparency);
-	m_Icosahedron.subWorldDraw(mode);
+
+	status = m_Icosahedron.subWorldDraw(mode);
+	if (status != Adesk::kTrue)
+		return status;
+
 	return Adesk::kTrue;
 }
 
@@ -255,13 +263,18 @@ double ADSKCustomPyramid::volumesDifference() const noexcept
 Acad::ErrorStatus ADSKCustomPyramid::subTransformBy(const AcGeMatrix3d & xform)
 {
 	assertWriteEnabled();
+	auto es{ Acad::eOk };
 	/*acutPrintf(_T("xform:\n%f %f %f %f\n%f %f %f %f\n%f %f %f %f\n%f %f %f %f\n\n"), xform(0, 0), xform(0, 1), xform(0, 2), xform(0, 3),
 		xform(1, 0), xform(1, 1), xform(1, 2), xform(1, 3),
 		xform(2, 0), xform(2, 1), xform(2, 2), xform(2, 3),
 		xform(3, 0), xform(3, 1), xform(3, 2), xform(3, 3));*/
 
-	m_Icosahedron.subTransformBy(xform);
-	m_Tetrahedron.subTransformBy(xform);
+	es = m_Icosahedron.subTransformBy(xform);
+	if (es != Acad::eOk)
+		return es;
+	es = m_Tetrahedron.subTransformBy(xform);
+	if (es != Acad::eOk)
+		return es;
 	m_ptBottomFaceCenter.transformBy(xform);
 
 	return Acad::eOk;
@@ -354,11 +367,13 @@ Acad::ErrorStatus ADSKCustomPyramid::subMoveGripPointsAt(
 		if (pGripData == nullptr) {
 			continue;
 		}
-		auto idx = pGripData->index();
-		if (4 == idx) { // botoom face center point
-			subTransformBy(AcGeMatrix3d::translation(offset));
-		}
-		else { // tetrahedron corner points
+		switch (pGripData->index())
+		{
+		case 0: // indexes 0-3 tetrahedron corner points 
+		case 1:
+		case 2:
+		case 3: 
+		{
 			/*auto pt = m_Tetrahedron.vertices()[idx];
 			auto vec = pt - m_Tetrahedron.center();
 			double originalLength = vec.length();
@@ -366,7 +381,18 @@ Acad::ErrorStatus ADSKCustomPyramid::subMoveGripPointsAt(
 			double scaleFactor = newLength / originalLength;
 			subTransformBy(AcGeMatrix3d::scaling(scaleFactor, m_Tetrahedron.center()));
 			subTransformBy(offset);*/
-			subTransformBy(AcGeMatrix3d::scaling(offset.length(), m_Tetrahedron.center()));
+			auto es = subTransformBy(AcGeMatrix3d::scaling(offset.length(), m_Tetrahedron.center()));
+			if (es != Acad::eOk)
+				return es;
+			break;
+		}
+		case 4: // botoom face center point
+		{
+			auto es = subTransformBy(AcGeMatrix3d::translation(offset));
+			if (es != Acad::eOk)
+				return es;
+			break;
+		}
 		}
 	}
 	return Acad::eOk;
@@ -402,4 +428,9 @@ const AcGePoint3d& ADSKCustomPyramid::center() const
 {
 	assertReadEnabled();
 	return m_Tetrahedron.center();
+}
+
+const AcGePoint3dArray& ADSKCustomPyramid::vertices() const
+{
+	return m_Icosahedron.vertices();
 }

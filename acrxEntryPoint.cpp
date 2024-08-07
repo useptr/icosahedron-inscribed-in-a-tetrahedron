@@ -152,6 +152,18 @@ public:
         }
         acutPrintf(_T("Volume is equal to %f"), pEntity->volumesDifference());
         acutPrintf(_T("CREATED ADSKTetrahedronWithInscribedIcosahedron!"));
+        //pDB->setPdmode(66);
+        //pDB->setPdsize(10.0);
+        //for (auto& vertex : pEntity->vertices()) {
+        //    auto pt = new AcDbPoint(vertex);
+
+
+        //    pt->setColorIndex(1);
+        //    pt->setLinetypeScale(2.0);
+        //    pt->setLineWeight(AcDb::kLnWt120);
+        //    AcDbObjectId idObj;
+        //    pSpaceBlockTableRecord->appendAcDbEntity(idObj, pt);
+        //}
     }
     static void ADSKMyGroup_JIGCREATE(void) {
         auto ptCenter = AcGePoint3d::kOrigin;

@@ -4,14 +4,20 @@
 AcGiFaceDataManager::AcGiFaceDataManager() : m_pFaceData(std::make_unique<AcGiFaceData>())
 {
 }
-short* AcGiFaceDataManager::colors() const noexcept
+const short* AcGiFaceDataManager::colors() const noexcept
 {
-	return m_pColors.get();
+	return m_pColors.data();
 }
-void AcGiFaceDataManager::setColors(std::unique_ptr<short[]> aColors)
+void AcGiFaceDataManager::setColors(std::vector<short> aColors)
 {
 	m_pColors = std::move(aColors);
-	m_pFaceData->setColors(m_pColors.get());
+	m_pFaceData->setColors(m_pColors.data());
+}
+
+void AcGiFaceDataManager::setColor(size_t aI, short anColor)
+{
+	//static_assert(aI < 20);
+	m_pColors.at(aI) = anColor;
 }
 
 AcGiFaceData* AcGiFaceDataManager::faceData() const noexcept

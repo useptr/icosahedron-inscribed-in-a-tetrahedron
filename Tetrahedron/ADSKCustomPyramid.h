@@ -150,6 +150,7 @@ public:
 		  \return Координаты центра фигуры
 	*/
 	const AcGePoint3d& center() const;
+	const AcGePoint3dArray& vertices() const;
 private:
 	/*!
 		  \brief Вычисляет координаты m_ptBottomFaceCenter

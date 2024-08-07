@@ -106,7 +106,7 @@ private:
 	/*!
 		  \details Обновляет длину ребер тетраэдра, вызывается в методе subTransformBy
 	*/
-	void updateEdgeLength();
+	void updateEdgeLength() noexcept;
 	/*!
 		  \details Вычисляет координаты точек икосаэдра по длине ребра граней и координате центра фигуры
 	*/

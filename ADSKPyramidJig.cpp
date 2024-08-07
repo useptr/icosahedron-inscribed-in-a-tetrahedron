@@ -37,7 +37,7 @@ AcEdJig::DragStatus ADSKPyramidJig::startJig (ADSKCustomPyramid *pEntity) {
 	mpEntity->setCenter(mptCenter);
 	//- Setup each input prompt
 	AcString inputPrompts [1] ={
-		_T("\nPick point")
+		_T("\nPick center point\n")
 	};
 	//- Setup kwords for each input
 	AcString kwords [1] ={

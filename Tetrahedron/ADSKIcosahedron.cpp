@@ -49,7 +49,7 @@ ADSKIcosahedron::ADSKIcosahedron() : ADSKIcosahedron(AcGePoint3d::kOrigin, 1.0) 
 
 ADSKIcosahedron::ADSKIcosahedron(AcGePoint3d aptCenter, double adEdgeLength) : AcDbEntity(), m_dEdgeLength(adEdgeLength), m_ptCenter(aptCenter) {
 	calculateVertices();
-	m_faceDataManager.setColors(std::move(std::make_unique<short[]>(20)));
+	m_faceDataManager.setColors(std::move(std::vector<short>(20, 0)));
 }
 
 ADSKIcosahedron::~ADSKIcosahedron () {
@@ -112,9 +112,8 @@ ADSKIcosahedron::~ADSKIcosahedron () {
 //----- AcDbEntity protocols
 Adesk::Boolean ADSKIcosahedron::subWorldDraw (AcGiWorldDraw *mode) {
 	assertReadEnabled () ;
-
 	Adesk::UInt32 faceListSize = 4*20;
-
+	// ћассив индексов вершин дл€ каждой грани икосаэдра, метод shell из AcGiGeometry принимает сначала количество вершин дл€ грани, затем индексы самих вершин 
 	static Adesk::Int32 faceList[] = { 
 		3, 0, 4, 1, 
 		3, 0, 9, 4,
@@ -137,9 +136,8 @@ Adesk::Boolean ADSKIcosahedron::subWorldDraw (AcGiWorldDraw *mode) {
 		3, 9, 2, 5, 
 		3, 7, 2, 11 
 	};
-	mode->subEntityTraits().setColor(1);
 	mode->geometry().shell(m_aVertices.length(), m_aVertices.asArrayPtr(), faceListSize, faceList, nullptr, m_faceDataManager.faceData());
-	//return (AcDbEntity::subWorldDraw (mode)) ;
+	mode->subEntityTraits().setColor(1);
 	return Adesk::kTrue;
 }
 
@@ -152,7 +150,6 @@ Adesk::Boolean ADSKIcosahedron::subWorldDraw (AcGiWorldDraw *mode) {
 Acad::ErrorStatus ADSKIcosahedron::subTransformBy(const AcGeMatrix3d& xform)
 {
 	assertWriteEnabled();
-	// TODO if call scale need ubdate m_dEdgeLength
 	for (auto& vertex : m_aVertices) {
 		vertex.transformBy(xform);
 	}
@@ -175,7 +172,7 @@ const AcGePoint3dArray& ADSKIcosahedron::vertices() const
 	return m_aVertices;
 }
 
-void ADSKIcosahedron::updateEdgeLength()
+void ADSKIcosahedron::updateEdgeLength() noexcept
 {
 	assertWriteEnabled();
 	m_dEdgeLength = m_aVertices[0].distanceTo(m_aVertices[1]);
@@ -188,10 +185,18 @@ void ADSKIcosahedron::calculateVertices() noexcept
 	double s = m_dEdgeLength * std::numbers::phi_v<double> / 2.0;
 	if (m_aVertices.length() > 0)
 		m_aVertices.removeAll();
-	m_aVertices.appendList(AcGePoint3d(m_ptCenter.x -t, m_ptCenter.y, m_ptCenter.z+ s), AcGePoint3d(m_ptCenter.x + t, m_ptCenter.y, m_ptCenter.z+ s), AcGePoint3d(m_ptCenter.x -t, m_ptCenter.y, m_ptCenter.z -s), AcGePoint3d(m_ptCenter.x+ t, m_ptCenter.y, m_ptCenter.z -s),
-		AcGePoint3d(m_ptCenter.x, m_ptCenter.y+ s, m_ptCenter.z+ t), AcGePoint3d(m_ptCenter.x, m_ptCenter.y+ s, m_ptCenter.z -t), AcGePoint3d(m_ptCenter.x, m_ptCenter.y -s, m_ptCenter.z+ t), AcGePoint3d(m_ptCenter.x, m_ptCenter.y -s, m_ptCenter.z -t),
-		AcGePoint3d(m_ptCenter.x+ s, m_ptCenter.y+ t, m_ptCenter.z), AcGePoint3d(m_ptCenter.x -s, m_ptCenter.y+ t, m_ptCenter.z), AcGePoint3d(m_ptCenter.x+ s, m_ptCenter.y -t, m_ptCenter.z), AcGePoint3d(m_ptCenter.x -s, m_ptCenter.y -t, m_ptCenter.z));
-	
+	m_aVertices.append(AcGePoint3d(m_ptCenter.x - t, m_ptCenter.y,     m_ptCenter.z + s));
+	m_aVertices.append(AcGePoint3d(m_ptCenter.x + t, m_ptCenter.y,     m_ptCenter.z + s));
+	m_aVertices.append(AcGePoint3d(m_ptCenter.x - t, m_ptCenter.y,     m_ptCenter.z - s));
+	m_aVertices.append(AcGePoint3d(m_ptCenter.x + t, m_ptCenter.y,     m_ptCenter.z - s));
+	m_aVertices.append(AcGePoint3d(m_ptCenter.x,     m_ptCenter.y + s, m_ptCenter.z + t));
+	m_aVertices.append(AcGePoint3d(m_ptCenter.x,     m_ptCenter.y + s, m_ptCenter.z - t));
+	m_aVertices.append(AcGePoint3d(m_ptCenter.x,     m_ptCenter.y - s, m_ptCenter.z + t));
+	m_aVertices.append(AcGePoint3d(m_ptCenter.x,     m_ptCenter.y - s, m_ptCenter.z - t));
+	m_aVertices.append(AcGePoint3d(m_ptCenter.x + s, m_ptCenter.y + t, m_ptCenter.z));
+	m_aVertices.append(AcGePoint3d(m_ptCenter.x - s, m_ptCenter.y + t, m_ptCenter.z));
+	m_aVertices.append(AcGePoint3d(m_ptCenter.x + s, m_ptCenter.y - t, m_ptCenter.z));
+	m_aVertices.append(AcGePoint3d(m_ptCenter.x - s, m_ptCenter.y - t, m_ptCenter.z));	
 }
 
 double ADSKIcosahedron::circumradius(double adEdgeLenght) noexcept
@@ -210,7 +215,7 @@ Acad::ErrorStatus ADSKIcosahedron::setFaceColor(Adesk::Int32 aI, short anColor)
 {
 	assertWriteEnabled();
 	//static_assert(aI > 0 && aI < 20);
-	m_faceDataManager.colors()[aI] = anColor;
+	m_faceDataManager.setColor(aI, anColor);
 	return Acad::eOk;
 }
 

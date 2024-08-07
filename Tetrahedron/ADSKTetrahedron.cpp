@@ -140,7 +140,7 @@ Acad::ErrorStatus ADSKTetrahedron::subTransformBy(const AcGeMatrix3d& xform)
 	updateEdgeLength();
 	return Acad::eOk;
 }
-void ADSKTetrahedron::updateEdgeLength()
+void ADSKTetrahedron::updateEdgeLength() noexcept
 {
 	assertWriteEnabled();
 	m_dEdgeLength = m_aVertices[0].distanceTo(m_aVertices[1]);
