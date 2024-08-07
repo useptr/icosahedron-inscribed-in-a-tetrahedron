@@ -173,12 +173,14 @@ void ADSKTetrahedron::calculateVertices() noexcept
 
 double ADSKTetrahedron::inradius(double adEdgeLength) noexcept
 {
+	
 	// https://en.wikipedia.org/wiki/Tetrahedron#Measurement
 	return adEdgeLength / std::sqrt(24.0);
 }
 
 double ADSKTetrahedron::inradius() const noexcept
 {
+	assertReadEnabled();
 	return inradius(m_dEdgeLength);
 }
 

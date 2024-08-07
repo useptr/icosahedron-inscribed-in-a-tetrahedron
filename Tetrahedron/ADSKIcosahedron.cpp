@@ -165,6 +165,7 @@ Acad::ErrorStatus ADSKIcosahedron::subTransformBy(const AcGeMatrix3d& xform)
 double ADSKIcosahedron::volume() const noexcept
 {
 	// https://en.wikipedia.org/wiki/Regular_icosahedron#Mensuration
+	assertReadEnabled();
 	return 5.0* std::pow(std::numbers::phi_v<double>, 2.0) / 6.0*std::pow(m_dEdgeLength,3.0);
 }
 

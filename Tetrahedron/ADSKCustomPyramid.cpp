@@ -54,12 +54,14 @@ ADSKCustomPyramid::ADSKCustomPyramid(AcGePoint3d aptCenter, double adEdgeLength)
 
 AcGePoint3d ADSKCustomPyramid::bottomFaceCenterPoint() const noexcept
 {
+	assertReadEnabled();
 	auto ptCenter = m_Tetrahedron.center();
 	return AcGePoint3d(ptCenter.x, ptCenter.y, ptCenter.z - m_Tetrahedron.height()/2.0);
 }
 
 AcGePoint3d ADSKCustomPyramid::icosahedronCenter() const noexcept
 {
+	assertReadEnabled();
 	auto ptCenter = m_Tetrahedron.center();
 	return AcGePoint3d(ptCenter.x, ptCenter.y, ptCenter.z - m_Tetrahedron.height() / 2.0 + m_Tetrahedron.inradius());
 }
@@ -117,7 +119,7 @@ Acad::ErrorStatus ADSKCustomPyramid::dwgInFields(AcDbDwgFiler * pFiler) {
 
 	setEdgeLength(edgelength);
 	setCenter(ptCenter);
-	m_ptBottomFaceCenter = bottomFaceCenterPoint();
+	
 
 	return (pFiler->filerStatus());
 }
@@ -201,7 +203,6 @@ Acad::ErrorStatus ADSKCustomPyramid::dxfInFields(AcDbDxfFiler * pFiler) {
 
 	setEdgeLength(edgeLength);
 	setCenter(ptCenter);
-	m_ptBottomFaceCenter = bottomFaceCenterPoint();
 
 	return (pFiler->filerStatus());
 }
@@ -239,6 +240,7 @@ Acad::ErrorStatus ADSKCustomPyramid::setFaceOfIcosahedronToRandomColor()
 
 double ADSKCustomPyramid::volumesDifference() const noexcept
 {
+	assertReadEnabled();
 	return m_Tetrahedron.volume() - m_Icosahedron.volume();
 }
 //Acad::ErrorStatus ADSKTetrahedronWithInscribedIcosahedron::subGetTransformedCopy(const AcGeMatrix3d& xform, AcDbEntity*& ent) const
@@ -382,11 +384,13 @@ Acad::ErrorStatus ADSKCustomPyramid::setEdgeLength(const double adEdgeLength) {
 	assertWriteEnabled();
 	m_Tetrahedron.setEdgeLength(adEdgeLength);
 	m_Icosahedron.setEdgeLength(icosahedronEdgeLength(adEdgeLength));
+	m_ptBottomFaceCenter = bottomFaceCenterPoint();
 	return Acad::eOk;
 }
 
 Acad::ErrorStatus ADSKCustomPyramid::setCenter(const AcGePoint3d& aptCenter)
 {
+	assertWriteEnabled();
 	auto es = m_Tetrahedron.setCenter(aptCenter);
 	if (Acad::eOk != es)
 		return es;
@@ -396,5 +400,6 @@ Acad::ErrorStatus ADSKCustomPyramid::setCenter(const AcGePoint3d& aptCenter)
 
 const AcGePoint3d& ADSKCustomPyramid::center() const
 {
+	assertReadEnabled();
 	return m_Tetrahedron.center();
 }
