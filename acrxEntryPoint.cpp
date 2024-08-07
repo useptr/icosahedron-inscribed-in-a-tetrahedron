@@ -54,16 +54,7 @@ public:
 		// You *must* call On_kInitAppMsg here
 		AcRx::AppRetCode retCode =AcRxArxApp::On_kInitAppMsg (pkt) ;
         AcRxObject* pSvc;
-        if (!(pSvc = acrxServiceDictionary->at(ASDKICOSAHEDRON_DBXSERVICE)))
-        {
-            // Try to load the module, if it is not yet present 
-            if (!acrxDynamicLinker->loadModule(_T("ADSKTetrahedron.dbx"), 0))
-            {
-                acutPrintf(_T("Unable to load ADSKTetrahedron.dbx. Unloading this application...\n"));
-                return (AcRx::kRetError);
-            }
-        }
-        if (!(pSvc = acrxServiceDictionary->at(ASDKTETRAHEDRON_DBXSERVICE)))
+        if (!(pSvc = acrxServiceDictionary->at(ASDKICOSAHEDRON_DBXSERVICE)) || !(pSvc = acrxServiceDictionary->at(ASDKPOLYHEDRON_DBXSERVICE)) || !(pSvc = acrxServiceDictionary->at(ASDKPOLYHEDRON_DBXSERVICE)))
         {
             // Try to load the module, if it is not yet present 
             if (!acrxDynamicLinker->loadModule(_T("ADSKTetrahedron.dbx"), 0))

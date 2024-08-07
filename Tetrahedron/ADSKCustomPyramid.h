@@ -53,6 +53,7 @@
 #include "ADSKIcosahedron.h"
 #include "ADSKTetrahedron.h"
 //-----------------------------------------------------------------------------
+#define ASDKPOLYHEDRON_DBXSERVICE _T("ASDKPOLYHEDRON_DBXSERVICE")
 /*!
 	\brief Тетраэдр с вписанным икосаэдром
 */

@@ -55,8 +55,8 @@
 #include "dbmain.h"
 #include "Tchar.h"
 #define ASDKTETRAHEDRON_DBXSERVICE _T("ASDKTETRAHEDRON_DBXSERVICE")
-class ADSKCustomPyramid;
 //-----------------------------------------------------------------------------
+class ADSKCustomPyramid;
 class DLLIMPEXP ADSKTetrahedron : public AcDbEntity {
 
 public:
