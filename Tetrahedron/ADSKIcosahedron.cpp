@@ -175,13 +175,6 @@ const AcGePoint3dArray& ADSKIcosahedron::vertices() const
 	return m_aVertices;
 }
 
-Acad::ErrorStatus ADSKIcosahedron::setVertexAt(int aI, AcGePoint3d& arPt)
-{
-	assertWriteEnabled();
-	m_aVertices.at(aI) = arPt;
-	return Acad::eOk;
-}
-
 void ADSKIcosahedron::updateEdgeLength()
 {
 	assertWriteEnabled();

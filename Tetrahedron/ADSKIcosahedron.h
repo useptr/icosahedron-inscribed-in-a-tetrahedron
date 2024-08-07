@@ -102,9 +102,14 @@ public:
 	*/
 	double volume() const noexcept;
 	const AcGePoint3dArray& vertices() const;
-	Acad::ErrorStatus setVertexAt(int aI, AcGePoint3d& arPt);
 private:
+	/*!
+		  \details Обновляет длину ребер тетраэдра, вызывается в методе subTransformBy
+	*/
 	void updateEdgeLength();
+	/*!
+		  \details Вычисляет координаты точек икосаэдра по длине ребра граней и координате центра фигуры
+	*/
 	void calculateVertices() noexcept;
 	double m_dEdgeLength;
 	AcGePoint3d m_ptCenter;

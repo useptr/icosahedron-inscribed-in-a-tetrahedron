@@ -98,6 +98,11 @@ public:
 		  \return Объём тетраэдра
 	*/
 	double volume() const noexcept;
+	/*!
+		  \brief Вычисляет высоту тетраэдра по длине ребра тетраэдра
+		  \details https://en.wikipedia.org/wiki/Tetrahedron#Measurement
+		  \return Высоту тетраэдра 
+	*/
 	static double height(double adEdgeLenght) noexcept;
 	double height() const noexcept;
 	Acad::ErrorStatus setCenter(const AcGePoint3d& aptCenter);
@@ -106,7 +111,13 @@ public:
 	Acad::ErrorStatus setEdgeLength(double adEdgeLenght);
 	const AcGePoint3dArray& vertices() const;
 private:
+	/*!
+		  \details Обновляет длину ребер тетраэдра, вызывается в методе subTransformBy
+	*/
 	void updateEdgeLength();
+	/*!
+		  \details Вычисляет координаты точек тетраэдра по длине ребра граней и координате центра фигуры
+	*/
 	void calculateVertices() noexcept;
 	double m_dEdgeLength; // длинна ребра
 	AcGePoint3d m_ptCenter;
