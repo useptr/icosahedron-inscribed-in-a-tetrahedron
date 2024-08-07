@@ -1,4 +1,4 @@
-// (C) Copyright 2002-2007 by Autodesk, Inc. 
+п»ї// (C) Copyright 2002-2007 by Autodesk, Inc. 
 //
 // Permission to use, copy, modify, and distribute this software in
 // object code form for any purpose and without fee is hereby granted, 
@@ -86,22 +86,22 @@ protected:
 public:
 	// for Tetrahedron
 	/*!
-		  \brief Вычисляет радиус вписанной сферы тетраэдра по длине ребра тетраэдра
-		  \param[in] adEdgeLenght длина ребра тетраэдра
-		  \return Радиус вписанной сферы тетраэдра
+		  \brief Р’С‹С‡РёСЃР»СЏРµС‚ СЂР°РґРёСѓСЃ РІРїРёСЃР°РЅРЅРѕР№ СЃС„РµСЂС‹ С‚РµС‚СЂР°СЌРґСЂР° РїРѕ РґР»РёРЅРµ СЂРµР±СЂР° С‚РµС‚СЂР°СЌРґСЂР°
+		  \param[in] adEdgeLenght РґР»РёРЅР° СЂРµР±СЂР° С‚РµС‚СЂР°СЌРґСЂР°
+		  \return Р Р°РґРёСѓСЃ РІРїРёСЃР°РЅРЅРѕР№ СЃС„РµСЂС‹ С‚РµС‚СЂР°СЌРґСЂР°
 	*/
 	static double inradius(double adEdgeLength) noexcept;
 	double inradius() const noexcept;
 	/*!
-		  \brief Вычисляет объём тетраэдра
+		  \brief Р’С‹С‡РёСЃР»СЏРµС‚ РѕР±СЉС‘Рј С‚РµС‚СЂР°СЌРґСЂР°
 		  \details https://en.wikipedia.org/wiki/Tetrahedron#Measurement
-		  \return Объём тетраэдра
+		  \return РћР±СЉС‘Рј С‚РµС‚СЂР°СЌРґСЂР°
 	*/
 	double volume() const noexcept;
 	/*!
-		  \brief Вычисляет высоту тетраэдра по длине ребра тетраэдра
+		  \brief Р’С‹С‡РёСЃР»СЏРµС‚ РІС‹СЃРѕС‚Сѓ С‚РµС‚СЂР°СЌРґСЂР° РїРѕ РґР»РёРЅРµ СЂРµР±СЂР° С‚РµС‚СЂР°СЌРґСЂР°
 		  \details https://en.wikipedia.org/wiki/Tetrahedron#Measurement
-		  \return Высоту тетраэдра 
+		  \return Р’С‹СЃРѕС‚Сѓ С‚РµС‚СЂР°СЌРґСЂР° 
 	*/
 	static double height(double adEdgeLenght) noexcept;
 	double height() const noexcept;
@@ -112,14 +112,14 @@ public:
 	const AcGePoint3dArray& vertices() const;
 private:
 	/*!
-		  \details Обновляет длину ребер тетраэдра, вызывается в методе subTransformBy
+		  \details РћР±РЅРѕРІР»СЏРµС‚ РґР»РёРЅСѓ СЂРµР±РµСЂ С‚РµС‚СЂР°СЌРґСЂР°, РІС‹Р·С‹РІР°РµС‚СЃСЏ РІ РјРµС‚РѕРґРµ subTransformBy
 	*/
 	void updateEdgeLength() noexcept;
 	/*!
-		  \details Вычисляет координаты точек тетраэдра по длине ребра граней и координате центра фигуры
+		  \details Р’С‹С‡РёСЃР»СЏРµС‚ РєРѕРѕСЂРґРёРЅР°С‚С‹ С‚РѕС‡РµРє С‚РµС‚СЂР°СЌРґСЂР° РїРѕ РґР»РёРЅРµ СЂРµР±СЂР° РіСЂР°РЅРµР№ Рё РєРѕРѕСЂРґРёРЅР°С‚Рµ С†РµРЅС‚СЂР° С„РёРіСѓСЂС‹
 	*/
 	void calculateVertices() noexcept;
-	double m_dEdgeLength; // длинна ребра
+	double m_dEdgeLength; // РґР»РёРЅРЅР° СЂРµР±СЂР°
 	AcGePoint3d m_ptCenter;
 	AcGePoint3dArray m_aVertices;
 } ;

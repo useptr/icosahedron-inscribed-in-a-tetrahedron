@@ -30,9 +30,6 @@
     <ClCompile Include="ADSKIcosahedron.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="ADSKTemp.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="AcGiFaceDataManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -57,9 +54,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="exportDefs.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="ADSKTemp.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="AcGiFaceDataManager.h">

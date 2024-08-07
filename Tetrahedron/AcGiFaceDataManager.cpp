@@ -1,4 +1,4 @@
-#include "stdafx.h"
+﻿#include "stdafx.h"
 #include "AcGiFaceDataManager.h"
 #include <utility>
 AcGiFaceDataManager::AcGiFaceDataManager() : m_pFaceData(std::make_unique<AcGiFaceData>())

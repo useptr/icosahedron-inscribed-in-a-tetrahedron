@@ -1,8 +1,8 @@
-#pragma once
+п»ї#pragma once
 #include <memory>
 #include <vector>
 /*!
-	\brief Вспомогательный класс, который следит за выделенными через new полями для AcGiFaceData
+	\brief Р’СЃРїРѕРјРѕРіР°С‚РµР»СЊРЅС‹Р№ РєР»Р°СЃСЃ, РєРѕС‚РѕСЂС‹Р№ СЃР»РµРґРёС‚ Р·Р° РІС‹РґРµР»РµРЅРЅС‹РјРё С‡РµСЂРµР· new РїРѕР»СЏРјРё РґР»СЏ AcGiFaceData
 */
 class AcGiFaceDataManager
 {

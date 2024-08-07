@@ -1,4 +1,4 @@
-// (C) Copyright 2005-2007 by Autodesk, Inc. 
+ï»¿// (C) Copyright 2005-2007 by Autodesk, Inc. 
 //
 // Permission to use, copy, modify, and distribute this software in
 // object code form for any purpose and without fee is hereby granted, 
@@ -118,7 +118,7 @@ AcEdJig::DragStatus ADSKPyramidJig::sampler () {
 	AcEdJig::DragStatus status =AcEdJig::kCancel ;
 	//- Check the current input number to see which input to do
 	switch ( mCurrentInputLevel+1 ) {
-		case 1: // Äëèíà ðåáðà
+		case 1: // Ð”Ð»Ð¸Ð½Ð° Ñ€ÐµÐ±Ñ€Ð°
 			static double dEdgeLenghtTemp = -1.0;
 			status = acquireDist(dEdgeLenghtTemp, mptCenter);
 			if (dEdgeLenghtTemp > 0) {

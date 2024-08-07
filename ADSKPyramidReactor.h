@@ -1,4 +1,4 @@
-// (C) Copyright 2002-2007 by Autodesk, Inc. 
+п»ї// (C) Copyright 2002-2007 by Autodesk, Inc. 
 //
 // Permission to use, copy, modify, and distribute this software in
 // object code form for any purpose and without fee is hereby granted, 
@@ -55,7 +55,7 @@
 //----- Note: Uncomment the DLLIMPEXP symbol below if you wish exporting
 //----- your class to other ARX/DBX modules
 /*!
-	\deteils Если экземпляр ADSKCustomPyramid открывают для записи, при команде редактора для изменения масштабирования, добавляет objectId этого экземпляра в список m_aChangedObjects класса документа DocVars
+	\deteils Р•СЃР»Рё СЌРєР·РµРјРїР»СЏСЂ ADSKCustomPyramid РѕС‚РєСЂС‹РІР°СЋС‚ РґР»СЏ Р·Р°РїРёСЃРё, РїСЂРё РєРѕРјР°РЅРґРµ СЂРµРґР°РєС‚РѕСЂР° РґР»СЏ РёР·РјРµРЅРµРЅРёСЏ РјР°СЃС€С‚Р°Р±РёСЂРѕРІР°РЅРёСЏ, РґРѕР±Р°РІР»СЏРµС‚ objectId СЌС‚РѕРіРѕ СЌРєР·РµРјРїР»СЏСЂР° РІ СЃРїРёСЃРѕРє m_aChangedObjects РєР»Р°СЃСЃР° РґРѕРєСѓРјРµРЅС‚Р° DocVars
 */
 class /*DLLIMPEXP*/ ADSKPyramidReactor : public AcDbObjectReactor {
 

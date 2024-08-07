@@ -75,7 +75,6 @@
     <ClCompile Include="acrxEntryPoint.cpp" />
     <ClCompile Include="ADSKCustomPyramid.cpp" />
     <ClCompile Include="ADSKIcosahedron.cpp" />
-    <ClCompile Include="ADSKTemp.cpp" />
     <ClCompile Include="ADSKTetrahedron.cpp" />
     <ClCompile Include="StdAfx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
@@ -88,7 +87,6 @@
     <ClInclude Include="AcGiFaceDataManager.h" />
     <ClInclude Include="ADSKCustomPyramid.h" />
     <ClInclude Include="ADSKIcosahedron.h" />
-    <ClInclude Include="ADSKTemp.h" />
     <ClInclude Include="ADSKTetrahedron.h" />
     <ClInclude Include="exportDefs.h" />
     <ClInclude Include="Resource.h" />

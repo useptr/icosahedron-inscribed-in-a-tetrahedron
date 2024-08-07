@@ -1,4 +1,4 @@
-// (C) Copyright 2002-2007 by Autodesk, Inc. 
+ï»¿// (C) Copyright 2002-2007 by Autodesk, Inc. 
 //
 // Permission to use, copy, modify, and distribute this software in
 // object code form for any purpose and without fee is hereby granted, 
@@ -333,7 +333,7 @@ Acad::ErrorStatus ADSKCustomPyramid::subGetOsnapPoints(
 class GripAppData final
 {
 private:
-	int m_ID; ///< èäåíòèôèêàòîð äëÿ AcDbGripData
+	int m_ID; ///< Ð¸Ð´ÐµÐ½Ñ‚Ð¸Ñ„Ð¸ÐºÐ°Ñ‚Ð¾Ñ€ Ð´Ð»Ñ AcDbGripData
 public:
 	GripAppData(int aId) : m_ID(aId) {}
 	int index() const noexcept { return m_ID; }

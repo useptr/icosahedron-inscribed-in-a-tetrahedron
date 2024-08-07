@@ -1,4 +1,4 @@
-// (C) Copyright 2002-2012 by Autodesk, Inc. 
+ï»¿// (C) Copyright 2002-2012 by Autodesk, Inc. 
 //
 // Permission to use, copy, modify, and distribute this software in
 // object code form for any purpose and without fee is hereby granted, 
@@ -234,7 +234,7 @@ public:
 
     //    for (int i = 0; i < 20; ++i)
     //    {
-    //        // Ñîçäàíèå òðåóãîëüíîé ãðàíè
+    //        // Ð¡Ð¾Ð·Ð´Ð°Ð½Ð¸Ðµ Ñ‚Ñ€ÐµÑƒÐ³Ð¾Ð»ÑŒÐ½Ð¾Ð¹ Ð³Ñ€Ð°Ð½Ð¸
     //        AcDbFace* pFace = new AcDbFace(vertices[faces[i][0]], vertices[faces[i][1]], vertices[faces[i][2]]);
     //        AcDbObjectId solidId;
     //        if (pSpaceRecord->appendAcDbEntity(solidId, pFace) != Acad::eOk)

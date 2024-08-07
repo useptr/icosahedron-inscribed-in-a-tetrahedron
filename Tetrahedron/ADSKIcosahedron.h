@@ -1,4 +1,4 @@
-// (C) Copyright 2002-2007 by Autodesk, Inc. 
+п»ї// (C) Copyright 2002-2007 by Autodesk, Inc. 
 //
 // Permission to use, copy, modify, and distribute this software in
 // object code form for any purpose and without fee is hereby granted, 
@@ -84,9 +84,9 @@ protected:
 public:
 	// for Icosahedron
 	/*!
-		  \brief Вычисляет длину ребра икосаэдра по радиусу описанной сферы 
-		  \param[in] adCircumsphereRadius радиус описанной сферы икосаэдра
-		  \return Длину ребра икосаэдра
+		  \brief Р’С‹С‡РёСЃР»СЏРµС‚ РґР»РёРЅСѓ СЂРµР±СЂР° РёРєРѕСЃР°СЌРґСЂР° РїРѕ СЂР°РґРёСѓСЃСѓ РѕРїРёСЃР°РЅРЅРѕР№ СЃС„РµСЂС‹ 
+		  \param[in] adCircumsphereRadius СЂР°РґРёСѓСЃ РѕРїРёСЃР°РЅРЅРѕР№ СЃС„РµСЂС‹ РёРєРѕСЃР°СЌРґСЂР°
+		  \return Р”Р»РёРЅСѓ СЂРµР±СЂР° РёРєРѕСЃР°СЌРґСЂР°
 	*/
 	static double circumradius(double adEdgeLenght) noexcept;
 	static double edgeLengthByCircumradius(double adCircumsphereRadius) noexcept;
@@ -96,19 +96,19 @@ public:
 	double edgeLength() const;
 	Acad::ErrorStatus setEdgeLength(double adEdgeLenght);
 	/*!
-		  \brief Вычисляет объём тетраэдра
+		  \brief Р’С‹С‡РёСЃР»СЏРµС‚ РѕР±СЉС‘Рј С‚РµС‚СЂР°СЌРґСЂР°
 		  \details https://en.wikipedia.org/wiki/Regular_icosahedron#Mensuration
-		  \return Объём тетраэдра
+		  \return РћР±СЉС‘Рј С‚РµС‚СЂР°СЌРґСЂР°
 	*/
 	double volume() const noexcept;
 	const AcGePoint3dArray& vertices() const;
 private:
 	/*!
-		  \details Обновляет длину ребер тетраэдра, вызывается в методе subTransformBy
+		  \details РћР±РЅРѕРІР»СЏРµС‚ РґР»РёРЅСѓ СЂРµР±РµСЂ С‚РµС‚СЂР°СЌРґСЂР°, РІС‹Р·С‹РІР°РµС‚СЃСЏ РІ РјРµС‚РѕРґРµ subTransformBy
 	*/
 	void updateEdgeLength() noexcept;
 	/*!
-		  \details Вычисляет координаты точек икосаэдра по длине ребра граней и координате центра фигуры
+		  \details Р’С‹С‡РёСЃР»СЏРµС‚ РєРѕРѕСЂРґРёРЅР°С‚С‹ С‚РѕС‡РµРє РёРєРѕСЃР°СЌРґСЂР° РїРѕ РґР»РёРЅРµ СЂРµР±СЂР° РіСЂР°РЅРµР№ Рё РєРѕРѕСЂРґРёРЅР°С‚Рµ С†РµРЅС‚СЂР° С„РёРіСѓСЂС‹
 	*/
 	void calculateVertices() noexcept;
 	double m_dEdgeLength;

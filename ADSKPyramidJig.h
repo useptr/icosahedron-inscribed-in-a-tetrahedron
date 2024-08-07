@@ -1,4 +1,4 @@
-// (C) Copyright 2005-2007 by Autodesk, Inc. 
+п»ї// (C) Copyright 2005-2007 by Autodesk, Inc. 
 //
 // Permission to use, copy, modify, and distribute this software in
 // object code form for any purpose and without fee is hereby granted, 
@@ -49,7 +49,7 @@
 
 
 /*!
-	\brief Позволяет создать экземпляр класса ADSKCustomPyramid с заданным центром координат и длиной граней
+	\brief РџРѕР·РІРѕР»СЏРµС‚ СЃРѕР·РґР°С‚СЊ СЌРєР·РµРјРїР»СЏСЂ РєР»Р°СЃСЃР° ADSKCustomPyramid СЃ Р·Р°РґР°РЅРЅС‹Рј С†РµРЅС‚СЂРѕРј РєРѕРѕСЂРґРёРЅР°С‚ Рё РґР»РёРЅРѕР№ РіСЂР°РЅРµР№
 */
 class ADSKPyramidJig : public AcEdJig {
 private:

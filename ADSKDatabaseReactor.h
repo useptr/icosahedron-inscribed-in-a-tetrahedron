@@ -1,4 +1,4 @@
-// (C) Copyright 2002-2007 by Autodesk, Inc. 
+п»ї// (C) Copyright 2002-2007 by Autodesk, Inc. 
 //
 // Permission to use, copy, modify, and distribute this software in
 // object code form for any purpose and without fee is hereby granted, 
@@ -51,7 +51,7 @@
 //----- Note: Uncomment the DLLIMPEXP symbol below if you wish exporting
 //----- your class to other ARX/DBX modules
 /*!
-	\brief При добавлении в базу данных нового экзампляра ADSKCustomPyramid добавляет к нему глобальный реактор - g_pPyramidReactor
+	\brief РџСЂРё РґРѕР±Р°РІР»РµРЅРёРё РІ Р±Р°Р·Сѓ РґР°РЅРЅС‹С… РЅРѕРІРѕРіРѕ СЌРєР·Р°РјРїР»СЏСЂР° ADSKCustomPyramid РґРѕР±Р°РІР»СЏРµС‚ Рє РЅРµРјСѓ РіР»РѕР±Р°Р»СЊРЅС‹Р№ СЂРµР°РєС‚РѕСЂ - g_pPyramidReactor
 */
 class /*DLLIMPEXP*/ ADSKDatabaseReactor : public AcDbDatabaseReactor {
 

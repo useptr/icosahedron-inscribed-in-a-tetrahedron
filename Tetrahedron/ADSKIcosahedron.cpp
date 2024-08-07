@@ -1,4 +1,4 @@
-// (C) Copyright 2002-2007 by Autodesk, Inc. 
+п»ї// (C) Copyright 2002-2007 by Autodesk, Inc. 
 //
 // Permission to use, copy, modify, and distribute this software in
 // object code form for any purpose and without fee is hereby granted, 
@@ -113,7 +113,7 @@ ADSKIcosahedron::~ADSKIcosahedron () {
 Adesk::Boolean ADSKIcosahedron::subWorldDraw (AcGiWorldDraw *mode) {
 	assertReadEnabled () ;
 	Adesk::UInt32 faceListSize = 4*20;
-	// Массив индексов вершин для каждой грани икосаэдра, метод shell из AcGiGeometry принимает сначала количество вершин для грани, затем индексы самих вершин 
+	// РњР°СЃСЃРёРІ РёРЅРґРµРєСЃРѕРІ РІРµСЂС€РёРЅ РґР»СЏ РєР°Р¶РґРѕР№ РіСЂР°РЅРё РёРєРѕСЃР°СЌРґСЂР°, РјРµС‚РѕРґ shell РёР· AcGiGeometry РїСЂРёРЅРёРјР°РµС‚ СЃРЅР°С‡Р°Р»Р° РєРѕР»РёС‡РµСЃС‚РІРѕ РІРµСЂС€РёРЅ РґР»СЏ РіСЂР°РЅРё, Р·Р°С‚РµРј РёРЅРґРµРєСЃС‹ СЃР°РјРёС… РІРµСЂС€РёРЅ 
 	static Adesk::Int32 faceList[] = { 
 		3, 0, 4, 1, 
 		3, 0, 9, 4,

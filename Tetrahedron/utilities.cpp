@@ -1,4 +1,4 @@
-//#define NOMINMAX
+﻿//#define NOMINMAX
 #include "stdafx.h"
 #include "utilities.h"
 

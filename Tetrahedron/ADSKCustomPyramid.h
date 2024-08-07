@@ -1,4 +1,4 @@
-// (C) Copyright 2002-2007 by Autodesk, Inc. 
+п»ї// (C) Copyright 2002-2007 by Autodesk, Inc. 
 //
 // Permission to use, copy, modify, and distribute this software in
 // object code form for any purpose and without fee is hereby granted, 
@@ -55,7 +55,7 @@
 //-----------------------------------------------------------------------------
 #define ASDKPOLYHEDRON_DBXSERVICE _T("ASDKPOLYHEDRON_DBXSERVICE")
 /*!
-	\brief Тетраэдр с вписанным икосаэдром
+	\brief РўРµС‚СЂР°СЌРґСЂ СЃ РІРїРёСЃР°РЅРЅС‹Рј РёРєРѕСЃР°СЌРґСЂРѕРј
 */
 class DLLIMPEXP ADSKCustomPyramid : public AcDbEntity {
 
@@ -68,9 +68,9 @@ protected:
 public:
 	ADSKCustomPyramid();
 	/*!
-		  \details Конструктор с двумя параметрами для фигуры
-		  \param[in] aptCenter координаты центра фигурв
-		  \param[in] adEdgeLength Длина рёбер фигуры
+		  \details РљРѕРЅСЃС‚СЂСѓРєС‚РѕСЂ СЃ РґРІСѓРјСЏ РїР°СЂР°РјРµС‚СЂР°РјРё РґР»СЏ С„РёРіСѓСЂС‹
+		  \param[in] aptCenter РєРѕРѕСЂРґРёРЅР°С‚С‹ С†РµРЅС‚СЂР° С„РёРіСѓСЂРІ
+		  \param[in] adEdgeLength Р”Р»РёРЅР° СЂС‘Р±РµСЂ С„РёРіСѓСЂС‹
 	*/
 	ADSKCustomPyramid(AcGePoint3d aptCenter, double adEdgeLength);
 	virtual ~ADSKCustomPyramid();
@@ -124,55 +124,55 @@ public:
 
 	// methods for working with ADSKTetrahedronWithInscribedIcosahedron
 	/*!
-		  \brief Меняет цвет случайной грани вписанного икосаэдра на один из стандартных цветов AutoCAD'а (1-6)
-		  \return Acad::eOk в случае успешного выполнения, иначе другую ошибку типа Acad::ErrorStatus
+		  \brief РњРµРЅСЏРµС‚ С†РІРµС‚ СЃР»СѓС‡Р°Р№РЅРѕР№ РіСЂР°РЅРё РІРїРёСЃР°РЅРЅРѕРіРѕ РёРєРѕСЃР°СЌРґСЂР° РЅР° РѕРґРёРЅ РёР· СЃС‚Р°РЅРґР°СЂС‚РЅС‹С… С†РІРµС‚РѕРІ AutoCAD'Р° (1-6)
+		  \return Acad::eOk РІ СЃР»СѓС‡Р°Рµ СѓСЃРїРµС€РЅРѕРіРѕ РІС‹РїРѕР»РЅРµРЅРёСЏ, РёРЅР°С‡Рµ РґСЂСѓРіСѓСЋ РѕС€РёР±РєСѓ С‚РёРїР° Acad::ErrorStatus
 	*/
 	Acad::ErrorStatus setFaceOfIcosahedronToRandomColor();
 	/*!
-		  \brief Вычисляет разницу объемов икосаэдра и вписанного тетраэдра
-		  \return Разницу объемов икосаэдра и вписанного тетраэдра
+		  \brief Р’С‹С‡РёСЃР»СЏРµС‚ СЂР°Р·РЅРёС†Сѓ РѕР±СЉРµРјРѕРІ РёРєРѕСЃР°СЌРґСЂР° Рё РІРїРёСЃР°РЅРЅРѕРіРѕ С‚РµС‚СЂР°СЌРґСЂР°
+		  \return Р Р°Р·РЅРёС†Сѓ РѕР±СЉРµРјРѕРІ РёРєРѕСЃР°СЌРґСЂР° Рё РІРїРёСЃР°РЅРЅРѕРіРѕ С‚РµС‚СЂР°СЌРґСЂР°
 	*/
 	double volumesDifference() const noexcept;
 	/*!
-		  \details Устанавливает новую длину рёбер для тетраэдра, пересчитывает длину рёбер вписанного икосаэдра и затем вызывает анологичный метод у икосаэдра
-		  \param[in] adEdgeLenght длина ребра тетраэдра
-		  \return Acad::eOk в случае успешного выполнения, иначе другую ошибку типа Acad::ErrorStatus
+		  \details РЈСЃС‚Р°РЅР°РІР»РёРІР°РµС‚ РЅРѕРІСѓСЋ РґР»РёРЅСѓ СЂС‘Р±РµСЂ РґР»СЏ С‚РµС‚СЂР°СЌРґСЂР°, РїРµСЂРµСЃС‡РёС‚С‹РІР°РµС‚ РґР»РёРЅСѓ СЂС‘Р±РµСЂ РІРїРёСЃР°РЅРЅРѕРіРѕ РёРєРѕСЃР°СЌРґСЂР° Рё Р·Р°С‚РµРј РІС‹Р·С‹РІР°РµС‚ Р°РЅРѕР»РѕРіРёС‡РЅС‹Р№ РјРµС‚РѕРґ Сѓ РёРєРѕСЃР°СЌРґСЂР°
+		  \param[in] adEdgeLenght РґР»РёРЅР° СЂРµР±СЂР° С‚РµС‚СЂР°СЌРґСЂР°
+		  \return Acad::eOk РІ СЃР»СѓС‡Р°Рµ СѓСЃРїРµС€РЅРѕРіРѕ РІС‹РїРѕР»РЅРµРЅРёСЏ, РёРЅР°С‡Рµ РґСЂСѓРіСѓСЋ РѕС€РёР±РєСѓ С‚РёРїР° Acad::ErrorStatus
 	*/
 	Acad::ErrorStatus setEdgeLength(const double adEdgeLength);
 	/*!
-		  \brief Устанавливает новые координаты центра фигуры
-		  \param[in] adEdgeLenght координаты центра фигуры
-		  \return Acad::eOk в случае успешного выполнения, иначе другую ошибку типа Acad::ErrorStatus
+		  \brief РЈСЃС‚Р°РЅР°РІР»РёРІР°РµС‚ РЅРѕРІС‹Рµ РєРѕРѕСЂРґРёРЅР°С‚С‹ С†РµРЅС‚СЂР° С„РёРіСѓСЂС‹
+		  \param[in] adEdgeLenght РєРѕРѕСЂРґРёРЅР°С‚С‹ С†РµРЅС‚СЂР° С„РёРіСѓСЂС‹
+		  \return Acad::eOk РІ СЃР»СѓС‡Р°Рµ СѓСЃРїРµС€РЅРѕРіРѕ РІС‹РїРѕР»РЅРµРЅРёСЏ, РёРЅР°С‡Рµ РґСЂСѓРіСѓСЋ РѕС€РёР±РєСѓ С‚РёРїР° Acad::ErrorStatus
 	*/
 	Acad::ErrorStatus setCenter(const AcGePoint3d& aptCenter);
 	/*!
-		  \brief Возвращает координаты центра фигуры
-		  \return Координаты центра фигуры
+		  \brief Р’РѕР·РІСЂР°С‰Р°РµС‚ РєРѕРѕСЂРґРёРЅР°С‚С‹ С†РµРЅС‚СЂР° С„РёРіСѓСЂС‹
+		  \return РљРѕРѕСЂРґРёРЅР°С‚С‹ С†РµРЅС‚СЂР° С„РёРіСѓСЂС‹
 	*/
 	const AcGePoint3d& center() const;
 	const AcGePoint3dArray& vertices() const;
 private:
 	/*!
-		  \brief Вычисляет координаты m_ptBottomFaceCenter
-		  \return координаты m_ptBottomFaceCenter
+		  \brief Р’С‹С‡РёСЃР»СЏРµС‚ РєРѕРѕСЂРґРёРЅР°С‚С‹ m_ptBottomFaceCenter
+		  \return РєРѕРѕСЂРґРёРЅР°С‚С‹ m_ptBottomFaceCenter
 	*/
 	AcGePoint3d bottomFaceCenterPoint() const noexcept;
 	/*!
-		  \brief Вычисляет координаты центра вписанного икосаэдра
-		  \return координаты центра вписанного икосаэдра
+		  \brief Р’С‹С‡РёСЃР»СЏРµС‚ РєРѕРѕСЂРґРёРЅР°С‚С‹ С†РµРЅС‚СЂР° РІРїРёСЃР°РЅРЅРѕРіРѕ РёРєРѕСЃР°СЌРґСЂР°
+		  \return РєРѕРѕСЂРґРёРЅР°С‚С‹ С†РµРЅС‚СЂР° РІРїРёСЃР°РЅРЅРѕРіРѕ РёРєРѕСЃР°СЌРґСЂР°
 	*/
 	AcGePoint3d icosahedronCenter() const noexcept;
 	/*!
-		  \brief Вычисляет длину ребра вписанного икосаэдра по длине ребра тетраэдра
-		  \param[in] adEdgeLenght длина ребра тетраэдра
-		  \return Длину ребра вписанного икосаэдра тетраэдра
+		  \brief Р’С‹С‡РёСЃР»СЏРµС‚ РґР»РёРЅСѓ СЂРµР±СЂР° РІРїРёСЃР°РЅРЅРѕРіРѕ РёРєРѕСЃР°СЌРґСЂР° РїРѕ РґР»РёРЅРµ СЂРµР±СЂР° С‚РµС‚СЂР°СЌРґСЂР°
+		  \param[in] adEdgeLenght РґР»РёРЅР° СЂРµР±СЂР° С‚РµС‚СЂР°СЌРґСЂР°
+		  \return Р”Р»РёРЅСѓ СЂРµР±СЂР° РІРїРёСЃР°РЅРЅРѕРіРѕ РёРєРѕСЃР°СЌРґСЂР° С‚РµС‚СЂР°СЌРґСЂР°
 	*/
 	double icosahedronEdgeLength(double adTetrahedronEdgeLenght) const noexcept;
 	
-	ADSKTetrahedron m_Tetrahedron; ///< Тетраэдр
-	ADSKIcosahedron m_Icosahedron; ///< Вписанный икосаэдр
-	AcGePoint3d m_ptBottomFaceCenter; ///< Точка на нижней гране тетраэдра для перемещения фигуры
-	//AcGeMatrix3d m_transform; ///< Матрица преобразований (TRS matrix)
+	ADSKTetrahedron m_Tetrahedron; ///< РўРµС‚СЂР°СЌРґСЂ
+	ADSKIcosahedron m_Icosahedron; ///< Р’РїРёСЃР°РЅРЅС‹Р№ РёРєРѕСЃР°СЌРґСЂ
+	AcGePoint3d m_ptBottomFaceCenter; ///< РўРѕС‡РєР° РЅР° РЅРёР¶РЅРµР№ РіСЂР°РЅРµ С‚РµС‚СЂР°СЌРґСЂР° РґР»СЏ РїРµСЂРµРјРµС‰РµРЅРёСЏ С„РёРіСѓСЂС‹
+	//AcGeMatrix3d m_transform; ///< РњР°С‚СЂРёС†Р° РїСЂРµРѕР±СЂР°Р·РѕРІР°РЅРёР№ (TRS matrix)
 	//AcGeMatrix3d m_translation;
 	//AcGeMatrix3d m_scaling;
 	//AcGeMatrix3d m_rotation;

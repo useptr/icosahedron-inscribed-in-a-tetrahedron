@@ -1,4 +1,4 @@
-// (C) Copyright 2002-2007 by Autodesk, Inc. 
+п»ї// (C) Copyright 2002-2007 by Autodesk, Inc. 
 //
 // Permission to use, copy, modify, and distribute this software in
 // object code form for any purpose and without fee is hereby granted, 
@@ -58,7 +58,7 @@
 //----- Note: Uncomment the DLLIMPEXP symbol below if you wish exporting
 //----- your class to other ARX/DBX modules
 /*!
-	\brief Отслеживает операции масштабирования для экземпляров класса ADSKCustomPyramid
+	\brief РћС‚СЃР»РµР¶РёРІР°РµС‚ РѕРїРµСЂР°С†РёРё РјР°СЃС€С‚Р°Р±РёСЂРѕРІР°РЅРёСЏ РґР»СЏ СЌРєР·РµРјРїР»СЏСЂРѕРІ РєР»Р°СЃСЃР° ADSKCustomPyramid
 */
 class /*DLLIMPEXP*/ ADSKEditorReactor : public AcEditorReactor {
 

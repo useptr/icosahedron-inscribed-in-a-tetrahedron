@@ -1,14 +1,14 @@
-#pragma once
+Ôªø#pragma once
 	/*!
-		  \brief ¬ÓÁ‚‡˘‡ÂÚ ÒÎÛ˜‡ÈÌ˚È ˆ‚ÂÚ ÚËÔ‡ short ‚ ‰Ë‡ÔÓÁÓÌÂ ÓÚ 1 ‰Ó 6
+		  \brief –í–æ–∑–≤—Ä–∞—â–∞–µ—Ç —Å–ª—É—á–∞–π–Ω—ã–π —Ü–≤–µ—Ç —Ç–∏–ø–∞ short –≤ –¥–∏–∞–ø–æ–∑–æ–Ω–µ –æ—Ç 1 –¥–æ 6
 		  \details  ObjectARX Introductory Concepts -> Entities -> Common Entity Properties -> Entity Color
-                    https://help.autodesk.com/view/OARX/2022/ENU/?guid=GUID-4A760CC5-F3CB-4EDD-B049-F62EB588A471
-                    1 Red
-                    2 Yellow
-                    3 Green
-                    4 Cyan
-                    5 Blue
-                    6 Magenta
-		  \return ÷‚ÂÚ
+            https://help.autodesk.com/view/OARX/2022/ENU/?guid=GUID-4A760CC5-F3CB-4EDD-B049-F62EB588A471
+            1 Red
+            2 Yellow
+            3 Green
+            4 Cyan
+            5 Blue
+            6 Magenta
+		  \return –¶–≤–µ—Ç
 	*/
 short getRandomColor();
