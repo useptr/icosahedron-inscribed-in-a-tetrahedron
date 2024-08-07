@@ -102,7 +102,12 @@ public:
 	virtual void RegisterServerComponents () {
 	}
     static void ADSKMyGroup_TETRAHEDRON(void) {
-        AcDbBlockTableRecordPointer pSpaceBlockTableRecord(acdbHostApplicationServices()->workingDatabase()->currentSpaceId(), AcDb::kForWrite);
+        auto* pDB = acdbHostApplicationServices()->workingDatabase();
+        if (nullptr == pDB) {
+            acutPrintf(_T("\nERROR: Cannot obtain workingDatabase"));
+            return;
+        }
+        AcDbBlockTableRecordPointer pSpaceBlockTableRecord(pDB->currentSpaceId(), AcDb::kForWrite);
         if (pSpaceBlockTableRecord.openStatus() != Acad::eOk) {
             acutPrintf(_T("\nERROR: Cannot open BlockTableRecord for write"));
             return;
@@ -116,7 +121,12 @@ public:
         }
     }
     static void ADSKMyGroup_ICOSAHEDRON(void) {
-        AcDbBlockTableRecordPointer pSpaceBlockTableRecord(acdbHostApplicationServices()->workingDatabase()->currentSpaceId(), AcDb::kForWrite);
+        auto* pDB = acdbHostApplicationServices()->workingDatabase();
+        if (nullptr == pDB) {
+            acutPrintf(_T("\nERROR: Cannot obtain workingDatabase"));
+            return;
+        }
+        AcDbBlockTableRecordPointer pSpaceBlockTableRecord(pDB->currentSpaceId(), AcDb::kForWrite);
         if (pSpaceBlockTableRecord.openStatus() != Acad::eOk) {
             acutPrintf(_T("\nERROR: Cannot open BlockTableRecord for write"));
             return;
@@ -131,7 +141,13 @@ public:
         }
     }
     static void ADSKMyGroup_CREATE(void) {
-        AcDbBlockTableRecordPointer pSpaceBlockTableRecord(acdbHostApplicationServices()->workingDatabase()->currentSpaceId(), AcDb::kForWrite);
+        
+        auto* pDB = acdbHostApplicationServices()->workingDatabase();
+        if (nullptr == pDB) {
+            acutPrintf(_T("\nERROR: Cannot obtain workingDatabase"));
+            return;
+        }
+        AcDbBlockTableRecordPointer pSpaceBlockTableRecord(pDB->currentSpaceId(), AcDb::kForWrite);
         if (pSpaceBlockTableRecord.openStatus() != Acad::eOk) {
             acutPrintf(_T("\nERROR: Cannot open BlockTableRecord for write"));
             return;
