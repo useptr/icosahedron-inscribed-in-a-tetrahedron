@@ -44,23 +44,6 @@ ADSKPOLYHEDRONSAPP
 )
 
 //-----------------------------------------------------------------------------
-
-
-//ADSKIcosahedron::ADSKIcosahedron(const ADSKIcosahedron& other)
-//{
-//	m_dEdgeLength = other.m_dEdgeLength;
-//	m_aVertices = other.m_aVertices;
-//}
-//
-//ADSKIcosahedron& ADSKIcosahedron::operator=(const ADSKIcosahedron& other)
-//{
-//	if (this == std::addressof(other))
-//		return *this;
-//	m_dEdgeLength = other.m_dEdgeLength;
-//	m_aVertices = other.m_aVertices;
-//	return *this;
-//}
-
 ADSKIcosahedron::ADSKIcosahedron() : ADSKIcosahedron(AcGePoint3d::kOrigin, 1.0) {
 }
 
@@ -124,71 +107,6 @@ ADSKIcosahedron::~ADSKIcosahedron () {
 //	return (pFiler->filerStatus ()) ;
 //}
 //
-////- Dxf Filing protocol
-//Acad::ErrorStatus ADSKIcosahedron::dxfOutFields (AcDbDxfFiler *pFiler) const {
-//	assertReadEnabled () ;
-//	//----- Save parent class information first.
-//	Acad::ErrorStatus es =AcDbEntity::dxfOutFields (pFiler) ;
-//	if ( es != Acad::eOk )
-//		return (es) ;
-//	es =pFiler->writeItem (AcDb::kDxfSubclass, _RXST("ADSKIcosahedron")) ;
-//	if ( es != Acad::eOk )
-//		return (es) ;
-//	//----- Object version number needs to be saved first
-//	if ( (es =pFiler->writeUInt32 (kDxfInt32, ADSKIcosahedron::kCurrentVersionNumber)) != Acad::eOk )
-//		return (es) ;
-//	//----- Output params
-//	pFiler->writeItem(AcDb::kDxfReal + 1, m_dEdgeLength);
-//
-//	return (pFiler->filerStatus ()) ;
-//}
-//
-//Acad::ErrorStatus ADSKIcosahedron::dxfInFields (AcDbDxfFiler *pFiler) {
-//	assertWriteEnabled () ;
-//	//----- Read parent class information first.
-//	Acad::ErrorStatus es =AcDbEntity::dxfInFields (pFiler) ;
-//	if ( es != Acad::eOk || !pFiler->atSubclassData (_RXST("ADSKIcosahedron")) )
-//		return (pFiler->filerStatus ()) ;
-//	//----- Object version number needs to be read first
-//	struct resbuf rb ;
-//	pFiler->readItem (&rb) ;
-//	if ( rb.restype != AcDb::kDxfInt32 ) {
-//		pFiler->pushBackItem () ;
-//		pFiler->setError (Acad::eInvalidDxfCode, _RXST("\nError: expected group code %d (version #)"), AcDb::kDxfInt32) ;
-//		return (pFiler->filerStatus ()) ;
-//	}
-//	Adesk::UInt32 version =(Adesk::UInt32)rb.resval.rlong ;
-//	if ( version > ADSKIcosahedron::kCurrentVersionNumber )
-//		return (Acad::eMakeMeProxy) ;
-//	//- Uncomment the 2 following lines if your current object implementation cannot
-//	//- support previous version of that object.
-//	//if ( version < ADSKIcosahedron::kCurrentVersionNumber )
-//	//	return (Acad::eMakeMeProxy) ;
-//	//----- Read params in non order dependant manner
-//
-//	while ( es == Acad::eOk && (es =pFiler->readResBuf (&rb)) == Acad::eOk ) {
-//		switch ( rb.restype ) {
-//			case  AcDb::kDxfReal + 1:
-//				m_dEdgeLength = rb.resval.rreal;
-//			break;
-//
-//			default:
-//				//----- An unrecognized group. Push it back so that the subclass can read it again.
-//				pFiler->pushBackItem () ;
-//				es =Acad::eEndOfFile ;
-//				break ;
-//		}
-//	}
-//
-//	//----- At this point the es variable must contain eEndOfFile
-//	//----- - either from readResBuf() or from pushback. If not,
-//	//----- it indicates that an error happened and we should
-//	//----- return immediately.
-//	if ( es != Acad::eEndOfFile )
-//		return (Acad::eInvalidResBuf) ;
-//
-//	return (pFiler->filerStatus ()) ;
-//}
 
 //-----------------------------------------------------------------------------
 //----- AcDbEntity protocols
@@ -243,63 +161,6 @@ Acad::ErrorStatus ADSKIcosahedron::subTransformBy(const AcGeMatrix3d& xform)
 	
 	return Acad::eOk;
 }
-
-	//- Osnap points protocol
-//Acad::ErrorStatus ADSKIcosahedron::subGetOsnapPoints (
-//	AcDb::OsnapMode osnapMode,
-//	Adesk::GsMarker gsSelectionMark,
-//	const AcGePoint3d &pickPoint,
-//	const AcGePoint3d &lastPoint,
-//	const AcGeMatrix3d &viewXform,
-//	AcGePoint3dArray &snapPoints,
-//	AcDbIntArray &geomIds) const
-//{
-//	assertReadEnabled () ;
-//	return (AcDbEntity::subGetOsnapPoints (osnapMode, gsSelectionMark, pickPoint, lastPoint, viewXform, snapPoints, geomIds)) ;
-//}
-//
-//Acad::ErrorStatus ADSKIcosahedron::subGetOsnapPoints (
-//	AcDb::OsnapMode osnapMode,
-//	Adesk::GsMarker gsSelectionMark,
-//	const AcGePoint3d &pickPoint,
-//	const AcGePoint3d &lastPoint,
-//	const AcGeMatrix3d &viewXform,
-//	AcGePoint3dArray &snapPoints,
-//	AcDbIntArray &geomIds,
-//	const AcGeMatrix3d &insertionMat) const
-//{
-//	assertReadEnabled () ;
-//	return (AcDbEntity::subGetOsnapPoints (osnapMode, gsSelectionMark, pickPoint, lastPoint, viewXform, snapPoints, geomIds, insertionMat)) ;
-//}
-
-//- Grip points protocol
-
-//Acad::ErrorStatus ADSKIcosahedron::subGetGripPoints (
-//	AcDbGripDataPtrArray &grips, const double curViewUnitSize, const int gripSize, 
-//	const AcGeVector3d &curViewDir, const int bitflags
-//) const {
-//	assertReadEnabled () ;
-//	return Acad::eOk;
-//	//----- If you return eNotImplemented here, that will force AutoCAD to call
-//	//----- the older getGripPoints() implementation. The call below may return
-//	//----- eNotImplemented depending of your base class.
-//	//return (AcDbEntity::subGetGripPoints (grips, curViewUnitSize, gripSize, curViewDir, bitflags)) ;
-//}
-//
-//Acad::ErrorStatus ADSKIcosahedron::subMoveGripPointsAt (
-//	const AcDbVoidPtrArray &gripAppData, const AcGeVector3d &offset,
-//	const int bitflags
-//) {
-//	assertWriteEnabled () ;
-//	for (auto& vertex : m_aVertices) {
-//		vertex += offset;
-//	}
-//	//----- If you return eNotImplemented here, that will force AutoCAD to call
-//	//----- the older getGripPoints() implementation. The call below may return
-//	//----- eNotImplemented depending of your base class.
-//	//return (AcDbEntity::subMoveGripPointsAt (gripAppData, offset, bitflags)) ;
-//	return Acad::eOk;
-//}
 
 double ADSKIcosahedron::volume() const noexcept
 {

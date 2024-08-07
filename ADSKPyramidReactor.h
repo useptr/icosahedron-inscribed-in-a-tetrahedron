@@ -54,6 +54,9 @@
 //-----------------------------------------------------------------------------
 //----- Note: Uncomment the DLLIMPEXP symbol below if you wish exporting
 //----- your class to other ARX/DBX modules
+/*!
+	\deteils Если экземпляр ADSKCustomPyramid открывают для записи, при команде редактора для изменения масштабирования, добавляет objectId этого экземпляра в список m_aChangedObjects класса документа DocVars
+*/
 class /*DLLIMPEXP*/ ADSKPyramidReactor : public AcDbObjectReactor {
 
 public:

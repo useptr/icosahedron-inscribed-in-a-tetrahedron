@@ -139,10 +139,6 @@ Adesk::Boolean ADSKPyramidJig::update () {
 	//switch ( mCurrentInputLevel+1 ) {
 	//	case 1:
 	//		// TODO : update your entity for this input
-	//		//mpEntity->setCenter (mInputPoints [mCurrentInputLevel]) ;
-	//		//mpEntity->setEdgeLength(mdEdgeLenght);
-	//		break ;
-
 	//	default:
 	//		break ;
 	//}

@@ -57,6 +57,9 @@
 //-----------------------------------------------------------------------------
 //----- Note: Uncomment the DLLIMPEXP symbol below if you wish exporting
 //----- your class to other ARX/DBX modules
+/*!
+	\brief Отслеживает операции масштабирования для экземпляров класса ADSKCustomPyramid
+*/
 class /*DLLIMPEXP*/ ADSKEditorReactor : public AcEditorReactor {
 
 protected:

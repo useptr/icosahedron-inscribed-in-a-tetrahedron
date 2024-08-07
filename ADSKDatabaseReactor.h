@@ -50,6 +50,9 @@
 //-----------------------------------------------------------------------------
 //----- Note: Uncomment the DLLIMPEXP symbol below if you wish exporting
 //----- your class to other ARX/DBX modules
+/*!
+	\brief При добавлении в базу данных нового экзампляра ADSKCustomPyramid добавляет к нему глобальный реактор - g_pPyramidReactor
+*/
 class /*DLLIMPEXP*/ ADSKDatabaseReactor : public AcDbDatabaseReactor {
 
 public:

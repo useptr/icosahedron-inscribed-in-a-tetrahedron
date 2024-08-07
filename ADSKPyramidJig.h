@@ -48,11 +48,11 @@
 //};
 
 
-
+/*!
+	\brief Позволяет создать экземпляр класса ADSKCustomPyramid с заданным центром координат и длиной граней
+*/
 class ADSKPyramidJig : public AcEdJig {
-
 private:
-
 	//- Member variables
 	AcGePoint3d mptCenter;
 	double mdEdgeLenght;

@@ -67,18 +67,12 @@ public:
 	friend class ADSKCustomPyramid;
 	ADSKIcosahedron () ;
 	ADSKIcosahedron(AcGePoint3d aptCenter, double adEdgeLength);
-	//ADSKIcosahedron(const ADSKIcosahedron& other);
-	//ADSKIcosahedron& operator=(const ADSKIcosahedron& other);
 	virtual ~ADSKIcosahedron () ;
 
 	//----- AcDbObject protocols
 	//- Dwg Filing protocol
 	//virtual Acad::ErrorStatus dwgOutFields (AcDbDwgFiler *pFiler) const ;
 	//virtual Acad::ErrorStatus dwgInFields (AcDbDwgFiler *pFiler) ;
-
-	////- Dxf Filing protocol
-	//virtual Acad::ErrorStatus dxfOutFields (AcDbDxfFiler *pFiler) const ;
-	//virtual Acad::ErrorStatus dxfInFields (AcDbDxfFiler *pFiler) ;
 
 	//----- AcDbEntity protocols
 	//- Graphics protocol
@@ -88,30 +82,6 @@ protected:
 	virtual Acad::ErrorStatus subTransformBy(const AcGeMatrix3d& xform);
 	//- Osnap points protocol
 public:
-	/*virtual Acad::ErrorStatus subGetOsnapPoints (
-		AcDb::OsnapMode osnapMode,
-		Adesk::GsMarker gsSelectionMark,
-		const AcGePoint3d &pickPoint,
-		const AcGePoint3d &lastPoint,
-		const AcGeMatrix3d &viewXform,
-		AcGePoint3dArray &snapPoints,
-		AcDbIntArray &geomIds) const ;
-	virtual Acad::ErrorStatus subGetOsnapPoints (
-		AcDb::OsnapMode osnapMode,
-		Adesk::GsMarker gsSelectionMark,
-		const AcGePoint3d &pickPoint,
-		const AcGePoint3d &lastPoint,
-		const AcGeMatrix3d &viewXform,
-		AcGePoint3dArray &snapPoints,
-		AcDbIntArray &geomIds,
-		const AcGeMatrix3d &insertionMat) const ;*/
-
-	//- Grip points protocol
-	/*virtual Acad::ErrorStatus subGetGripPoints (
-		AcDbGripDataPtrArray &grips, const double curViewUnitSize, const int gripSize, 
-		const AcGeVector3d &curViewDir, const int bitflags) const ;
-	virtual Acad::ErrorStatus subMoveGripPointsAt (const AcDbVoidPtrArray &gripAppData, const AcGeVector3d &offset, const int bitflags) ;*/
-
 	// for Icosahedron
 	/*!
 		  \brief Вычисляет длину ребра икосаэдра по радиусу описанной сферы 

@@ -68,8 +68,6 @@ protected:
 public:
 	friend class ADSKCustomPyramid;
 	ADSKTetrahedron () ;
-	//ADSKTetrahedron(const ADSKTetrahedron& other);
-	//ADSKTetrahedron& operator=(const ADSKTetrahedron& other);
 	ADSKTetrahedron(AcGePoint3d aptCenter, double adEdgeLength);
 	virtual ~ADSKTetrahedron () ;
 
@@ -77,10 +75,6 @@ public:
 	//- Dwg Filing protocol
 	/*virtual Acad::ErrorStatus dwgOutFields (AcDbDwgFiler *pFiler) const ;
 	virtual Acad::ErrorStatus dwgInFields (AcDbDwgFiler *pFiler) ;*/
-
-	////- Dxf Filing protocol
-	//virtual Acad::ErrorStatus dxfOutFields (AcDbDxfFiler *pFiler) const ;
-	//virtual Acad::ErrorStatus dxfInFields (AcDbDxfFiler *pFiler) ;
 
 	//----- AcDbEntity protocols
 	//- Graphics protocol
@@ -90,44 +84,19 @@ protected:
 	virtual Acad::ErrorStatus   subTransformBy(const AcGeMatrix3d& xform);
 	//- Osnap points protocol
 public:
-	/*virtual Acad::ErrorStatus subGetOsnapPoints (
-		AcDb::OsnapMode osnapMode,
-		Adesk::GsMarker gsSelectionMark,
-		const AcGePoint3d &pickPoint,
-		const AcGePoint3d &lastPoint,
-		const AcGeMatrix3d &viewXform,
-		AcGePoint3dArray &snapPoints,
-		AcDbIntArray &geomIds) const ;
-	virtual Acad::ErrorStatus subGetOsnapPoints (
-		AcDb::OsnapMode osnapMode,
-		Adesk::GsMarker gsSelectionMark,
-		const AcGePoint3d &pickPoint,
-		const AcGePoint3d &lastPoint,
-		const AcGeMatrix3d &viewXform,
-		AcGePoint3dArray &snapPoints,
-		AcDbIntArray &geomIds,
-		const AcGeMatrix3d &insertionMat) const ;*/
-
-	//- Grip points protocol
-	/*virtual Acad::ErrorStatus subGetGripPoints (
-		AcDbGripDataPtrArray &grips, const double curViewUnitSize, const int gripSize, 
-		const AcGeVector3d &curViewDir, const int bitflags) const ;
-	virtual Acad::ErrorStatus subMoveGripPointsAt (const AcDbVoidPtrArray &gripAppData, const AcGeVector3d &offset, const int bitflags) ;*/
-
-	// for  Tetrahedron
-	AcGePoint3d pointAt(Adesk::Int32 ai) const;
+	// for Tetrahedron
 	/*!
 		  \brief Вычисляет радиус вписанной сферы тетраэдра по длине ребра тетраэдра
 		  \param[in] adEdgeLenght длина ребра тетраэдра
 		  \return Радиус вписанной сферы тетраэдра
 	*/
 	static double inradius(double adEdgeLength) noexcept;
+	double inradius() const noexcept;
 	/*!
 		  \brief Вычисляет объём тетраэдра
 		  \details https://en.wikipedia.org/wiki/Tetrahedron#Measurement
 		  \return Объём тетраэдра
 	*/
-	double inradius() const noexcept;
 	double volume() const noexcept;
 	static double height(double adEdgeLenght) noexcept;
 	double height() const noexcept;
@@ -136,7 +105,6 @@ public:
 	double edgeLength() const;
 	Acad::ErrorStatus setEdgeLength(double adEdgeLenght);
 	const AcGePoint3dArray& vertices() const;
-	Acad::ErrorStatus setVertexAt(int aI, AcGePoint3d& arPt);
 private:
 	void updateEdgeLength();
 	void calculateVertices() noexcept;

@@ -92,14 +92,8 @@ void ADSKEditorReactor::commandEnded(const ACHAR* aszCmdStr)
 		auto* pTetrahedronWithInscribedIcosahedron = ADSKCustomPyramid::cast(pEntity);
 		if (nullptr == pTetrahedronWithInscribedIcosahedron)
 			continue;
-
-		/*AcDbObjectPointer<ADSKTetrahedronWithInscribedIcosahedron> pTetrahedronWithInscribedIcosahedron(objId, AcDb::kForWrite);
-		if (pTetrahedronWithInscribedIcosahedro.openStatus() != Acad::eOk)
-			continue;*/
-
 		
 		pTetrahedronWithInscribedIcosahedron->setFaceOfIcosahedronToRandomColor();
-		acutPrintf(_T("SUCCESS!!\n\n\n\n\n\n\n"));
 	}
 
 }

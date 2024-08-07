@@ -35,7 +35,6 @@ ADSKPyramidReactor::ADSKPyramidReactor () : AcDbObjectReactor() {
 //-----------------------------------------------------------------------------
 ADSKPyramidReactor::~ADSKPyramidReactor () {
 }
-
 void ADSKPyramidReactor::openedForModify(const AcDbObject* pDbObj)
 {
 	if (DocVars.docData().m_bDoRepainting)
