@@ -30,41 +30,41 @@ extern std::unique_ptr <ADSKPyramidReactor> g_pPyramidReactor;
 ACRX_CONS_DEFINE_MEMBERS(ADSKDatabaseReactor, AcDbDatabaseReactor, 1)
 
 //-----------------------------------------------------------------------------
-ADSKDatabaseReactor::ADSKDatabaseReactor (AcDbDatabase *pDb) : AcDbDatabaseReactor(), mpDatabase(pDb) {
-	if ( pDb )
-		pDb->addReactor (this) ;
+ADSKDatabaseReactor::ADSKDatabaseReactor(AcDbDatabase* pDb) : AcDbDatabaseReactor(), mpDatabase(pDb) {
+	if (pDb)
+		pDb->addReactor(this);
 }
 
 //-----------------------------------------------------------------------------
-ADSKDatabaseReactor::~ADSKDatabaseReactor () {
-	Detach () ;
+ADSKDatabaseReactor::~ADSKDatabaseReactor() {
+	Detach();
 }
 
 //-----------------------------------------------------------------------------
-void ADSKDatabaseReactor::Attach (AcDbDatabase *pDb) {
-	Detach () ;
-	if ( mpDatabase == NULL ) {
-		if ( (mpDatabase =pDb) != NULL )
-			pDb->addReactor (this) ;
+void ADSKDatabaseReactor::Attach(AcDbDatabase* pDb) {
+	Detach();
+	if (mpDatabase == NULL) {
+		if ((mpDatabase = pDb) != NULL)
+			pDb->addReactor(this);
 	}
 }
 
-void ADSKDatabaseReactor::Detach () {
-	if ( mpDatabase ) {
-		mpDatabase->removeReactor (this) ;
-		mpDatabase =NULL ;
+void ADSKDatabaseReactor::Detach() {
+	if (mpDatabase) {
+		mpDatabase->removeReactor(this);
+		mpDatabase = NULL;
 	}
 }
 
-AcDbDatabase *ADSKDatabaseReactor::Subject () const {
-	return (mpDatabase) ;
+AcDbDatabase* ADSKDatabaseReactor::Subject() const {
+	return (mpDatabase);
 }
 
-bool ADSKDatabaseReactor::IsAttached () const {
-	return (mpDatabase != NULL) ;
+bool ADSKDatabaseReactor::IsAttached() const {
+	return (mpDatabase != NULL);
 }
 
-void ADSKDatabaseReactor::objectAppended(const AcDbDatabase* , const AcDbObject* apDbObj)
+void ADSKDatabaseReactor::objectAppended(const AcDbDatabase*, const AcDbObject* apDbObj)
 {
 	auto* pEntity = ADSKCustomPyramid::cast(apDbObj);
 	if (nullptr == pEntity)

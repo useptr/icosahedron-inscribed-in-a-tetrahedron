@@ -161,6 +161,7 @@ private:
 		  \brief Вычисляет координаты центра вписанного икосаэдра
 		  \return координаты центра вписанного икосаэдра
 	*/
+	//static AcGePoint3d icosahedronCenter(AcGePoint3d aptTetrahedronCenter) noexcept;
 	AcGePoint3d icosahedronCenter() const noexcept;
 	/*!
 		  \brief Вычисляет длину ребра вписанного икосаэдра по длине ребра тетраэдра
@@ -168,7 +169,7 @@ private:
 		  \return Длину ребра вписанного икосаэдра тетраэдра
 	*/
 	double icosahedronEdgeLength(double adTetrahedronEdgeLenght) const noexcept;
-	
+
 	ADSKTetrahedron m_Tetrahedron; ///< Тетраэдр
 	ADSKIcosahedron m_Icosahedron; ///< Вписанный икосаэдр
 	AcGePoint3d m_ptBottomFaceCenter; ///< Точка на нижней гране тетраэдра для перемещения фигуры

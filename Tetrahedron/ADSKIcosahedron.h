@@ -52,6 +52,7 @@
 #include "dbmain.h"
 #include "Tchar.h"
 #include "AcGiFaceDataManager.h"
+#include "ADSKTetrahedron.h"
 #define ASDKICOSAHEDRON_DBXSERVICE _T("ASDKICOSAHEDRON_DBXSERVICE")
 //-----------------------------------------------------------------------------
 class ADSKCustomPyramid;
@@ -61,30 +62,36 @@ public:
 	ACRX_DECLARE_MEMBERS(ADSKIcosahedron);
 
 protected:
-	static Adesk::UInt32 kCurrentVersionNumber ;
+	static Adesk::UInt32 kCurrentVersionNumber;
 
 public:
 	friend class ADSKCustomPyramid;
-	ADSKIcosahedron () ;
+	ADSKIcosahedron();
 	ADSKIcosahedron(AcGePoint3d aptCenter, double adEdgeLength);
-	virtual ~ADSKIcosahedron () ;
+	virtual ~ADSKIcosahedron();
 
 	//----- AcDbObject protocols
 	//- Dwg Filing protocol
-	//virtual Acad::ErrorStatus dwgOutFields (AcDbDwgFiler *pFiler) const ;
-	//virtual Acad::ErrorStatus dwgInFields (AcDbDwgFiler *pFiler) ;
+	virtual Acad::ErrorStatus dwgOutFields(AcDbDwgFiler* pFiler) const;
+	virtual Acad::ErrorStatus dwgInFields(AcDbDwgFiler* pFiler);
 
 	//----- AcDbEntity protocols
 	//- Graphics protocol
 protected:
-	virtual Adesk::Boolean subWorldDraw (AcGiWorldDraw *mode) ;
+	virtual Adesk::Boolean subWorldDraw(AcGiWorldDraw* mode);
 	//virtual Adesk::UInt32 subSetAttributes (AcGiDrawableTraits *traits) ;
 	virtual Acad::ErrorStatus subTransformBy(const AcGeMatrix3d& xform);
 	//- Osnap points protocol
 public:
+	//- Grip points protocol
+	virtual Acad::ErrorStatus subGetGripPoints(
+		AcDbGripDataPtrArray& grips, const double curViewUnitSize, const int gripSize,
+		const AcGeVector3d& curViewDir, const int bitflags) const;
+	virtual Acad::ErrorStatus subMoveGripPointsAt(const AcDbVoidPtrArray& gripAppData, const AcGeVector3d& offset, const int bitflags);
+
 	// for Icosahedron
 	/*!
-		  \brief Вычисляет длину ребра икосаэдра по радиусу описанной сферы 
+		  \brief Вычисляет длину ребра икосаэдра по радиусу описанной сферы
 		  \param[in] adCircumsphereRadius радиус описанной сферы икосаэдра
 		  \return Длину ребра икосаэдра
 	*/
@@ -102,7 +109,15 @@ public:
 	*/
 	double volume() const noexcept;
 	const AcGePoint3dArray& vertices() const;
+	/*!
+			\brief Вычисляет координаты вершин вписанного в тетраэдра икосаэдра по координатам тетраэдра
+			\details Чтобы получить координаты вершин вписанного икосаэдра из тетраэдра, нужно разделить его ребра на золотое сечение. Полученные точки сметрично расположены от каждой вершины тетраэдра. В каждом треугольнике тетраэдра строятся 3 цевиана (от каждой вершины до точки разделившей сторону на золотое сечение). Пересечение цевианов дает нам грань икосаэдра. Source: https://veraviana.net/enclosing/inside-the-tetrahedron/.
+			\throw std::invalid_argument в случае некоректного тетраэдра (неправильное количество или расположение вершин)
+	*/
+	void calculateVertices(ADSKTetrahedron& arTetrahedron);
 private:
+	static AcGePoint3dArray divideByGoldenRatio(const AcGePoint3dArray& arTetrahedronVertices, const std::vector<std::pair<int, int>>& arEdgesPointsIndexes);
+	static AcGePoint3d divideByGoldenRatio(AcGePoint3d& aptA, AcGePoint3d& aptB);
 	/*!
 		  \details Обновляет длину ребер тетраэдра, вызывается в методе subTransformBy
 	*/
@@ -111,12 +126,21 @@ private:
 		  \details Вычисляет координаты точек икосаэдра по длине ребра граней и координате центра фигуры
 	*/
 	void calculateVertices() noexcept;
+
 	double m_dEdgeLength;
 	AcGePoint3d m_ptCenter;
 	AcGePoint3dArray m_aVertices;
 	AcGiFaceDataManager m_faceDataManager;
-} ;
+};
 
 #ifdef TETRAHEDRON_MODULE
 ACDB_REGISTER_OBJECT_ENTRY_AUTO(ADSKIcosahedron)
 #endif
+
+//#if _DEBUG
+// namespace {
+//static_assert(adEdgeLenght > 0, "Edge lenght must be positive");
+//static_assert(adCircumsphereRadius > 0, "Circumradius must be positive");
+//static_assert(aI > 0 && aI < 20, "Face index must be in range [0, 20)");
+// } // namespace
+//#endif // !_DEBUG

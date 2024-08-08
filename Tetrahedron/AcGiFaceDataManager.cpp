@@ -16,7 +16,6 @@ void AcGiFaceDataManager::setColors(std::vector<short> aColors)
 
 void AcGiFaceDataManager::setColor(size_t aI, short anColor)
 {
-	//static_assert(aI < 20);
 	m_pColors.at(aI) = anColor;
 }
 

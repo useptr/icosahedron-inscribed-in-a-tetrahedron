@@ -60,14 +60,14 @@
 class /*DLLIMPEXP*/ ADSKPyramidReactor : public AcDbObjectReactor {
 
 public:
-	ACRX_DECLARE_MEMBERS(ADSKPyramidReactor) ;
+	ACRX_DECLARE_MEMBERS(ADSKPyramidReactor);
 
 public:
-	ADSKPyramidReactor () ;
-	virtual ~ADSKPyramidReactor () ;
+	ADSKPyramidReactor();
+	virtual ~ADSKPyramidReactor();
 
 	void openedForModify(const AcDbObject* pDbObj) override;
-} ;
+};
 
 #ifdef ICOSAHEDRONINSCRIBEDINATETRAHEDRON_MODULE
 ACDB_REGISTER_OBJECT_ENTRY_AUTO(ADSKTetrahedronWithInscribedIcosahedronReactor)

@@ -26,46 +26,46 @@
 #include "ADSKEditorReactor.h"
 #include "Tchar.h"
 //-----------------------------------------------------------------------------
-ADSKEditorReactor::ADSKEditorReactor (const bool autoInitAndRelease) : AcEditorReactor(), mbAutoInitAndRelease(autoInitAndRelease) {
-	if ( autoInitAndRelease ) {
-		if ( acedEditor )
-			acedEditor->addReactor (this) ;
+ADSKEditorReactor::ADSKEditorReactor(const bool autoInitAndRelease) : AcEditorReactor(), mbAutoInitAndRelease(autoInitAndRelease) {
+	if (autoInitAndRelease) {
+		if (acedEditor)
+			acedEditor->addReactor(this);
 		else
-			mbAutoInitAndRelease =false ;
+			mbAutoInitAndRelease = false;
 	}
 }
 
 //-----------------------------------------------------------------------------
-ADSKEditorReactor::~ADSKEditorReactor () {
-	Detach () ;
+ADSKEditorReactor::~ADSKEditorReactor() {
+	Detach();
 }
 
 //-----------------------------------------------------------------------------
-void ADSKEditorReactor::Attach () {
-	Detach () ;
-	if ( !mbAutoInitAndRelease ) {
-		if ( acedEditor ) {
-			acedEditor->addReactor (this) ;
-			mbAutoInitAndRelease =true ;
+void ADSKEditorReactor::Attach() {
+	Detach();
+	if (!mbAutoInitAndRelease) {
+		if (acedEditor) {
+			acedEditor->addReactor(this);
+			mbAutoInitAndRelease = true;
 		}
 	}
 }
 
-void ADSKEditorReactor::Detach () {
-	if ( mbAutoInitAndRelease ) {
-		if ( acedEditor ) {
-			acedEditor->removeReactor (this) ;
-			mbAutoInitAndRelease =false ;
+void ADSKEditorReactor::Detach() {
+	if (mbAutoInitAndRelease) {
+		if (acedEditor) {
+			acedEditor->removeReactor(this);
+			mbAutoInitAndRelease = false;
 		}
 	}
 }
 
-AcEditor *ADSKEditorReactor::Subject () const {
-	return (acedEditor) ;
+AcEditor* ADSKEditorReactor::Subject() const {
+	return (acedEditor);
 }
 
-bool ADSKEditorReactor::IsAttached () const {
-	return (mbAutoInitAndRelease) ;
+bool ADSKEditorReactor::IsAttached() const {
+	return (mbAutoInitAndRelease);
 }
 void ADSKEditorReactor::commandWillStart(const ACHAR* aszCmdStr)
 {
@@ -92,7 +92,7 @@ void ADSKEditorReactor::commandEnded(const ACHAR* aszCmdStr)
 		auto* pTetrahedronWithInscribedIcosahedron = ADSKCustomPyramid::cast(pEntity);
 		if (nullptr == pTetrahedronWithInscribedIcosahedron)
 			continue;
-		
+
 		pTetrahedronWithInscribedIcosahedron->setFaceOfIcosahedronToRandomColor();
 	}
 

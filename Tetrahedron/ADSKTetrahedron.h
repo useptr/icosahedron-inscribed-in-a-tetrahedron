@@ -54,36 +54,42 @@
 //-----------------------------------------------------------------------------
 #include "dbmain.h"
 #include "Tchar.h"
+
 #define ASDKTETRAHEDRON_DBXSERVICE _T("ASDKTETRAHEDRON_DBXSERVICE")
 //-----------------------------------------------------------------------------
 class ADSKCustomPyramid;
 class DLLIMPEXP ADSKTetrahedron : public AcDbEntity {
 
 public:
-	ACRX_DECLARE_MEMBERS(ADSKTetrahedron) ;
+	ACRX_DECLARE_MEMBERS(ADSKTetrahedron);
 
 protected:
-	static Adesk::UInt32 kCurrentVersionNumber ;
+	static Adesk::UInt32 kCurrentVersionNumber;
 
 public:
 	friend class ADSKCustomPyramid;
-	ADSKTetrahedron () ;
+	ADSKTetrahedron();
 	ADSKTetrahedron(AcGePoint3d aptCenter, double adEdgeLength);
-	virtual ~ADSKTetrahedron () ;
+	virtual ~ADSKTetrahedron();
 
 	//----- AcDbObject protocols
 	//- Dwg Filing protocol
-	/*virtual Acad::ErrorStatus dwgOutFields (AcDbDwgFiler *pFiler) const ;
-	virtual Acad::ErrorStatus dwgInFields (AcDbDwgFiler *pFiler) ;*/
+	virtual Acad::ErrorStatus dwgOutFields(AcDbDwgFiler* pFiler) const;
+	virtual Acad::ErrorStatus dwgInFields(AcDbDwgFiler* pFiler);
 
 	//----- AcDbEntity protocols
 	//- Graphics protocol
 protected:
-	virtual Adesk::Boolean subWorldDraw (AcGiWorldDraw *mode) ;
+	virtual Adesk::Boolean subWorldDraw(AcGiWorldDraw* mode);
 	//virtual Adesk::UInt32 subSetAttributes (AcGiDrawableTraits *traits) ;
 	virtual Acad::ErrorStatus   subTransformBy(const AcGeMatrix3d& xform);
 	//- Osnap points protocol
 public:
+	//- Grip points protocol
+	virtual Acad::ErrorStatus subGetGripPoints(
+		AcDbGripDataPtrArray& grips, const double curViewUnitSize, const int gripSize,
+		const AcGeVector3d& curViewDir, const int bitflags) const;
+	virtual Acad::ErrorStatus subMoveGripPointsAt(const AcDbVoidPtrArray& gripAppData, const AcGeVector3d& offset, const int bitflags);
 	// for Tetrahedron
 	/*!
 		  \brief Вычисляет радиус вписанной сферы тетраэдра по длине ребра тетраэдра
@@ -91,6 +97,7 @@ public:
 		  \return Радиус вписанной сферы тетраэдра
 	*/
 	static double inradius(double adEdgeLength) noexcept;
+	static double midradius(double adEdgeLength) noexcept;
 	double inradius() const noexcept;
 	/*!
 		  \brief Вычисляет объём тетраэдра
@@ -101,7 +108,7 @@ public:
 	/*!
 		  \brief Вычисляет высоту тетраэдра по длине ребра тетраэдра
 		  \details https://en.wikipedia.org/wiki/Tetrahedron#Measurement
-		  \return Высоту тетраэдра 
+		  \return Высоту тетраэдра
 	*/
 	static double height(double adEdgeLenght) noexcept;
 	double height() const noexcept;
@@ -122,8 +129,19 @@ private:
 	double m_dEdgeLength; // длинна ребра
 	AcGePoint3d m_ptCenter;
 	AcGePoint3dArray m_aVertices;
-} ;
+};
 
 #ifdef TETRAHEDRON_MODULE
 ACDB_REGISTER_OBJECT_ENTRY_AUTO(ADSKTetrahedron)
 #endif
+
+
+//#ifndef _DEBUG
+//namespace {
+//	const ADSKTetrahedron gTetrahedron(AcGePoint3d::kOrigin, 1.0);
+//	auto aVertices = gTetrahedron.vertices();
+//	auto dEdgeLength = gTetrahedron.edgeLength();
+//	//static_assert(aVertices.length() == 4);
+//	//static_assert(std::abs(dEdgeLength - aVertices[0].distanceTo(aVertices[1])) < AcGeTol::equalPoint());
+//} // namespace
+//#endif // !_DEBUG

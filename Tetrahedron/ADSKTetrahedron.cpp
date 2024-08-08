@@ -28,6 +28,7 @@
 #include <memory>
 #include <ranges>
 #include <cmath>
+#include "utilities.h"
 //-----------------------------------------------------------------------------
 Adesk::UInt32 ADSKTetrahedron::kCurrentVersionNumber = 1;
 
@@ -56,83 +57,85 @@ ADSKTetrahedron::~ADSKTetrahedron() {
 //-----------------------------------------------------------------------------
 //----- AcDbObject protocols
 //- Dwg Filing protocol
-//Acad::ErrorStatus ADSKTetrahedron::dwgOutFields(AcDbDwgFiler * pFiler) const {
-//	assertReadEnabled();
-//	//----- Save parent class information first.
-//	Acad::ErrorStatus es = AcDbEntity::dwgOutFields(pFiler);
-//	if (es != Acad::eOk)
-//		return (es);
-//	//----- Object version number needs to be saved first
-//	if ((es = pFiler->writeUInt32(ADSKTetrahedron::kCurrentVersionNumber)) != Acad::eOk)
-//		return (es);
-//	//----- Output params
-//	//pFiler->writeItem(m_dEdgeLength);
-//	for (auto& vertex : m_aVertices) {
-//		pFiler->writeItem(vertex.x);
-//		pFiler->writeItem(vertex.y);
-//		pFiler->writeItem(vertex.z);
-//	}
-//
-//	return (pFiler->filerStatus());
-//}
-//
-//Acad::ErrorStatus ADSKTetrahedron::dwgInFields(AcDbDwgFiler * pFiler) {
-//	assertWriteEnabled();
-//	//----- Read parent class information first.
-//	Acad::ErrorStatus es = AcDbEntity::dwgInFields(pFiler);
-//	if (es != Acad::eOk)
-//		return (es);
-//	//----- Object version number needs to be read first
-//	Adesk::UInt32 version = 0;
-//	if ((es = pFiler->readUInt32(&version)) != Acad::eOk)
-//		return (es);
-//	if (version > ADSKTetrahedron::kCurrentVersionNumber)
-//		return (Acad::eMakeMeProxy);
-//	//- Uncomment the 2 following lines if your current object implementation cannot
-//	//- support previous version of that object.
-//	//if ( version < ADSKTetrahedron::kCurrentVersionNumber )
-//	//	return (Acad::eMakeMeProxy) ;
-//	//----- Read params
-//	//pFiler->readItem(&m_dEdgeLength);
-//	for (int i : std::views::iota(0, 4)) {
-//		AcGePoint3d pt;
-//		pFiler->readItem(&pt.x);
-//		pFiler->readItem(&pt.y);
-//		pFiler->readItem(&pt.z);
-//		m_aVertices.at(i) = pt;
-//	}
-//	m_dEdgeLength = m_aVertices[0].distanceTo(m_aVertices[1]);
-//
-//	return (pFiler->filerStatus());
-//}
+Acad::ErrorStatus ADSKTetrahedron::dwgOutFields(AcDbDwgFiler * pFiler) const {
+	assertReadEnabled();
+	//----- Save parent class information first.
+	Acad::ErrorStatus es = AcDbEntity::dwgOutFields(pFiler);
+	if (es != Acad::eOk)
+		return (es);
+	//----- Object version number needs to be saved first
+	if ((es = pFiler->writeUInt32(ADSKTetrahedron::kCurrentVersionNumber)) != Acad::eOk)
+		return (es);
+	//----- Output params
+	es = pFiler->writeItem(m_ptCenter.x);
+	if (es != Acad::eOk)
+		return es;
+	es = pFiler->writeItem(m_ptCenter.y);
+	if (es != Acad::eOk)
+		return es;
+	es = pFiler->writeItem(m_ptCenter.z);
+	if (es != Acad::eOk)
+		return es;
+	es = pFiler->writeItem(m_dEdgeLength);
+	if (es != Acad::eOk)
+		return es;
+
+	return (pFiler->filerStatus());
+}
+
+Acad::ErrorStatus ADSKTetrahedron::dwgInFields(AcDbDwgFiler * pFiler) {
+	assertWriteEnabled();
+	//----- Read parent class information first.
+	Acad::ErrorStatus es = AcDbEntity::dwgInFields(pFiler);
+	if (es != Acad::eOk)
+		return (es);
+	//----- Object version number needs to be read first
+	Adesk::UInt32 version = 0;
+	if ((es = pFiler->readUInt32(&version)) != Acad::eOk)
+		return (es);
+	if (version > ADSKTetrahedron::kCurrentVersionNumber)
+		return (Acad::eMakeMeProxy);
+	//- Uncomment the 2 following lines if your current object implementation cannot
+	//- support previous version of that object.
+	//if ( version < ADSKTetrahedron::kCurrentVersionNumber )
+	//	return (Acad::eMakeMeProxy) ;
+	//----- Read params
+	es = pFiler->readItem(&m_ptCenter.x);
+	if (es != Acad::eOk)
+		return es;
+	es = pFiler->readItem(&m_ptCenter.y);
+	if (es != Acad::eOk)
+		return es;
+	es = pFiler->readItem(&m_ptCenter.z);
+	if (es != Acad::eOk)
+		return es;
+	es = pFiler->readItem(&m_dEdgeLength);
+	if (es != Acad::eOk)
+		return es;
+	calculateVertices();
+
+	return (pFiler->filerStatus());
+}
 
 //-----------------------------------------------------------------------------
 //----- AcDbEntity protocols
 Adesk::Boolean ADSKTetrahedron::subWorldDraw(AcGiWorldDraw * mode) {
 	assertReadEnabled();
-
-	Adesk::UInt32 faceListSize = 4 * 4;
-	static Adesk::Int32 faceList[] = {
+	Adesk::UInt32 faceListSize{ 4 * 4 };
+	// Массив индексов вершин для каждой грани тетраэдра, метод shell из AcGiGeometry принимает сначала количество вершин для грани, затем индексы самих вершин 
+	static const Adesk::Int32 faceList[] = {
 		3, 0, 1, 2,
 		3, 0, 1, 3,
 		3, 0, 2, 3,
 		3, 1, 2, 3,
 	};
-	
 	mode->geometry().shell(m_aVertices.length(), m_aVertices.asArrayPtr(), faceListSize, faceList);
 	return Adesk::kTrue;
 }
 
-
-//Adesk::UInt32 ADSKTetrahedron::subSetAttributes(AcGiDrawableTraits * traits) {
-//	assertReadEnabled();
-//	return (AcDbEntity::subSetAttributes(traits));
-//}
-
-Acad::ErrorStatus ADSKTetrahedron::subTransformBy(const AcGeMatrix3d& xform)
+Acad::ErrorStatus ADSKTetrahedron::subTransformBy(const AcGeMatrix3d & xform)
 {
 	assertWriteEnabled();
-	// TODO if call scale need ubdate m_dEdgeLength
 	for (auto& vertex : m_aVertices) {
 		vertex.transformBy(xform);
 	}
@@ -140,6 +143,48 @@ Acad::ErrorStatus ADSKTetrahedron::subTransformBy(const AcGeMatrix3d& xform)
 	updateEdgeLength();
 	return Acad::eOk;
 }
+
+Acad::ErrorStatus ADSKTetrahedron::subGetGripPoints(
+	AcDbGripDataPtrArray & grips, const double curViewUnitSize, const int gripSize,
+	const AcGeVector3d & curViewDir, const int bitflags
+) const {
+	assertReadEnabled();
+	try {
+		auto pGripData = new AcDbGripData();
+		pGripData->setGripPoint(m_ptCenter);
+		pGripData->setAppData(new GripAppData(0));
+		grips.append(pGripData);
+	}
+	catch (std::bad_alloc&) {
+		return Acad::eOutOfMemory;
+	}
+	return Acad::eOk;
+}
+
+Acad::ErrorStatus ADSKTetrahedron::subMoveGripPointsAt(
+	const AcDbVoidPtrArray & gripAppData, const AcGeVector3d & offset,
+	const int bitflags
+) {
+	assertWriteEnabled();
+	for (auto pGripAppData : gripAppData) {
+		auto pGripData = static_cast<GripAppData*>(pGripAppData);
+		if (pGripData == nullptr) {
+			continue;
+		}
+		switch (pGripData->index())
+		{
+		case 0: // indexes 0-3 tetrahedron corner points 
+		{
+			auto es = subTransformBy(AcGeMatrix3d::translation(offset));
+			if (es != Acad::eOk)
+				return es;
+			break;
+		}
+		}
+	}
+	return Acad::eOk;
+}
+
 void ADSKTetrahedron::updateEdgeLength() noexcept
 {
 	assertWriteEnabled();
@@ -154,28 +199,31 @@ double ADSKTetrahedron::height() const noexcept
 {
 	assertReadEnabled();
 	return height(m_dEdgeLength);
-	//return std::sqrt(6.0) / 3.0 * m_dEdgeLength;
 }
 
 void ADSKTetrahedron::calculateVertices() noexcept
 {
 	assertWriteEnabled();
 	double dHalfHeight = height() / 2.0;
-	//static double sqrt3 = std::sqrt(3.0); // TODO       
-	if (m_aVertices.length() > 0) 
+	static double sqrt3 = std::sqrt(3.0);
+	if (m_aVertices.length() > 0)
 		m_aVertices.removeAll();
-	
-	m_aVertices.append(AcGePoint3d(m_ptCenter.x -m_dEdgeLength / 2.0, m_ptCenter.y -std::sqrt(3.0) / 6.0 * m_dEdgeLength, m_ptCenter.z - dHalfHeight));
-	m_aVertices.append(AcGePoint3d(m_ptCenter.x + m_dEdgeLength / 2.0, m_ptCenter.y -std::sqrt(3.0) / 6.0 * m_dEdgeLength, m_ptCenter.z - dHalfHeight));
-	m_aVertices.append(AcGePoint3d(m_ptCenter.x, m_ptCenter.y + std::sqrt(3.0) / 3.0 * m_dEdgeLength, m_ptCenter.z - dHalfHeight));
+	m_aVertices.append(AcGePoint3d(m_ptCenter.x - m_dEdgeLength / 2.0, m_ptCenter.y - sqrt3 / 6.0 * m_dEdgeLength, m_ptCenter.z - dHalfHeight));
+	m_aVertices.append(AcGePoint3d(m_ptCenter.x + m_dEdgeLength / 2.0, m_ptCenter.y - sqrt3 / 6.0 * m_dEdgeLength, m_ptCenter.z - dHalfHeight));
+	m_aVertices.append(AcGePoint3d(m_ptCenter.x, m_ptCenter.y + sqrt3 / 3.0 * m_dEdgeLength, m_ptCenter.z - dHalfHeight));
 	m_aVertices.append(AcGePoint3d(m_ptCenter.x, m_ptCenter.y, m_ptCenter.z + dHalfHeight));
 }
 
 double ADSKTetrahedron::inradius(double adEdgeLength) noexcept
 {
-	
 	// https://en.wikipedia.org/wiki/Tetrahedron#Measurement
 	return adEdgeLength / std::sqrt(24.0);
+}
+
+double ADSKTetrahedron::midradius(double adEdgeLength) noexcept
+{
+	// https://en.wikipedia.org/wiki/Tetrahedron#Measurement
+	return adEdgeLength / std::sqrt(8);
 }
 
 double ADSKTetrahedron::inradius() const noexcept
@@ -188,7 +236,7 @@ double ADSKTetrahedron::volume() const noexcept
 {
 	// https://en.wikipedia.org/wiki/Tetrahedron#Measurement
 	assertReadEnabled();
-	return  std::pow(m_dEdgeLength, 3.0)/(6.0*std::sqrt(2.0));
+	return  std::pow(m_dEdgeLength, 3.0) / (6.0 * std::sqrt(2.0));
 }
 
 const AcGePoint3d& ADSKTetrahedron::center() const
@@ -196,7 +244,7 @@ const AcGePoint3d& ADSKTetrahedron::center() const
 	assertReadEnabled();
 	return m_ptCenter;
 }
-Acad::ErrorStatus ADSKTetrahedron::setCenter(const AcGePoint3d& aptCenter)
+Acad::ErrorStatus ADSKTetrahedron::setCenter(const AcGePoint3d & aptCenter)
 {
 	assertWriteEnabled();
 	m_ptCenter = aptCenter;

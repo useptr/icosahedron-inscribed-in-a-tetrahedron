@@ -23,47 +23,47 @@
 #include "StdAfx.h"
 #include "ADSKPyramidJig.h"
 //-----------------------------------------------------------------------------
-ADSKPyramidJig::ADSKPyramidJig (AcGePoint3d& ptCenter) : AcEdJig(), mptCenter(ptCenter), mdEdgeLenght(1.0), mCurrentInputLevel(0), mpEntity(nullptr)
+ADSKPyramidJig::ADSKPyramidJig(AcGePoint3d& ptCenter) : AcEdJig(), mptCenter(ptCenter), mdEdgeLenght(1.0), mCurrentInputLevel(0), mpEntity(nullptr)
 {
 }
 
-ADSKPyramidJig::~ADSKPyramidJig () {
+ADSKPyramidJig::~ADSKPyramidJig() {
 }
 
 //-----------------------------------------------------------------------------
-AcEdJig::DragStatus ADSKPyramidJig::startJig (ADSKCustomPyramid *pEntity) {
+AcEdJig::DragStatus ADSKPyramidJig::startJig(ADSKCustomPyramid* pEntity) {
 	//- Store the new entity pointer
-	mpEntity =pEntity ;
+	mpEntity = pEntity;
 	mpEntity->setCenter(mptCenter);
 	//- Setup each input prompt
-	AcString inputPrompts [1] ={
+	AcString inputPrompts[1] = {
 		_T("\nPick center point\n")
 	};
 	//- Setup kwords for each input
-	AcString kwords [1] ={
+	AcString kwords[1] = {
 		_T("")
 	};
-	bool appendOk =true ;
-	AcEdJig::DragStatus status =AcEdJig::kNull ;
+	bool appendOk = true;
+	AcEdJig::DragStatus status = AcEdJig::kNull;
 	//- Loop the number of inputs
-	for ( mCurrentInputLevel =0 ; mCurrentInputLevel < 1 ; mCurrentInputLevel++ ) {
+	for (mCurrentInputLevel = 0; mCurrentInputLevel < 1; mCurrentInputLevel++) {
 		//- Add a new input point to the list of input points
-		mInputPoints.append (AcGePoint3d ()) ;
+		mInputPoints.append(AcGePoint3d());
 		//- Set the input prompt
-		setDispPrompt (inputPrompts [mCurrentInputLevel]) ;
+		setDispPrompt(inputPrompts[mCurrentInputLevel]);
 		//- Setup the keywords required
-		setKeywordList (kwords [mCurrentInputLevel]) ;
+		setKeywordList(kwords[mCurrentInputLevel]);
 
-		bool quit =false ;
+		bool quit = false;
 		//- Lets now do the input
-		status =drag () ;
-		if ( status != AcEdJig::kNormal) {
+		status = drag();
+		if (status != AcEdJig::kNormal) {
 			//- If it's a keyword
-			switch ( status ) {
-				case AcEdJig::kCancel:
-				case AcEdJig::kNull:
-					quit =true ;
-					break ;
+			switch (status) {
+			case AcEdJig::kCancel:
+			case AcEdJig::kNull:
+				quit = true;
+				break;
 
 				//case kKW1:
 				//case kKW2:
@@ -77,14 +77,15 @@ AcEdJig::DragStatus ADSKPyramidJig::startJig (ADSKCustomPyramid *pEntity) {
 					//- Do something
 
 					//break ;
-		  }
-		} else {
-			appendOk =true ;
+			}
+		}
+		else {
+			appendOk = true;
 		}
 
 		//- If to finish
-		if ( quit )
-			break ;
+		if (quit)
+			break;
 	}
 
 	//- If the input went well
@@ -95,46 +96,46 @@ AcEdJig::DragStatus ADSKPyramidJig::startJig (ADSKCustomPyramid *pEntity) {
 	}
 	else
 		//- Clean up
-		delete mpEntity  ;
+		delete mpEntity;
 
-	return (status) ;
+	return (status);
 }
 
 //-----------------------------------------------------------------------------
 //- Input sampler
-AcEdJig::DragStatus ADSKPyramidJig::sampler () {
+AcEdJig::DragStatus ADSKPyramidJig::sampler() {
 	//- Setup the user input controls for each input
-	AcEdJig::UserInputControls userInputControls [1] ={
+	AcEdJig::UserInputControls userInputControls[1] = {
 		/*AcEdJig::UserInputControls::*/(AcEdJig::UserInputControls)0
-	} ;
+	};
 	//- Setup the cursor type for each input
-	AcEdJig::CursorType cursorType [1] ={
+	AcEdJig::CursorType cursorType[1] = {
 		/*AcEdJig::CursorType::*/(AcEdJig::CursorType)0
-	} ;
+	};
 	//- Setup the user input controls for each sample
-	setUserInputControls (userInputControls [mCurrentInputLevel]) ;
-	setSpecialCursorType (cursorType [mCurrentInputLevel]) ;
+	setUserInputControls(userInputControls[mCurrentInputLevel]);
+	setSpecialCursorType(cursorType[mCurrentInputLevel]);
 
-	AcEdJig::DragStatus status =AcEdJig::kCancel ;
+	AcEdJig::DragStatus status = AcEdJig::kCancel;
 	//- Check the current input number to see which input to do
-	switch ( mCurrentInputLevel+1 ) {
-		case 1: // Длина ребра
-			static double dEdgeLenghtTemp = -1.0;
-			status = acquireDist(dEdgeLenghtTemp, mptCenter);
-			if (dEdgeLenghtTemp > 0) {
-				mdEdgeLenght = dEdgeLenghtTemp;
-			}
-			else {
-				status = AcEdJig::kNoChange;
-			}
-			break;
+	switch (mCurrentInputLevel + 1) {
+	case 1: // Длина ребра
+		static double dEdgeLenghtTemp = -1.0;
+		status = acquireDist(dEdgeLenghtTemp, mptCenter);
+		if (dEdgeLenghtTemp > 0) {
+			mdEdgeLenght = dEdgeLenghtTemp;
+		}
+		else {
+			status = AcEdJig::kNoChange;
+		}
+		break;
 	}
-	return (status) ;
+	return (status);
 }
 
 //-----------------------------------------------------------------------------
 //- Jigged entity update
-Adesk::Boolean ADSKPyramidJig::update () {
+Adesk::Boolean ADSKPyramidJig::update() {
 	//- Check the current input number to see which update to do
 	//switch ( mCurrentInputLevel+1 ) {
 	//	case 1:
@@ -150,8 +151,8 @@ Adesk::Boolean ADSKPyramidJig::update () {
 
 //-----------------------------------------------------------------------------
 //- Jigged entity pointer return
-AcDbEntity *ADSKPyramidJig::entity () const {
-	return mpEntity ;
+AcDbEntity* ADSKPyramidJig::entity() const {
+	return mpEntity;
 }
 
 //-----------------------------------------------------------------------------

@@ -64,17 +64,17 @@ class /*DLLIMPEXP*/ ADSKEditorReactor : public AcEditorReactor {
 
 protected:
 	//----- Auto initialization and release flag.
-	bool mbAutoInitAndRelease ;
+	bool mbAutoInitAndRelease;
 
 public:
-	ADSKEditorReactor (const bool autoInitAndRelease =true) ;
-	virtual ~ADSKEditorReactor () ;
+	ADSKEditorReactor(const bool autoInitAndRelease = true);
+	virtual ~ADSKEditorReactor();
 
-	virtual void Attach () ;
-	virtual void Detach () ;
-	virtual AcEditor *Subject () const ;
-	virtual bool IsAttached () const ;
+	virtual void Attach();
+	virtual void Detach();
+	virtual AcEditor* Subject() const;
+	virtual bool IsAttached() const;
 
 	virtual void commandWillStart(const ACHAR* aszCmdStr);
 	virtual void commandEnded(const ACHAR* aszCmdStr);
-} ;
+};

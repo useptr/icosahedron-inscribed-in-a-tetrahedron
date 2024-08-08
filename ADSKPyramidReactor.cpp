@@ -29,11 +29,11 @@
 ACRX_CONS_DEFINE_MEMBERS(ADSKPyramidReactor, AcDbObjectReactor, 1)
 
 //-----------------------------------------------------------------------------
-ADSKPyramidReactor::ADSKPyramidReactor () : AcDbObjectReactor() {
+ADSKPyramidReactor::ADSKPyramidReactor() : AcDbObjectReactor() {
 }
 
 //-----------------------------------------------------------------------------
-ADSKPyramidReactor::~ADSKPyramidReactor () {
+ADSKPyramidReactor::~ADSKPyramidReactor() {
 }
 void ADSKPyramidReactor::openedForModify(const AcDbObject* pDbObj)
 {

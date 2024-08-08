@@ -24,30 +24,6 @@
 #include "dbjig.h"
 #include "ADSKCustomPyramid.h"
 //-----------------------------------------------------------------------------
-//class ADSKPyramidJig : public AcEdJig
-//    // This class allows the user to create an ellipse by
-//    // picking its center point and then dragging to select the
-//    // desired major axis and minor axis lengths.  During the
-//    // drag operations, the user will be able to visually see
-//    // what the ellipse looks like at any time.
-//    //
-//{
-//public:
-//    ADSKPyramidJig();
-//    ~ADSKPyramidJig();
-//    void doIt();
-//    virtual DragStatus sampler();
-//    virtual Adesk::Boolean update();
-//    virtual AcDbEntity* entity() const;
-//private:
-//    ADSKCustomPyramid* mpEntity;
-//    //- current input level, increment for each input
-//	int mCurrentInputLevel ;
-//	//- Dynamic dimension info
-//	AcDbDimDataPtrArray mDimData ;
-//};
-
-
 /*!
 	\brief Позволяет создать экземпляр класса ADSKCustomPyramid с заданным центром координат и длиной граней
 */
@@ -57,30 +33,30 @@ private:
 	AcGePoint3d mptCenter;
 	double mdEdgeLenght;
 	//- current input level, increment for each input
-	int mCurrentInputLevel ;
+	int mCurrentInputLevel;
 	//- Dynamic dimension info
-	AcDbDimDataPtrArray mDimData ;
+	AcDbDimDataPtrArray mDimData;
 
 public:
 	//- Array of input points, each level corresponds to the mCurrentInputLevel
-	AcGePoint3dArray mInputPoints ;
+	AcGePoint3dArray mInputPoints;
 	//- Entity being jigged
-	ADSKCustomPyramid *mpEntity ;
+	ADSKCustomPyramid* mpEntity;
 
 public:
-	ADSKPyramidJig (AcGePoint3d&) ;
-	~ADSKPyramidJig () ;
+	ADSKPyramidJig(AcGePoint3d&);
+	~ADSKPyramidJig();
 	//- Command invoke the jig, call passing a new'd instance of the object to jig
-	AcEdJig::DragStatus startJig (ADSKCustomPyramid *pEntityToJig) ;
+	AcEdJig::DragStatus startJig(ADSKCustomPyramid* pEntityToJig);
 
 protected:
 	//- AcEdJig overrides
 	//- input sampler
-	virtual DragStatus sampler () ;
+	virtual DragStatus sampler();
 	//- jigged entity update
-	virtual Adesk::Boolean update () ;
+	virtual Adesk::Boolean update();
 	//- jigged entity pointer return
-	virtual AcDbEntity *entity () const ;
+	virtual AcDbEntity* entity() const;
 	//- dynamic dimension data setup
 	//virtual AcDbDimDataPtrArray *dimData (const double dimScale) ;
 	////- dynamic dimension data update
@@ -94,4 +70,4 @@ protected:
 	//AcEdJig::DragStatus GetStartPoint () ;
 	////- Std input to get a point with rubber band from point
 	//AcEdJig::DragStatus GetNextPoint () ;
-} ;
+};

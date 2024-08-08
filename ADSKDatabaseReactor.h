@@ -53,26 +53,26 @@
 /*!
 	\brief При добавлении в базу данных нового экзампляра ADSKCustomPyramid добавляет к нему глобальный реактор - g_pPyramidReactor
 */
-class /*DLLIMPEXP*/ ADSKDatabaseReactor : public AcDbDatabaseReactor {
+class /*DLLIMPEXP*/	ADSKDatabaseReactor : public AcDbDatabaseReactor {
 
 public:
-	ACRX_DECLARE_MEMBERS(ADSKDatabaseReactor) ;
+	ACRX_DECLARE_MEMBERS(ADSKDatabaseReactor);
 
 protected:
 	//----- Pointer to the document this reactor instance belongs to.
-	AcDbDatabase *mpDatabase ;
+	AcDbDatabase* mpDatabase;
 
 public:
-	ADSKDatabaseReactor (AcDbDatabase *pDb =NULL) ;
-	virtual ~ADSKDatabaseReactor () ;
+	ADSKDatabaseReactor(AcDbDatabase* pDb = NULL);
+	virtual ~ADSKDatabaseReactor();
 
-	virtual void Attach (AcDbDatabase *pDb) ;
-	virtual void Detach () ;
-	virtual AcDbDatabase *Subject () const ;
-	virtual bool IsAttached () const ;
+	virtual void Attach(AcDbDatabase* pDb);
+	virtual void Detach();
+	virtual AcDbDatabase* Subject() const;
+	virtual bool IsAttached() const;
 
 	virtual void objectAppended(const AcDbDatabase* apDwg, const AcDbObject* apDbObj) override;
-} ;
+};
 
 #ifdef ICOSAHEDRONINSCRIBEDINATETRAHEDRON_MODULE
 ACDB_REGISTER_OBJECT_ENTRY_AUTO(ADSKDatabaseReactor)
