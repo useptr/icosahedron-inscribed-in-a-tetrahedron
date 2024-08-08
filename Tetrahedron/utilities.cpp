@@ -5,7 +5,6 @@
 #include <random>
 #include <limits>
 // TODO maybe make template
-
 short getRandomColor()
 {
 	static std::default_random_engine engine;

@@ -67,13 +67,7 @@ Acad::ErrorStatus ADSKTetrahedron::dwgOutFields(AcDbDwgFiler * pFiler) const {
 	if ((es = pFiler->writeUInt32(ADSKTetrahedron::kCurrentVersionNumber)) != Acad::eOk)
 		return (es);
 	//----- Output params
-	es = pFiler->writeItem(m_ptCenter.x);
-	if (es != Acad::eOk)
-		return es;
-	es = pFiler->writeItem(m_ptCenter.y);
-	if (es != Acad::eOk)
-		return es;
-	es = pFiler->writeItem(m_ptCenter.z);
+	es = pFiler->writePoint3d(m_ptCenter);
 	if (es != Acad::eOk)
 		return es;
 	es = pFiler->writeItem(m_dEdgeLength);
@@ -100,13 +94,7 @@ Acad::ErrorStatus ADSKTetrahedron::dwgInFields(AcDbDwgFiler * pFiler) {
 	//if ( version < ADSKTetrahedron::kCurrentVersionNumber )
 	//	return (Acad::eMakeMeProxy) ;
 	//----- Read params
-	es = pFiler->readItem(&m_ptCenter.x);
-	if (es != Acad::eOk)
-		return es;
-	es = pFiler->readItem(&m_ptCenter.y);
-	if (es != Acad::eOk)
-		return es;
-	es = pFiler->readItem(&m_ptCenter.z);
+	es = pFiler->readPoint3d(&m_ptCenter);
 	if (es != Acad::eOk)
 		return es;
 	es = pFiler->readItem(&m_dEdgeLength);

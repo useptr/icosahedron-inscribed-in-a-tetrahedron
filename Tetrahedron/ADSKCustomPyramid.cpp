@@ -89,14 +89,7 @@ Acad::ErrorStatus ADSKCustomPyramid::dwgOutFields(AcDbDwgFiler * pFiler) const {
 		return (es);
 	//----- Output params
 
-	auto pt = m_Tetrahedron.center();
-	es = pFiler->writeItem(pt.x);
-	if (es != Acad::eOk)
-		return es;
-	es = pFiler->writeItem(pt.y);
-	if (es != Acad::eOk)
-		return es;
-	es = pFiler->writeItem(pt.z);
+	es =  pFiler->writePoint3d(m_Tetrahedron.center());
 	if (es != Acad::eOk)
 		return es;
 	es = pFiler->writeItem(m_Tetrahedron.edgeLength());
@@ -125,13 +118,7 @@ Acad::ErrorStatus ADSKCustomPyramid::dwgInFields(AcDbDwgFiler * pFiler) {
 	//----- Read params
 
 	AcGePoint3d ptCenter;
-	es = pFiler->readItem(&ptCenter.x);
-	if (es != Acad::eOk)
-		return es;
-	es = pFiler->readItem(&ptCenter.y);
-	if (es != Acad::eOk)
-		return es;
-	es = pFiler->readItem(&ptCenter.z);
+	es = pFiler->readPoint3d(&ptCenter);
 	if (es != Acad::eOk)
 		return es;
 	double edgelength;
@@ -303,56 +290,6 @@ Acad::ErrorStatus ADSKCustomPyramid::subTransformBy(const AcGeMatrix3d & xform)
 	m_ptBottomFaceCenter.transformBy(xform);
 	return Acad::eOk;
 }
-
-//- Osnap points protocol
-Acad::ErrorStatus ADSKCustomPyramid::subGetOsnapPoints(
-	AcDb::OsnapMode osnapMode,
-	Adesk::GsMarker gsSelectionMark,
-	const AcGePoint3d & pickPoint,
-	const AcGePoint3d & lastPoint,
-	const AcGeMatrix3d & viewXform,
-	AcGePoint3dArray & snapPoints,
-	AcDbIntArray & geomIds) const
-{
-	assertReadEnabled();
-	return (AcDbEntity::subGetOsnapPoints(osnapMode, gsSelectionMark, pickPoint, lastPoint, viewXform, snapPoints, geomIds));
-}
-
-Acad::ErrorStatus ADSKCustomPyramid::subGetOsnapPoints(
-	AcDb::OsnapMode osnapMode,
-	Adesk::GsMarker gsSelectionMark,
-	const AcGePoint3d & pickPoint,
-	const AcGePoint3d & lastPoint,
-	const AcGeMatrix3d & viewXform,
-	AcGePoint3dArray & snapPoints,
-	AcDbIntArray & geomIds,
-	const AcGeMatrix3d & insertionMat) const
-{
-	assertReadEnabled();
-	return (AcDbEntity::subGetOsnapPoints(osnapMode, gsSelectionMark, pickPoint, lastPoint, viewXform, snapPoints, geomIds, insertionMat));
-}
-
-//- Grip points protocol
-//Acad::ErrorStatus ADSKTetrahedronWithInscribedIcosahedron::subGetStretchPoints(AcGePoint3dArray& stretchPoints) const
-//{
-//	assertReadEnabled();
-//	acutPrintf(_T("subGetStretchPoints CALLED!\n"));
-//	stretchPoints.appendList(m_Tetrahedron.pointAt(0), m_Tetrahedron.pointAt(1), m_Tetrahedron.pointAt(2));
-//	return Acad::eOk;
-//	//return Acad::eNotImplemented;
-//}
-//
-//Acad::ErrorStatus ADSKTetrahedronWithInscribedIcosahedron::subMoveStretchPointsAt(const AcDbIntArray& indices, const AcGeVector3d& offset)
-//{
-//	assertWriteEnabled();
-//	for (int i : std::views::iota(0, indices.length())) {
-//		// max from windows.h
-//		auto dMaxOffset = max(max(offset.x, offset.y), offset.z);
-//		subTransformBy(AcGeMatrix3d::scaling(dMaxOffset));
-//	}
-//	return Acad::eOk;
-//	//return Acad::eNotImplemented;
-//}
 
 Acad::ErrorStatus ADSKCustomPyramid::subGetGripPoints(
 	AcDbGripDataPtrArray & grips, const double curViewUnitSize, const int gripSize,

@@ -89,7 +89,7 @@ public:
 		const AcGeVector3d& curViewDir, const int bitflags) const;
 	virtual Acad::ErrorStatus subMoveGripPointsAt(const AcDbVoidPtrArray& gripAppData, const AcGeVector3d& offset, const int bitflags);
 
-	// for Icosahedron
+	// Icosahedron methods
 	/*!
 		  \brief Вычисляет длину ребра икосаэдра по радиусу описанной сферы
 		  \param[in] adCircumsphereRadius радиус описанной сферы икосаэдра
@@ -111,12 +111,24 @@ public:
 	const AcGePoint3dArray& vertices() const;
 	/*!
 			\brief Вычисляет координаты вершин вписанного в тетраэдра икосаэдра по координатам тетраэдра
-			\details Чтобы получить координаты вершин вписанного икосаэдра из тетраэдра, нужно разделить его ребра на золотое сечение. Полученные точки сметрично расположены от каждой вершины тетраэдра. В каждом треугольнике тетраэдра строятся 3 цевиана (от каждой вершины до точки разделившей сторону на золотое сечение). Пересечение цевианов дает нам грань икосаэдра. Source: https://veraviana.net/enclosing/inside-the-tetrahedron/.
+			\details Чтобы получить координаты вершин вписанного икосаэдра из тетраэдра, нужно разделить его ребра на золотое сечение. Полученные точки сметрично расположены от каждой вершины тетраэдра. В каждом треугольнике тетраэдра строятся 3 цевиана (от каждой вершины до точки разделившей сторону на золотое сечение). Пересечение цевианов дает нам грань икосаэдра. Source: https://veraviana.net/enclosing/inside-the-tetrahedron/
 			\throw std::invalid_argument в случае некоректного тетраэдра (неправильное количество или расположение вершин)
 	*/
 	void calculateVertices(ADSKTetrahedron& arTetrahedron);
 private:
+	/*!
+		  \brief Вспомогательный метод для calculateVertices, который принимает тетраэдр. Вычислает точки сметрично расположеные от каждой вершины тетраэдра
+		  \param[in] arTetrahedronVertices вершины тетраэдра
+		  \param[in] arEdgesPointsIndexes индексы вершин, составлюющие ребра тетраэдра
+		  \return Массив точек сметрично расположеных от каждой вершины тетраэдра 
+	*/
 	static AcGePoint3dArray divideByGoldenRatio(const AcGePoint3dArray& arTetrahedronVertices, const std::vector<std::pair<int, int>>& arEdgesPointsIndexes);
+	/*!
+		  \brief Вспомогательный метод для calculateVertices, который принимает тетраэдр. Делит тве точки на золотое сечение.
+		  \param[in] aptA первая вершина ребра
+		  \param[in] aptB вторая вершина ребра
+		  \return Точку делящую ребро в соотношении с золотым сечением
+	*/
 	static AcGePoint3d divideByGoldenRatio(AcGePoint3d& aptA, AcGePoint3d& aptB);
 	/*!
 		  \details Обновляет длину ребер тетраэдра, вызывается в методе subTransformBy
@@ -129,8 +141,8 @@ private:
 
 	double m_dEdgeLength;
 	AcGePoint3d m_ptCenter;
-	AcGePoint3dArray m_aVertices;
-	AcGiFaceDataManager m_faceDataManager;
+	AcGePoint3dArray m_aVertices; ///< Координаты вершин тетраэдра
+	AcGiFaceDataManager m_faceDataManager; ///< Освобождает память выделенную для свойств класса AcGiFaceData, описывающего свойства граней
 };
 
 #ifdef TETRAHEDRON_MODULE

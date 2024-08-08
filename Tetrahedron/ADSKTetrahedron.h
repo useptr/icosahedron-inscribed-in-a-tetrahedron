@@ -126,9 +126,9 @@ private:
 		  \details Вычисляет координаты точек тетраэдра по длине ребра граней и координате центра фигуры
 	*/
 	void calculateVertices() noexcept;
-	double m_dEdgeLength; // длинна ребра
+	double m_dEdgeLength;
 	AcGePoint3d m_ptCenter;
-	AcGePoint3dArray m_aVertices;
+	AcGePoint3dArray m_aVertices; ///< Координаты вершин тетраэдра
 };
 
 #ifdef TETRAHEDRON_MODULE

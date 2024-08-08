@@ -90,39 +90,16 @@ protected:
 	virtual Adesk::Boolean subWorldDraw(AcGiWorldDraw* mode);
 	virtual Adesk::UInt32 subSetAttributes(AcGiDrawableTraits* traits);
 	virtual Acad::ErrorStatus subTransformBy(const AcGeMatrix3d& xform);
-	//- Osnap points protocol
 public:
-	virtual Acad::ErrorStatus subGetOsnapPoints(
-		AcDb::OsnapMode osnapMode,
-		Adesk::GsMarker gsSelectionMark,
-		const AcGePoint3d& pickPoint,
-		const AcGePoint3d& lastPoint,
-		const AcGeMatrix3d& viewXform,
-		AcGePoint3dArray& snapPoints,
-		AcDbIntArray& geomIds) const;
-	virtual Acad::ErrorStatus subGetOsnapPoints(
-		AcDb::OsnapMode osnapMode,
-		Adesk::GsMarker gsSelectionMark,
-		const AcGePoint3d& pickPoint,
-		const AcGePoint3d& lastPoint,
-		const AcGeMatrix3d& viewXform,
-		AcGePoint3dArray& snapPoints,
-		AcDbIntArray& geomIds,
-		const AcGeMatrix3d& insertionMat) const;
 	//- Grip points protocol
 	virtual Acad::ErrorStatus subGetGripPoints(
 		AcDbGripDataPtrArray& grips, const double curViewUnitSize, const int gripSize,
 		const AcGeVector3d& curViewDir, const int bitflags) const;
 	virtual Acad::ErrorStatus subMoveGripPointsAt(const AcDbVoidPtrArray& gripAppData, const AcGeVector3d& offset, const int bitflags);
-	//virtual Acad::ErrorStatus   subGetStretchPoints(
-	//	AcGePoint3dArray& stretchPoints) const override;
-	//virtual Acad::ErrorStatus   subMoveStretchPointsAt(const AcDbIntArray& indices,
-	//	const AcGeVector3d& offset) override;
-
 	//virtual Acad::ErrorStatus subGetGeomExtents( AcDbExtents& extents) const;
 	//virtual Acad::ErrorStatus subGetTransformedCopy( const AcGeMatrix3d& xform, AcDbEntity*& ent) const;
 
-	// methods for working with ADSKTetrahedronWithInscribedIcosahedron
+	// ADSKTetrahedronWithInscribedIcosahedron methods 
 	/*!
 		  \brief Меняет цвет случайной грани вписанного икосаэдра на один из стандартных цветов AutoCAD'а (1-6)
 		  \return Acad::eOk в случае успешного выполнения, иначе другую ошибку типа Acad::ErrorStatus
@@ -152,6 +129,7 @@ public:
 	const AcGePoint3d& center() const;
 	const AcGePoint3dArray& vertices() const;
 private:
+	void update();
 	/*!
 		  \brief Вычисляет координаты m_ptBottomFaceCenter
 		  \return координаты m_ptBottomFaceCenter
@@ -173,10 +151,6 @@ private:
 	ADSKTetrahedron m_Tetrahedron; ///< Тетраэдр
 	ADSKIcosahedron m_Icosahedron; ///< Вписанный икосаэдр
 	AcGePoint3d m_ptBottomFaceCenter; ///< Точка на нижней гране тетраэдра для перемещения фигуры
-	//AcGeMatrix3d m_transform; ///< Матрица преобразований (TRS matrix)
-	//AcGeMatrix3d m_translation;
-	//AcGeMatrix3d m_scaling;
-	//AcGeMatrix3d m_rotation;
 };
 
 #ifdef TETRAHEDRON_MODULE
