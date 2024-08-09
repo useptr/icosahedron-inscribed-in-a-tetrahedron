@@ -119,8 +119,8 @@ Adesk::Boolean ADSKTetrahedron::subWorldDraw(AcGiWorldDraw * mode) {
 			3, 1, 2, 3,
 		};
 		auto status = mode->geometry().shell(m_aVertices.length(), m_aVertices.asArrayPtr(), faceListSize, faceList);
-		if (status != Adesk::kTrue)
-			return status;
+		//if (status != Adesk::kTrue)
+		//	return status;
 	}
 	catch (...) {
 		return Adesk::kFalse;
@@ -263,4 +263,25 @@ const AcGePoint3dArray& ADSKTetrahedron::vertices() const
 	assertReadEnabled();
 	return m_aVertices;
 }
+#ifndef _DEBUG
+bool ADSKTetrahedron::runTests() const
+{
+	double dTolerance = AcGeTol().equalPoint();
+	// check distance between points
+	if (!(std::abs(m_dEdgeLength - m_aVertices[0].distanceTo(m_aVertices[1])) < dTolerance))
+		return false;
+	if (!(std::abs(m_dEdgeLength - m_aVertices[0].distanceTo(m_aVertices[2])) < dTolerance))
+		return false;
+	if (!(std::abs(m_dEdgeLength - m_aVertices[0].distanceTo(m_aVertices[3])) < dTolerance))
+		return false;
+
+		if (!(std::abs(m_dEdgeLength - m_aVertices[3].distanceTo(m_aVertices[0])) < dTolerance))
+			return false;
+			if (!(std::abs(m_dEdgeLength - m_aVertices[3].distanceTo(m_aVertices[1])) < dTolerance))
+				return false;
+				if (!(std::abs(m_dEdgeLength - m_aVertices[3].distanceTo(m_aVertices[2])) < dTolerance))
+					return false;
+	return true;
+}
+#endif // !_DEBUG
 

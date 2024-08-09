@@ -117,6 +117,9 @@ public:
 	double edgeLength() const;
 	Acad::ErrorStatus setEdgeLength(double adEdgeLenght);
 	const AcGePoint3dArray& vertices() const;
+#ifndef _DEBUG
+	bool runTests() const;
+#endif // !_DEBUG
 private:
 	/*!
 		  \details Обновляет длину ребер тетраэдра, вызывается в методе subTransformBy
@@ -129,6 +132,7 @@ private:
 	double m_dEdgeLength;
 	AcGePoint3d m_ptCenter;
 	AcGePoint3dArray m_aVertices; ///< Координаты вершин тетраэдра
+	//static std::array<>aFaces Vertices Indexes
 };
 
 #ifdef TETRAHEDRON_MODULE
@@ -136,30 +140,3 @@ ACDB_REGISTER_OBJECT_ENTRY_AUTO(ADSKTetrahedron)
 #endif
 
 
-#ifndef _DEBUG
-
-namespace {
-	// arrange
-	auto szErrorMsg = _T("ADSKTetrahedron test suite error");
-	const ADSKTetrahedron gTetrahedron(AcGePoint3d::kOrigin, 1.0);
-	auto aVertices = gTetrahedron.vertices();
-	auto dEdgeLength = gTetrahedron.edgeLength();
-	// act
-	//bool 
-	//// arrange
-	//if (!(std::abs(dEdgeLength - aVertices[0].distanceTo(aVertices[1])) < AcGeTol::equalPoint()))
-	//	acutPrintf(_T("%s"), szErrorMsg);
-	//if (!(std::abs(dEdgeLength - aVertices[0].distanceTo(aVertices[2])) < AcGeTol::equalPoint()))
-	//	acutPrintf(_T("%s"), szErrorMsg);
-	//if (!(std::abs(dEdgeLength - aVertices[0].distanceTo(aVertices[3])) < AcGeTol::equalPoint()))
-	//	acutPrintf(_T("%s"), szErrorMsg);
-
-	//	if (!(std::abs(dEdgeLength - aVertices[3].distanceTo(aVertices[0])) < AcGeTol::equalPoint()))
-	//		acutPrintf(_T("%s"), szErrorMsg);
-	//		if (!(std::abs(dEdgeLength - aVertices[3].distanceTo(aVertices[1])) < AcGeTol::equalPoint()))
-	//			acutPrintf(_T("%s"), szErrorMsg);
-	//			if (!(std::abs(dEdgeLength - aVertices[3].distanceTo(aVertices[2])) < AcGeTol::equalPoint()))
-	//				acutPrintf(_T("%s"), szErrorMsg);
-	
-} // namespace
-#endif // !_DEBUG

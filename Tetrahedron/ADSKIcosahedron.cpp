@@ -232,18 +232,18 @@ void ADSKIcosahedron::calculateVertices() noexcept
 	double s = m_dEdgeLength * std::numbers::phi_v<double> / 2.0;
 	if (m_aVertices.length() > 0)
 		m_aVertices.removeAll();
-	m_aVertices.append(AcGePoint3d(m_ptCenter.x - t, m_ptCenter.y, m_ptCenter.z + s));
-	m_aVertices.append(AcGePoint3d(m_ptCenter.x + t, m_ptCenter.y, m_ptCenter.z + s));
-	m_aVertices.append(AcGePoint3d(m_ptCenter.x - t, m_ptCenter.y, m_ptCenter.z - s));
-	m_aVertices.append(AcGePoint3d(m_ptCenter.x + t, m_ptCenter.y, m_ptCenter.z - s));
-	m_aVertices.append(AcGePoint3d(m_ptCenter.x, m_ptCenter.y + s, m_ptCenter.z + t));
-	m_aVertices.append(AcGePoint3d(m_ptCenter.x, m_ptCenter.y + s, m_ptCenter.z - t));
-	m_aVertices.append(AcGePoint3d(m_ptCenter.x, m_ptCenter.y - s, m_ptCenter.z + t));
-	m_aVertices.append(AcGePoint3d(m_ptCenter.x, m_ptCenter.y - s, m_ptCenter.z - t));
-	m_aVertices.append(AcGePoint3d(m_ptCenter.x + s, m_ptCenter.y + t, m_ptCenter.z));
-	m_aVertices.append(AcGePoint3d(m_ptCenter.x - s, m_ptCenter.y + t, m_ptCenter.z));
-	m_aVertices.append(AcGePoint3d(m_ptCenter.x + s, m_ptCenter.y - t, m_ptCenter.z));
-	m_aVertices.append(AcGePoint3d(m_ptCenter.x - s, m_ptCenter.y - t, m_ptCenter.z));
+	m_aVertices.append(AcGePoint3d(m_ptCenter.x - t, m_ptCenter.y, m_ptCenter.z + s)); // 0
+	m_aVertices.append(AcGePoint3d(m_ptCenter.x + t, m_ptCenter.y, m_ptCenter.z + s)); // 1 
+	m_aVertices.append(AcGePoint3d(m_ptCenter.x,     m_ptCenter.y + s, m_ptCenter.z + t)); // 2 
+	m_aVertices.append(AcGePoint3d(m_ptCenter.x,     m_ptCenter.y + s, m_ptCenter.z - t)); // 5
+	m_aVertices.append(AcGePoint3d(m_ptCenter.x - s, m_ptCenter.y + t, m_ptCenter.z)); // 4	
+	m_aVertices.append(AcGePoint3d(m_ptCenter.x - t, m_ptCenter.y, m_ptCenter.z - s)); // 5
+	m_aVertices.append(AcGePoint3d(m_ptCenter.x - s, m_ptCenter.y - t, m_ptCenter.z)); // 6
+	m_aVertices.append(AcGePoint3d(m_ptCenter.x,     m_ptCenter.y - s, m_ptCenter.z + t)); // 7	
+	m_aVertices.append(AcGePoint3d(m_ptCenter.x,     m_ptCenter.y - s, m_ptCenter.z - t)); // 8			
+	m_aVertices.append(AcGePoint3d(m_ptCenter.x + s, m_ptCenter.y - t, m_ptCenter.z)); // 9
+	m_aVertices.append(AcGePoint3d(m_ptCenter.x + t, m_ptCenter.y, m_ptCenter.z - s)); // 10	
+	m_aVertices.append(AcGePoint3d(m_ptCenter.x + s, m_ptCenter.y + t, m_ptCenter.z)); // 11
 }
 
 
@@ -373,3 +373,35 @@ Acad::ErrorStatus ADSKIcosahedron::setEdgeLength(double adEdgeLenght) {
 	calculateVertices();
 	return Acad::eOk;
 }
+#ifndef _DEBUG
+bool ADSKIcosahedron::runTests() const
+{
+	double dTolerance = AcGeTol().equalPoint();
+	// check distance between points
+	auto d0 = m_aVertices[0].distanceTo(m_aVertices[1]);
+	if (!(std::abs(m_dEdgeLength - m_aVertices[0].distanceTo(m_aVertices[1])) < dTolerance))
+		return false;
+	auto d = m_aVertices[0].distanceTo(m_aVertices[2]);
+	auto r = std::abs(m_dEdgeLength - m_aVertices[0].distanceTo(m_aVertices[2]));
+	if (!(std::abs(m_dEdgeLength - m_aVertices[0].distanceTo(m_aVertices[2])) < dTolerance))
+		return false;
+	if (!(std::abs(m_dEdgeLength - m_aVertices[0].distanceTo(m_aVertices[4])) < dTolerance))
+		return false;
+	if (!(std::abs(m_dEdgeLength - m_aVertices[0].distanceTo(m_aVertices[6])) < dTolerance))
+		return false;
+	if (!(std::abs(m_dEdgeLength - m_aVertices[0].distanceTo(m_aVertices[7])) < dTolerance))
+		return false;
+
+	if (!(std::abs(m_dEdgeLength - m_aVertices[5].distanceTo(m_aVertices[3])) < dTolerance))
+		return false;
+	if (!(std::abs(m_dEdgeLength - m_aVertices[5].distanceTo(m_aVertices[4])) < dTolerance))
+		return false;
+	if (!(std::abs(m_dEdgeLength - m_aVertices[5].distanceTo(m_aVertices[6])) < dTolerance))
+		return false;
+	if (!(std::abs(m_dEdgeLength - m_aVertices[5].distanceTo(m_aVertices[8])) < dTolerance))
+		return false;
+	if (!(std::abs(m_dEdgeLength - m_aVertices[5].distanceTo(m_aVertices[10])) < dTolerance))
+		return false;
+	return true;
+}
+#endif // !_DEBUG

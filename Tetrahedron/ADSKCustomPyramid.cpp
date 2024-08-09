@@ -55,7 +55,6 @@ ADSKCustomPyramid::ADSKCustomPyramid(AcGePoint3d aptCenter, double adEdgeLength)
 	}
 	catch (const std::invalid_argument&) {
 		acutPrintf(_T("\nERROR: ADSKCustomPyramid an invalid cube was passed"));
-		//m_Icosahedron.calculateVertices()
 	}
 }
 
@@ -391,3 +390,39 @@ const AcGePoint3dArray& ADSKCustomPyramid::vertices() const
 	assertReadEnabled();
 	return m_Icosahedron.vertices();
 }
+
+#ifndef _DEBUG
+bool ADSKCustomPyramid::runTests() const
+{
+	// check that the points that make up the faces of the icosahedron lie on the planes of the tetrahedron
+	auto createPlane = [](const AcGePoint3d& pt1, const AcGePoint3d& pt2, const AcGePoint3d& pt3) ->AcGePlane {
+		auto v1 = pt2 - pt1;
+		auto v2 = pt3 - pt1;
+		auto normal = v1.crossProduct(v2);
+		return AcGePlane(pt1, normal);
+	};
+	auto aTetrahedronVertices = m_Tetrahedron.vertices();
+	auto aIcosahedronVertices = m_Icosahedron.vertices();
+	AcGePlane bottomPlane = createPlane(aTetrahedronVertices[0], aTetrahedronVertices[1], aTetrahedronVertices[2]);	
+	if (!bottomPlane.isOn(aIcosahedronVertices[0]) || !bottomPlane.isOn(aIcosahedronVertices[1]) || !bottomPlane.isOn(aIcosahedronVertices[2]))
+		return false;
+	AcGePlane frontPlane = createPlane(aTetrahedronVertices[0], aTetrahedronVertices[1], aTetrahedronVertices[3]);
+	if (!frontPlane.isOn(aIcosahedronVertices[3]) || !frontPlane.isOn(aIcosahedronVertices[4]) || !frontPlane.isOn(aIcosahedronVertices[5]))
+		return false;
+	AcGePlane backLeftPlane = createPlane(aTetrahedronVertices[0], aTetrahedronVertices[2], aTetrahedronVertices[3]);
+	if (!backLeftPlane.isOn(aIcosahedronVertices[9]) || !backLeftPlane.isOn(aIcosahedronVertices[10]) || !backLeftPlane.isOn(aIcosahedronVertices[11]))
+		return false;
+	AcGePlane rightBackPlane = createPlane(aTetrahedronVertices[1], aTetrahedronVertices[2], aTetrahedronVertices[3]);
+	if (!rightBackPlane.isOn(aIcosahedronVertices[6]) || !rightBackPlane.isOn(aIcosahedronVertices[7]) || !rightBackPlane.isOn(aIcosahedronVertices[8]))
+		return false;
+	return true;
+}
+const AcGePoint3dArray& ADSKCustomPyramid::tetrahedronVertices() const
+{
+	return m_Tetrahedron.vertices();
+}
+const AcGePoint3dArray& ADSKCustomPyramid::icosahedronVertices() const
+{
+	return m_Icosahedron.vertices();
+}
+#endif // !_DEBUG

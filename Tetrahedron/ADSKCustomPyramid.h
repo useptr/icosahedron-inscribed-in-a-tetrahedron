@@ -128,6 +128,11 @@ public:
 	*/
 	const AcGePoint3d& center() const;
 	const AcGePoint3dArray& vertices() const;
+#ifndef _DEBUG
+	bool runTests() const;
+	const AcGePoint3dArray& tetrahedronVertices() const;
+	const AcGePoint3dArray& icosahedronVertices() const;
+#endif // !_DEBUG
 private:
 	/*!
 		  \brief Вычисляет координаты m_ptBottomFaceCenter

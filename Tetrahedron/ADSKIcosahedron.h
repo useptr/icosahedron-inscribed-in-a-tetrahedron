@@ -115,6 +115,9 @@ public:
 			\throw std::invalid_argument в случае некоректного тетраэдра (неправильное количество или расположение вершин)
 	*/
 	void calculateVertices(ADSKTetrahedron& arTetrahedron);
+#ifndef _DEBUG
+	bool runTests() const;
+#endif // !_DEBUG
 private:
 	/*!
 		  \brief Вспомогательный метод для calculateVertices, который принимает тетраэдр. Вычислает точки сметрично расположеные от каждой вершины тетраэдра
