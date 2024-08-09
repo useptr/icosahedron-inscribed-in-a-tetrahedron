@@ -129,7 +129,6 @@ public:
 	const AcGePoint3d& center() const;
 	const AcGePoint3dArray& vertices() const;
 private:
-	void update();
 	/*!
 		  \brief Вычисляет координаты m_ptBottomFaceCenter
 		  \return координаты m_ptBottomFaceCenter
