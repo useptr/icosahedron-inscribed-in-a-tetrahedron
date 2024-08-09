@@ -136,12 +136,30 @@ ACDB_REGISTER_OBJECT_ENTRY_AUTO(ADSKTetrahedron)
 #endif
 
 
-//#ifndef _DEBUG
-//namespace {
-//	const ADSKTetrahedron gTetrahedron(AcGePoint3d::kOrigin, 1.0);
-//	auto aVertices = gTetrahedron.vertices();
-//	auto dEdgeLength = gTetrahedron.edgeLength();
-//	//static_assert(aVertices.length() == 4);
-//	//static_assert(std::abs(dEdgeLength - aVertices[0].distanceTo(aVertices[1])) < AcGeTol::equalPoint());
-//} // namespace
-//#endif // !_DEBUG
+#ifndef _DEBUG
+
+namespace {
+	// arrange
+	auto szErrorMsg = _T("ADSKTetrahedron test suite error");
+	const ADSKTetrahedron gTetrahedron(AcGePoint3d::kOrigin, 1.0);
+	auto aVertices = gTetrahedron.vertices();
+	auto dEdgeLength = gTetrahedron.edgeLength();
+	// act
+	//bool 
+	//// arrange
+	//if (!(std::abs(dEdgeLength - aVertices[0].distanceTo(aVertices[1])) < AcGeTol::equalPoint()))
+	//	acutPrintf(_T("%s"), szErrorMsg);
+	//if (!(std::abs(dEdgeLength - aVertices[0].distanceTo(aVertices[2])) < AcGeTol::equalPoint()))
+	//	acutPrintf(_T("%s"), szErrorMsg);
+	//if (!(std::abs(dEdgeLength - aVertices[0].distanceTo(aVertices[3])) < AcGeTol::equalPoint()))
+	//	acutPrintf(_T("%s"), szErrorMsg);
+
+	//	if (!(std::abs(dEdgeLength - aVertices[3].distanceTo(aVertices[0])) < AcGeTol::equalPoint()))
+	//		acutPrintf(_T("%s"), szErrorMsg);
+	//		if (!(std::abs(dEdgeLength - aVertices[3].distanceTo(aVertices[1])) < AcGeTol::equalPoint()))
+	//			acutPrintf(_T("%s"), szErrorMsg);
+	//			if (!(std::abs(dEdgeLength - aVertices[3].distanceTo(aVertices[2])) < AcGeTol::equalPoint()))
+	//				acutPrintf(_T("%s"), szErrorMsg);
+	
+} // namespace
+#endif // !_DEBUG

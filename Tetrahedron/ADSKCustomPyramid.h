@@ -146,7 +146,6 @@ private:
 		  \return Длину ребра вписанного икосаэдра тетраэдра
 	*/
 	double icosahedronEdgeLength(double adTetrahedronEdgeLenght) const noexcept;
-
 	ADSKTetrahedron m_Tetrahedron; ///< Тетраэдр
 	ADSKIcosahedron m_Icosahedron; ///< Вписанный икосаэдр
 	AcGePoint3d m_ptBottomFaceCenter; ///< Точка на нижней гране тетраэдра для перемещения фигуры

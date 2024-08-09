@@ -109,15 +109,22 @@ Acad::ErrorStatus ADSKTetrahedron::dwgInFields(AcDbDwgFiler * pFiler) {
 //----- AcDbEntity protocols
 Adesk::Boolean ADSKTetrahedron::subWorldDraw(AcGiWorldDraw * mode) {
 	assertReadEnabled();
-	Adesk::UInt32 faceListSize{ 4 * 4 };
-	// Массив индексов вершин для каждой грани тетраэдра, метод shell из AcGiGeometry принимает сначала количество вершин для грани, затем индексы самих вершин 
-	static const Adesk::Int32 faceList[] = {
-		3, 0, 1, 2,
-		3, 0, 1, 3,
-		3, 0, 2, 3,
-		3, 1, 2, 3,
-	};
-	mode->geometry().shell(m_aVertices.length(), m_aVertices.asArrayPtr(), faceListSize, faceList);
+	try {
+		Adesk::UInt32 faceListSize{ 4 * 4 };
+		// Массив индексов вершин для каждой грани тетраэдра, метод shell из AcGiGeometry принимает сначала количество вершин для грани, затем индексы самих вершин 
+		static const Adesk::Int32 faceList[] = {
+			3, 0, 1, 2,
+			3, 0, 1, 3,
+			3, 0, 2, 3,
+			3, 1, 2, 3,
+		};
+		auto status = mode->geometry().shell(m_aVertices.length(), m_aVertices.asArrayPtr(), faceListSize, faceList);
+		if (status != Adesk::kTrue)
+			return status;
+	}
+	catch (...) {
+		return Adesk::kFalse;
+	}
 	return Adesk::kTrue;
 }
 
@@ -154,22 +161,22 @@ Acad::ErrorStatus ADSKTetrahedron::subMoveGripPointsAt(
 	const int bitflags
 ) {
 	assertWriteEnabled();
-	for (auto pGripAppData : gripAppData) {
-		auto pGripData = static_cast<GripAppData*>(pGripAppData);
-		if (pGripData == nullptr) {
-			continue;
+		for (auto pGripAppData : gripAppData) {
+			auto pGripData = static_cast<GripAppData*>(pGripAppData);
+			if (pGripData == nullptr) {
+				continue;
+			}
+			switch (pGripData->index())
+			{
+			case 0: // indexes 0-3 tetrahedron corner points 
+			{
+				auto es = subTransformBy(AcGeMatrix3d::translation(offset));
+				if (es != Acad::eOk)
+					return es;
+				break;
+			}
+			}
 		}
-		switch (pGripData->index())
-		{
-		case 0: // indexes 0-3 tetrahedron corner points 
-		{
-			auto es = subTransformBy(AcGeMatrix3d::translation(offset));
-			if (es != Acad::eOk)
-				return es;
-			break;
-		}
-		}
-	}
 	return Acad::eOk;
 }
 

@@ -53,7 +53,8 @@ ADSKCustomPyramid::ADSKCustomPyramid(AcGePoint3d aptCenter, double adEdgeLength)
 	try {
 		m_Icosahedron.calculateVertices(m_Tetrahedron);
 	}
-	catch (std::invalid_argument&) {
+	catch (const std::invalid_argument&) {
+		acutPrintf(_T("\nERROR: ADSKCustomPyramid an invalid cube was passed"));
 		//m_Icosahedron.calculateVertices()
 	}
 }
@@ -228,21 +229,25 @@ Acad::ErrorStatus ADSKCustomPyramid::dxfInFields(AcDbDxfFiler * pFiler) {
 //----- AcDbEntity protocols
 Adesk::Boolean ADSKCustomPyramid::subWorldDraw(AcGiWorldDraw * mode) {
 	assertReadEnabled();
-	auto status{ Adesk::kTrue };
-	AcCmTransparency transparency(0.5);
-	mode->subEntityTraits().setTransparency(transparency);
+	try {
+		auto status{ Adesk::kTrue };
+		AcCmTransparency transparency(0.5);
+		mode->subEntityTraits().setTransparency(transparency);
 
-	status = m_Tetrahedron.subWorldDraw(mode);
-	if (status != Adesk::kTrue)
-		return status;
+		status = m_Tetrahedron.subWorldDraw(mode);
+		if (status != Adesk::kTrue)
+			return status;
 
-	transparency.setAlphaPercent(1.0);
-	mode->subEntityTraits().setTransparency(transparency);
+		transparency.setAlphaPercent(1.0);
+		mode->subEntityTraits().setTransparency(transparency);
 
-	status = m_Icosahedron.subWorldDraw(mode);
-	if (status != Adesk::kTrue)
-		return status;
-
+		status = m_Icosahedron.subWorldDraw(mode);
+		if (status != Adesk::kTrue)
+			return status;
+	}
+	catch (...) {
+		return Adesk::kFalse;
+	}
 	return Adesk::kTrue;
 }
 

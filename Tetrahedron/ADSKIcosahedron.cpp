@@ -118,32 +118,39 @@ Acad::ErrorStatus ADSKIcosahedron::dwgInFields(AcDbDwgFiler * pFiler) {
 //----- AcDbEntity protocols
 Adesk::Boolean ADSKIcosahedron::subWorldDraw(AcGiWorldDraw * mode) {
 	assertReadEnabled();
-	Adesk::UInt32 faceListSize = 4 * 20;
-	// Массив индексов вершин для каждой грани икосаэдра, метод shell из AcGiGeometry принимает сначала количество вершин для грани, затем индексы самих вершин 
-	static const Adesk::Int32 faceList[]{
-			3, 0, 1, 2, // icosahedron face on bottom tetrahedron face
-			3, 0, 1, 7,
-			3, 0, 2, 4,
-			3, 0, 4, 6,
-			3, 0, 6, 7,
-			3, 1, 2, 11,
-			3, 1, 7, 9,
-			3, 1, 9, 11,
-			3, 2, 3, 4,
-			3, 2, 3, 11,
-			3, 3, 4, 5, // icosahedron face on front tetrahedron face
-			3, 3, 5, 10,
-			3, 3, 10, 11,
-			3, 4, 5, 6,
-			3, 5, 6, 8,
-			3, 5, 8, 10,
-			3, 6, 7, 8, // icosahedron face on right-back tetrahedron facc 
-			3, 7, 8, 9,
-			3, 8, 9, 10,
-			3, 9, 10, 11 // icosahedron face on back-left tetrahedron facc 
-	};
-	mode->subEntityTraits().setColor(1);
-	mode->geometry().shell(m_aVertices.length(), m_aVertices.asArrayPtr(), faceListSize, faceList, nullptr, m_faceDataManager.faceData());
+	try {
+		Adesk::UInt32 faceListSize = 4 * 20;
+		// Массив индексов вершин для каждой грани икосаэдра, метод shell из AcGiGeometry принимает сначала количество вершин для грани, затем индексы самих вершин 
+		static const Adesk::Int32 faceList[]{
+				3, 0, 1, 2, // icosahedron face on bottom tetrahedron face
+				3, 0, 1, 7,
+				3, 0, 2, 4,
+				3, 0, 4, 6,
+				3, 0, 6, 7,
+				3, 1, 2, 11,
+				3, 1, 7, 9,
+				3, 1, 9, 11,
+				3, 2, 3, 4,
+				3, 2, 3, 11,
+				3, 3, 4, 5, // icosahedron face on front tetrahedron face
+				3, 3, 5, 10,
+				3, 3, 10, 11,
+				3, 4, 5, 6,
+				3, 5, 6, 8,
+				3, 5, 8, 10,
+				3, 6, 7, 8, // icosahedron face on right-back tetrahedron facc 
+				3, 7, 8, 9,
+				3, 8, 9, 10,
+				3, 9, 10, 11 // icosahedron face on back-left tetrahedron facc 
+		};
+		mode->subEntityTraits().setColor(1);
+		auto status = mode->geometry().shell(m_aVertices.length(), m_aVertices.asArrayPtr(), faceListSize, faceList, nullptr, m_faceDataManager.faceData());
+		if (status != Adesk::kTrue)
+			return status;
+	}
+	catch (...) {
+		return Adesk::kFalse;
+	}
 	return Adesk::kTrue;
 }
 
@@ -331,13 +338,13 @@ double ADSKIcosahedron::edgeLengthByCircumradius(double adCircumsphereRadius) no
 }
 
 Acad::ErrorStatus ADSKIcosahedron::setFaceColor(Adesk::Int32 aI, short anColor)
-{
+{	
 	assertWriteEnabled();
 	try {
 		m_faceDataManager.setColor(aI, anColor);
 	}
-	catch (std::out_of_range&) {
-		return Acad::eInvalidInput;
+	catch (const std::out_of_range&) {
+		return Acad::eInvalidIndex;
 	}
 	return Acad::eOk;
 }

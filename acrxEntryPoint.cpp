@@ -60,20 +60,30 @@ public:
 			// Try to load the module, if it is not yet present 
 			if (!acrxDynamicLinker->loadModule(_T("ADSKTetrahedron.dbx"), 0))
 			{
-				acutPrintf(_T("Unable to load ADSKTetrahedron.dbx. Unloading this application...\n"));
+				acutPrintf(_T("\nERROR: Unable to load ADSKTetrahedron.dbx. Unloading this application..."));
 				return (AcRx::kRetError);
 			}
 		}
 		// TODO: Add your initialization code here
-		g_pEditorReactor = std::move(std::make_unique<ADSKEditorReactor>(true));
-		g_pPyramidReactor = std::move(std::make_unique<ADSKPyramidReactor>());
+		try {
+			g_pEditorReactor = std::move(std::make_unique<ADSKEditorReactor>(true));
+			g_pPyramidReactor = std::move(std::make_unique<ADSKPyramidReactor>());
+		}
+		catch (std::bad_alloc&) {
+
+		}
 
 		return (retCode);
 	}
 	virtual AcRx::AppRetCode On_kLoadDwgMsg(void* pkt) {
 		AcRx::AppRetCode retCode = AcRxArxApp::On_kLoadDwgMsg(pkt);
 		// Create a new instance of  the database reactor for every new drawing
-		DocVars.docData().m_pDatabaseReactor = new ADSKDatabaseReactor(acdbHostApplicationServices()->workingDatabase());
+		try {
+			DocVars.docData().m_pDatabaseReactor = new ADSKDatabaseReactor(acdbHostApplicationServices()->workingDatabase());
+		}
+		catch (std::bad_alloc&) {
+			acutPrintf(_T("\nERROR: Memory allocation failure for ADSKDatabaseReactor"));
+		}
 		return (retCode);
 	}
 
@@ -108,7 +118,7 @@ public:
 		pTetrahedron.create();
 		AcDbObjectId idObj;
 		if (pSpaceBlockTableRecord->appendAcDbEntity(idObj, pTetrahedron) != Acad::eOk) {
-			acutPrintf(_T("ERROR: Cannot append ADSKTetrahedron to BlockTable"));
+			acutPrintf(_T("\nERROR: Cannot append ADSKTetrahedron to BlockTable"));
 			return;
 		}
 	}
@@ -128,7 +138,7 @@ public:
 		AcDbObjectId idObj;
 		auto es = pSpaceBlockTableRecord->appendAcDbEntity(idObj, pIcosahedron);
 		if (es != Acad::eOk) {
-			acutPrintf(_T("ERROR: Cannot append ADSKIcosahedron to BlockTable: %s"), acadErrorStatusText(es));
+			acutPrintf(_T("\nERROR: Cannot append ADSKIcosahedron to BlockTable: %s"), acadErrorStatusText(es));
 			return;
 		}
 	}
@@ -147,20 +157,28 @@ public:
 		pEntity.create();
 		AcDbObjectId idObj;
 		if (pSpaceBlockTableRecord->appendAcDbEntity(idObj, pEntity) != Acad::eOk) {
-			acutPrintf(_T("ERROR: Cannot append ADSKTetrahedronWithInscribedIcosahedron to BlockTable"));
+			acutPrintf(_T("\nERROR: Cannot append ADSKTetrahedronWithInscribedIcosahedron to BlockTable"));
 			return;
 		}
-		acutPrintf(_T("Volume is equal to %f"), pEntity->volumesDifference());
-		acutPrintf(_T("CREATED ADSKTetrahedronWithInscribedIcosahedron!"));
+		acutPrintf(_T("\nVolume is equal to %f"), pEntity->volumesDifference());
+		acutPrintf(_T("\nCREATED ADSKTetrahedronWithInscribedIcosahedron!"));
 	}
 	static void ADSKMyGroup_JIGCREATE(void) {
 		auto ptCenter = AcGePoint3d::kOrigin;
-		if (acedGetPoint(nullptr, _T("\nEllipse center point: "), asDblArray(ptCenter)) != RTNORM)
+		if (acedGetPoint(nullptr, _T("\nPick figure center point: "), asDblArray(ptCenter)) != RTNORM)
 			return;
-		ADSKPyramidJig entityJig(ptCenter);
-		entityJig.startJig(new ADSKCustomPyramid);
+		try {
+			ADSKPyramidJig entityJig(ptCenter);		
+			entityJig.startJig(new ADSKCustomPyramid);
+		}
+		catch (std::bad_alloc&) {
+			acutPrintf(_T("\nERROR: Memory allocation failure for ADSKCustomPyramid. ADSKPyramidJig "));
+		}
+		catch (...) {
+			acutPrintf(_T("\nERROR: aborting command JIGCREATE"));
+		}
 	}
-#if DEBUG
+#ifdef _DEBUG
 	static AcGePoint3d divideInGoldenRatio(AcGePoint3d& aptA, AcGePoint3d& aptB) {
 		return aptA + (aptB - aptA) / std::numbers::phi_v<double>;
 	}
@@ -380,15 +398,15 @@ public:
 			++index;
 		}
 	}
-#endif
+#endif // !_DEBUG
 };
 
 //-----------------------------------------------------------------------------
 IMPLEMENT_ARX_ENTRYPOINT(CicosahedroninscribedinatetrahedronApp)
 
-#if DEBUG
+#ifdef _DEBUG
 ACED_ARXCOMMAND_ENTRY_AUTO(CicosahedroninscribedinatetrahedronApp, ADSKMyGroup, _TEST_CREATE, TEST_CREATE, ACRX_CMD_TRANSPARENT, NULL)
-#endif
+#endif // !_DEBUG
 ACED_ARXCOMMAND_ENTRY_AUTO(CicosahedroninscribedinatetrahedronApp, ADSKMyGroup, _ICOSAHEDRON, ICOSAHEDRON, ACRX_CMD_TRANSPARENT, NULL)
 ACED_ARXCOMMAND_ENTRY_AUTO(CicosahedroninscribedinatetrahedronApp, ADSKMyGroup, _TETRAHEDRON, TETRAHEDRON, ACRX_CMD_TRANSPARENT, NULL)
 ACED_ARXCOMMAND_ENTRY_AUTO(CicosahedroninscribedinatetrahedronApp, ADSKMyGroup, _CREATE, CREATE, ACRX_CMD_TRANSPARENT, NULL)
