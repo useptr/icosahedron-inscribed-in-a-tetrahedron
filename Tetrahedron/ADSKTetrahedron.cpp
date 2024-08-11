@@ -185,12 +185,12 @@ void ADSKTetrahedron::updateEdgeLength() noexcept
 	assertWriteEnabled();
 	m_dEdgeLength = m_aVertices[0].distanceTo(m_aVertices[1]);
 }
-[[nodiscard]] double ADSKTetrahedron::height(double adEdgeLenght) noexcept
+ double ADSKTetrahedron::height(double adEdgeLenght) noexcept
 {
 	return std::sqrt(6.0) / 3.0 * adEdgeLenght;
 }
 
-[[nodiscard]] double ADSKTetrahedron::height() const noexcept
+ double ADSKTetrahedron::height() const noexcept
 {
 	assertReadEnabled();
 	return height(m_dEdgeLength);
@@ -209,32 +209,32 @@ void ADSKTetrahedron::calculateVertices() noexcept
 	m_aVertices.append(AcGePoint3d(m_ptCenter.x, m_ptCenter.y, m_ptCenter.z + dHalfHeight));
 }
 
-[[nodiscard]] double ADSKTetrahedron::inradius(double adEdgeLength) noexcept
+ double ADSKTetrahedron::inradius(double adEdgeLength) noexcept
 {
 	// https://en.wikipedia.org/wiki/Tetrahedron#Measurement
 	return adEdgeLength / std::sqrt(24.0);
 }
 
-[[nodiscard]] double ADSKTetrahedron::midradius(double adEdgeLength) noexcept
+ double ADSKTetrahedron::midradius(double adEdgeLength) noexcept
 {
 	// https://en.wikipedia.org/wiki/Tetrahedron#Measurement
 	return adEdgeLength / std::sqrt(8);
 }
 
-[[nodiscard]] double ADSKTetrahedron::inradius() const noexcept
+ double ADSKTetrahedron::inradius() const noexcept
 {
 	assertReadEnabled();
 	return inradius(m_dEdgeLength);
 }
 
-[[nodiscard]] double ADSKTetrahedron::volume() const noexcept
+ double ADSKTetrahedron::volume() const noexcept
 {
 	// https://en.wikipedia.org/wiki/Tetrahedron#Measurement
 	assertReadEnabled();
 	return  std::pow(m_dEdgeLength, 3.0) / (6.0 * std::sqrt(2.0));
 }
 
-[[nodiscard]] const AcGePoint3d& ADSKTetrahedron::center() const
+ const AcGePoint3d& ADSKTetrahedron::center() const
 {
 	assertReadEnabled();
 	return m_ptCenter;
@@ -247,7 +247,7 @@ Acad::ErrorStatus ADSKTetrahedron::setCenter(const AcGePoint3d & aptCenter)
 	return Acad::eOk;
 }
 
-[[nodiscard]]  double ADSKTetrahedron::edgeLength() const {
+  double ADSKTetrahedron::edgeLength() const {
 	assertReadEnabled();
 	return m_dEdgeLength;
 }
@@ -258,7 +258,7 @@ Acad::ErrorStatus ADSKTetrahedron::setEdgeLength(double adEdgeLenght) {
 	return Acad::eOk;
 }
 
-[[nodiscard]] const AcGePoint3dArray& ADSKTetrahedron::vertices() const
+ const AcGePoint3dArray& ADSKTetrahedron::vertices() const
 {
 	assertReadEnabled();
 	return m_aVertices;

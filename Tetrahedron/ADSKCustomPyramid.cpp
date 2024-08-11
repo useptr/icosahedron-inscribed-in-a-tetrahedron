@@ -58,14 +58,14 @@ ADSKCustomPyramid::ADSKCustomPyramid(AcGePoint3d aptCenter, double adEdgeLength)
 	}
 }
 
-[[nodiscard]] AcGePoint3d ADSKCustomPyramid::bottomFaceCenterPoint() const noexcept
+ AcGePoint3d ADSKCustomPyramid::bottomFaceCenterPoint() const noexcept
 {
 	assertReadEnabled();
 	auto ptCenter = m_Tetrahedron.center();
 	return AcGePoint3d(ptCenter.x, ptCenter.y, ptCenter.z - m_Tetrahedron.height() / 2.0);
 }
 
-[[nodiscard]] AcGePoint3d ADSKCustomPyramid::icosahedronCenter() const noexcept
+ AcGePoint3d ADSKCustomPyramid::icosahedronCenter() const noexcept
 {
 	assertReadEnabled();
 	auto ptCenter = m_Tetrahedron.center();
@@ -267,7 +267,7 @@ Acad::ErrorStatus ADSKCustomPyramid::setFaceOfIcosahedronToRandomColor()
 	return m_Icosahedron.setFaceColor(i, nColor);
 }
 
-[[nodiscard]] double ADSKCustomPyramid::volumesDifference() const noexcept
+ double ADSKCustomPyramid::volumesDifference() const noexcept
 {
 	assertReadEnabled();
 	return m_Tetrahedron.volume() - m_Icosahedron.volume();
@@ -352,7 +352,7 @@ Acad::ErrorStatus ADSKCustomPyramid::subMoveGripPointsAt(
 	return Acad::eOk;
 }
 
-[[nodiscard]] double ADSKCustomPyramid::icosahedronEdgeLength(double adTetrahedronEdgeLength) const noexcept
+ double ADSKCustomPyramid::icosahedronEdgeLength(double adTetrahedronEdgeLength) const noexcept
 {
 	// https://en.wikipedia.org/wiki/Tetrahedron
 	// https://en.wikipedia.org/wiki/Regular_icosahedron#Mensuration
@@ -379,13 +379,13 @@ Acad::ErrorStatus ADSKCustomPyramid::setCenter(const AcGePoint3d & aptCenter)
 	return Acad::eOk;
 }
 
-[[nodiscard]] const AcGePoint3d& ADSKCustomPyramid::center() const
+ const AcGePoint3d& ADSKCustomPyramid::center() const
 {
 	assertReadEnabled();
 	return m_Tetrahedron.center();
 }
 
-[[nodiscard]] const AcGePoint3dArray& ADSKCustomPyramid::vertices() const
+ const AcGePoint3dArray& ADSKCustomPyramid::vertices() const
 {
 	assertReadEnabled();
 	return m_Icosahedron.vertices();
