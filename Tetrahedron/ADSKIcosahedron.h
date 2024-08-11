@@ -1,19 +1,19 @@
-﻿// (C) Copyright 2002-2007 by Autodesk, Inc. 
+﻿// (C) Copyright 2002-2007 by Autodesk, Inc.
 //
 // Permission to use, copy, modify, and distribute this software in
-// object code form for any purpose and without fee is hereby granted, 
-// provided that the above copyright notice appears in all copies and 
+// object code form for any purpose and without fee is hereby granted,
+// provided that the above copyright notice appears in all copies and
 // that both that copyright notice and the limited warranty and
-// restricted rights notice below appear in all supporting 
+// restricted rights notice below appear in all supporting
 // documentation.
 //
-// AUTODESK PROVIDES THIS PROGRAM "AS IS" AND WITH ALL FAULTS. 
+// AUTODESK PROVIDES THIS PROGRAM "AS IS" AND WITH ALL FAULTS.
 // AUTODESK SPECIFICALLY DISCLAIMS ANY IMPLIED WARRANTY OF
-// MERCHANTABILITY OR FITNESS FOR A PARTICULAR USE.  AUTODESK, INC. 
+// MERCHANTABILITY OR FITNESS FOR A PARTICULAR USE.  AUTODESK, INC.
 // DOES NOT WARRANT THAT THE OPERATION OF THE PROGRAM WILL BE
 // UNINTERRUPTED OR ERROR FREE.
 //
-// Use, duplication, or disclosure by the U.S. Government is subject to 
+// Use, duplication, or disclosure by the U.S. Government is subject to
 // restrictions set forth in FAR 52.227-19 (Commercial Computer
 // Software - Restricted Rights) and DFAR 252.227-7013(c)(1)(ii)
 // (Rights in Technical Data and Computer Software), as applicable.
@@ -49,108 +49,132 @@
 #endif // !DLLIMPEXP
 
 //-----------------------------------------------------------------------------
-#include "dbmain.h"
-#include "Tchar.h"
-#include "AcGiFaceDataManager.h"
 #include "ADSKTetrahedron.h"
+#include "AcGiFaceDataManager.h"
+#include "Tchar.h"
+#include "dbmain.h"
 #define ASDKICOSAHEDRON_DBXSERVICE _T("ASDKICOSAHEDRON_DBXSERVICE")
 //-----------------------------------------------------------------------------
 class ADSKCustomPyramid;
 class DLLIMPEXP ADSKIcosahedron : public AcDbEntity {
 
 public:
-	ACRX_DECLARE_MEMBERS(ADSKIcosahedron);
+  ACRX_DECLARE_MEMBERS(ADSKIcosahedron);
 
 protected:
-	static Adesk::UInt32 kCurrentVersionNumber;
+  static Adesk::UInt32 kCurrentVersionNumber;
 
 public:
-	friend class ADSKCustomPyramid;
-	ADSKIcosahedron();
-	ADSKIcosahedron(AcGePoint3d aptCenter, double adEdgeLength);
-	virtual ~ADSKIcosahedron();
+  friend class ADSKCustomPyramid;
+  ADSKIcosahedron();
+  ADSKIcosahedron(AcGePoint3d aptCenter, double adEdgeLength);
+  virtual ~ADSKIcosahedron();
 
-	//----- AcDbObject protocols
-	//- Dwg Filing protocol
-	virtual Acad::ErrorStatus dwgOutFields(AcDbDwgFiler* pFiler) const;
-	virtual Acad::ErrorStatus dwgInFields(AcDbDwgFiler* pFiler);
+  //----- AcDbObject protocols
+  //- Dwg Filing protocol
+  virtual Acad::ErrorStatus dwgOutFields(AcDbDwgFiler *pFiler) const;
+  virtual Acad::ErrorStatus dwgInFields(AcDbDwgFiler *pFiler);
 
-	//----- AcDbEntity protocols
-	//- Graphics protocol
+  //----- AcDbEntity protocols
+  //- Graphics protocol
 protected:
-	virtual Adesk::Boolean subWorldDraw(AcGiWorldDraw* mode);
-	//virtual Adesk::UInt32 subSetAttributes (AcGiDrawableTraits *traits) ;
-	virtual Acad::ErrorStatus subTransformBy(const AcGeMatrix3d& xform);
-	//- Osnap points protocol
+  virtual Adesk::Boolean subWorldDraw(AcGiWorldDraw *mode);
+  // virtual Adesk::UInt32 subSetAttributes (AcGiDrawableTraits *traits) ;
+  virtual Acad::ErrorStatus subTransformBy(const AcGeMatrix3d &xform);
+  //- Osnap points protocol
 public:
-	//- Grip points protocol
-	virtual Acad::ErrorStatus subGetGripPoints(
-		AcDbGripDataPtrArray& grips, const double curViewUnitSize, const int gripSize,
-		const AcGeVector3d& curViewDir, const int bitflags) const;
-	virtual Acad::ErrorStatus subMoveGripPointsAt(const AcDbVoidPtrArray& gripAppData, const AcGeVector3d& offset, const int bitflags);
+  //- Grip points protocol
+  virtual Acad::ErrorStatus subGetGripPoints(AcDbGripDataPtrArray &grips,
+                                             const double curViewUnitSize,
+                                             const int gripSize,
+                                             const AcGeVector3d &curViewDir,
+                                             const int bitflags) const;
+  virtual Acad::ErrorStatus
+  subMoveGripPointsAt(const AcDbVoidPtrArray &gripAppData,
+                      const AcGeVector3d &offset, const int bitflags);
 
-	// Icosahedron methods
-	/*!
-		  \brief Вычисляет радиус описанной сферы по длине ребра икосаэдра
-		  \param[in] adEdgeLenght длина ребра икосаэдра
-		  \return Радиус описанной сферы
-	*/
-	[[nodiscard]] static double circumradius(double adEdgeLenght) noexcept;
-	/*!
-		  \brief Вычисляет длину ребра икосаэдра по радиусу описанной сферы
-		  \param[in] adCircumsphereRadius радиус описанной сферы икосаэдра
-		  \return Длину ребра икосаэдра
-	*/
-	[[nodiscard]] static double edgeLengthByCircumradius(double adCircumsphereRadius) noexcept;
-	Acad::ErrorStatus setFaceColor(Adesk::Int32 aI, short anColor);
-	Acad::ErrorStatus setCenter(const AcGePoint3d& aptCenter);
-	[[nodiscard]] const AcGePoint3d& center() const;
-	[[nodiscard]] double edgeLength() const;
-	Acad::ErrorStatus setEdgeLength(double adEdgeLenght);
-	/*!
-		  \brief Вычисляет объём тетраэдра
-		  \details https://en.wikipedia.org/wiki/Regular_icosahedron#Mensuration
-		  \return Объём тетраэдра
-	*/
-	[[nodiscard]] double volume() const noexcept;
-	[[nodiscard]] const AcGePoint3dArray& vertices() const;
-	/*!
-			\brief Вычисляет координаты вершин вписанного в тетраэдра икосаэдра по координатам тетраэдра
-			\details Чтобы получить координаты вершин вписанного икосаэдра из тетраэдра, нужно разделить его ребра на золотое сечение. Полученные точки сметрично расположены от каждой вершины тетраэдра. В каждом треугольнике тетраэдра строятся 3 цевиана (от каждой вершины до точки разделившей сторону на золотое сечение). Пересечение цевианов дает нам грань икосаэдра. Source: https://veraviana.net/enclosing/inside-the-tetrahedron/
-			\throw std::invalid_argument в случае некоректного тетраэдра (неправильное количество или расположение вершин)
-	*/
-	void calculateVertices(ADSKTetrahedron& arTetrahedron);
+  // Icosahedron methods
+  /*!
+            \brief Вычисляет радиус описанной сферы по длине ребра икосаэдра
+            \param[in] adEdgeLenght длина ребра икосаэдра
+            \return Радиус описанной сферы
+  */
+  [[nodiscard]] static double circumradius(double adEdgeLenght) noexcept;
+  /*!
+            \brief Вычисляет длину ребра икосаэдра по радиусу описанной сферы
+            \param[in] adCircumsphereRadius радиус описанной сферы икосаэдра
+            \return Длину ребра икосаэдра
+  */
+  [[nodiscard]] static double
+  edgeLengthByCircumradius(double adCircumsphereRadius) noexcept;
+  Acad::ErrorStatus setFaceColor(Adesk::Int32 aI, short anColor);
+  Acad::ErrorStatus setCenter(const AcGePoint3d &aptCenter);
+  [[nodiscard]] const AcGePoint3d &center() const;
+  [[nodiscard]] double edgeLength() const;
+  Acad::ErrorStatus setEdgeLength(double adEdgeLenght);
+  /*!
+            \brief Вычисляет объём тетраэдра
+            \details
+     https://en.wikipedia.org/wiki/Regular_icosahedron#Mensuration \return Объём
+     тетраэдра
+  */
+  [[nodiscard]] double volume() const noexcept;
+  [[nodiscard]] const AcGePoint3dArray &vertices() const;
+  /*!
+            \brief Вычисляет координаты вершин вписанного в тетраэдра
+     икосаэдра по координатам тетраэдра
+            \details Чтобы получить координаты вершин вписанного икосаэдра из
+     тетраэдра, нужно разделить его ребра на золотое сечение. Полученные точки
+     сметрично расположены от каждой вершины тетраэдра. В каждом треугольнике
+     тетраэдра строятся 3 цевиана (от каждой вершины до точки разделившей
+     сторону на золотое сечение). Пересечение цевианов дает нам грань икосаэдра.
+     Source: https://veraviana.net/enclosing/inside-the-tetrahedron/
+            \throw std::invalid_argument в случае некоректного тетраэдра
+     (неправильное количество или расположение вершин)
+  */
+  void calculateVertices(ADSKTetrahedron &arTetrahedron);
 #ifndef _DEBUG
-	bool runTests() const;
+  bool runTests() const;
 #endif // !_DEBUG
 private:
-	/*!
-		  \brief Вспомогательный метод для calculateVertices, который принимает тетраэдр. Вычислает точки сметрично расположеные от каждой вершины тетраэдра
-		  \param[in] arTetrahedronVertices вершины тетраэдра
-		  \param[in] arEdgesPointsIndexes индексы вершин, составлюющие ребра тетраэдра
-		  \return Массив точек сметрично расположеных от каждой вершины тетраэдра 
-	*/
-	[[nodiscard]] static AcGePoint3dArray divideByGoldenRatio(const AcGePoint3dArray& arTetrahedronVertices, const std::vector<std::pair<int, int>>& arEdgesPointsIndexes);
-	/*!
-		  \brief Вспомогательный метод для calculateVertices, который принимает тетраэдр. Делит тве точки на золотое сечение.
-		  \param[in] aptA первая вершина ребра
-		  \param[in] aptB вторая вершина ребра
-		  \return Точку делящую ребро в соотношении с золотым сечением
-	*/
-	[[nodiscard]] static AcGePoint3d divideByGoldenRatio(AcGePoint3d& aptA, AcGePoint3d& aptB);
-	/*!
-		  \details Обновляет длину ребер тетраэдра, вызывается в методе subTransformBy
-	*/
-	void updateEdgeLength() noexcept;
-	/*!
-		  \details Вычисляет координаты точек икосаэдра по длине ребра граней и координате центра фигуры
-	*/
-	void calculateVertices() noexcept;
+  /*!
+            \brief Вспомогательный метод для calculateVertices, который
+     принимает тетраэдр. Вычислает точки сметрично расположеные от каждой
+     вершины тетраэдра
+            \param[in] arTetrahedronVertices вершины тетраэдра
+            \param[in] arEdgesPointsIndexes индексы вершин, составлюющие ребра
+     тетраэдра \return Массив точек сметрично расположеных от каждой вершины
+     тетраэдра
+  */
+  [[nodiscard]] static AcGePoint3dArray divideByGoldenRatio(
+      const AcGePoint3dArray &arTetrahedronVertices,
+      const std::vector<std::pair<int, int>> &arEdgesPointsIndexes);
+  /*!
+            \brief Вспомогательный метод для calculateVertices, который
+     принимает тетраэдр. Делит тве точки на золотое сечение.
+            \param[in] aptA первая вершина ребра
+            \param[in] aptB вторая вершина ребра
+            \return Точку делящую ребро в соотношении с золотым сечением
+  */
+  [[nodiscard]] static AcGePoint3d divideByGoldenRatio(AcGePoint3d &aptA,
+                                                       AcGePoint3d &aptB);
+  /*!
+            \details Обновляет длину ребер тетраэдра, вызывается в методе
+     subTransformBy
+  */
+  void updateEdgeLength() noexcept;
+  /*!
+            \details Вычисляет координаты точек икосаэдра по длине ребра граней
+     и координате центра фигуры
+  */
+  void calculateVertices() noexcept;
 
-	double m_dEdgeLength;
-	AcGePoint3d m_ptCenter;
-	AcGePoint3dArray m_aVertices; ///< Координаты вершин тетраэдра
-	AcGiFaceDataManager m_faceDataManager; ///< Освобождает память выделенную для свойств класса AcGiFaceData, описывающего свойства граней
+  double m_dEdgeLength;
+  AcGePoint3d m_ptCenter;
+  AcGePoint3dArray m_aVertices; ///< Координаты вершин тетраэдра
+  AcGiFaceDataManager
+      m_faceDataManager; ///< Освобождает память выделенную для свойств класса
+                         ///< AcGiFaceData, описывающего свойства граней
 };
 
 #ifdef TETRAHEDRON_MODULE
@@ -159,8 +183,8 @@ ACDB_REGISTER_OBJECT_ENTRY_AUTO(ADSKIcosahedron)
 
 //#if _DEBUG
 // namespace {
-//static_assert(adEdgeLenght > 0, "Edge lenght must be positive");
-//static_assert(adCircumsphereRadius > 0, "Circumradius must be positive");
-//static_assert(aI > 0 && aI < 20, "Face index must be in range [0, 20)");
+// static_assert(adEdgeLenght > 0, "Edge lenght must be positive");
+// static_assert(adCircumsphereRadius > 0, "Circumradius must be positive");
+// static_assert(aI > 0 && aI < 20, "Face index must be in range [0, 20)");
 // } // namespace
 //#endif // !_DEBUG
