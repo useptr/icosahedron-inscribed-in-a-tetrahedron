@@ -206,14 +206,14 @@ Acad::ErrorStatus ADSKIcosahedron::subMoveGripPointsAt(
 	return Acad::eOk;
 }
 
-double ADSKIcosahedron::volume() const noexcept
+[[nodiscard]] double ADSKIcosahedron::volume() const noexcept
 {
 	// https://en.wikipedia.org/wiki/Regular_icosahedron#Mensuration
 	assertReadEnabled();
 	return 5.0 * std::pow(std::numbers::phi_v<double>, 2.0) / 6.0 * std::pow(m_dEdgeLength, 3.0);
 }
 
-const AcGePoint3dArray& ADSKIcosahedron::vertices() const
+[[nodiscard]] const AcGePoint3dArray& ADSKIcosahedron::vertices() const
 {
 	assertReadEnabled();
 	return m_aVertices;
@@ -309,7 +309,7 @@ void ADSKIcosahedron::calculateVertices(ADSKTetrahedron & arTetrahedron)
 	// TODO update center
 }
 
-AcGePoint3dArray ADSKIcosahedron::divideByGoldenRatio(const AcGePoint3dArray & arTetrahedronVertices, const std::vector<std::pair<int, int>>&arEdgesPointsIndexes) {
+[[nodiscard]] AcGePoint3dArray ADSKIcosahedron::divideByGoldenRatio(const AcGePoint3dArray & arTetrahedronVertices, const std::vector<std::pair<int, int>>&arEdgesPointsIndexes) {
 	AcGePoint3dArray verticesDivideInGoldenRatio;
 	for (auto& [iA, iB] : arEdgesPointsIndexes)
 	{
@@ -320,18 +320,18 @@ AcGePoint3dArray ADSKIcosahedron::divideByGoldenRatio(const AcGePoint3dArray & a
 	return verticesDivideInGoldenRatio;
 }
 
-AcGePoint3d ADSKIcosahedron::divideByGoldenRatio(AcGePoint3d & aptA, AcGePoint3d & aptB)
+[[nodiscard]] AcGePoint3d ADSKIcosahedron::divideByGoldenRatio(AcGePoint3d & aptA, AcGePoint3d & aptB)
 {
 	return aptA + (aptB - aptA) / std::numbers::phi_v<double>;
 }
 
-double ADSKIcosahedron::circumradius(double adEdgeLenght) noexcept
+[[nodiscard]] double ADSKIcosahedron::circumradius(double adEdgeLenght) noexcept
 {
 	// https://en.wikipedia.org/wiki/Regular_icosahedron#Mensuration
 	return std::sqrt(std::pow(std::numbers::phi_v<double>, 2.0) + 1.0) / 2.0 * adEdgeLenght;
 }
 
-double ADSKIcosahedron::edgeLengthByCircumradius(double adCircumsphereRadius) noexcept
+[[nodiscard]] double ADSKIcosahedron::edgeLengthByCircumradius(double adCircumsphereRadius) noexcept
 {
 	// https://en.wikipedia.org/wiki/Regular_icosahedron#Mensuration
 	return adCircumsphereRadius * 2.0 / std::sqrt(std::pow(std::numbers::phi_v<double>, 2.0) + 1.0);
@@ -357,13 +357,13 @@ Acad::ErrorStatus ADSKIcosahedron::setCenter(const AcGePoint3d & aptCenter)
 	return Acad::eOk;
 }
 
-const AcGePoint3d& ADSKIcosahedron::center() const
+[[nodiscard]] const AcGePoint3d& ADSKIcosahedron::center() const
 {
 	assertReadEnabled();
 	return m_ptCenter;
 }
 
-double ADSKIcosahedron::edgeLength() const {
+[[nodiscard]] double ADSKIcosahedron::edgeLength() const {
 	assertReadEnabled();
 	return m_dEdgeLength;
 }

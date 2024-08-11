@@ -2,7 +2,7 @@
 #include <memory>
 #include <vector>
 /*!
-	\brief Вспомогательный класс, который следит за выделенными через new полями для AcGiFaceData
+	\brief Класс для автоматического свобождения памяти, выделенной под свойства класса AcGiFaceData
 */
 class AcGiFaceDataManager
 {

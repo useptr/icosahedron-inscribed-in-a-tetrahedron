@@ -109,7 +109,7 @@ public:
 		  \brief Вычисляет разницу объемов икосаэдра и вписанного тетраэдра
 		  \return Разницу объемов икосаэдра и вписанного тетраэдра
 	*/
-	double volumesDifference() const noexcept;
+	[[nodiscard]] double volumesDifference() const noexcept;
 	/*!
 		  \details Устанавливает новую длину рёбер для тетраэдра, пересчитывает длину рёбер вписанного икосаэдра и затем вызывает анологичный метод у икосаэдра
 		  \param[in] adEdgeLenght длина ребра тетраэдра
@@ -126,8 +126,8 @@ public:
 		  \brief Возвращает координаты центра фигуры
 		  \return Координаты центра фигуры
 	*/
-	const AcGePoint3d& center() const;
-	const AcGePoint3dArray& vertices() const;
+	[[nodiscard]] const AcGePoint3d& center() const;
+	[[nodiscard]] const AcGePoint3dArray& vertices() const;
 #ifndef _DEBUG
 	bool runTests() const;
 	const AcGePoint3dArray& tetrahedronVertices() const;
@@ -138,19 +138,19 @@ private:
 		  \brief Вычисляет координаты m_ptBottomFaceCenter
 		  \return координаты m_ptBottomFaceCenter
 	*/
-	AcGePoint3d bottomFaceCenterPoint() const noexcept;
+	[[nodiscard]] AcGePoint3d bottomFaceCenterPoint() const noexcept;
 	/*!
 		  \brief Вычисляет координаты центра вписанного икосаэдра
 		  \return координаты центра вписанного икосаэдра
 	*/
 	//static AcGePoint3d icosahedronCenter(AcGePoint3d aptTetrahedronCenter) noexcept;
-	AcGePoint3d icosahedronCenter() const noexcept;
+	[[nodiscard]] AcGePoint3d icosahedronCenter() const noexcept;
 	/*!
 		  \brief Вычисляет длину ребра вписанного икосаэдра по длине ребра тетраэдра
 		  \param[in] adEdgeLenght длина ребра тетраэдра
 		  \return Длину ребра вписанного икосаэдра тетраэдра
 	*/
-	double icosahedronEdgeLength(double adTetrahedronEdgeLenght) const noexcept;
+	[[nodiscard]] double icosahedronEdgeLength(double adTetrahedronEdgeLenght) const noexcept;
 	ADSKTetrahedron m_Tetrahedron; ///< Тетраэдр
 	ADSKIcosahedron m_Icosahedron; ///< Вписанный икосаэдр
 	AcGePoint3d m_ptBottomFaceCenter; ///< Точка на нижней гране тетраэдра для перемещения фигуры

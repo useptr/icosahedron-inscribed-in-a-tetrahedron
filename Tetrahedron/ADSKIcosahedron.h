@@ -91,24 +91,29 @@ public:
 
 	// Icosahedron methods
 	/*!
+		  \brief Вычисляет радиус описанной сферы по длине ребра икосаэдра
+		  \param[in] adEdgeLenght длина ребра икосаэдра
+		  \return Радиус описанной сферы
+	*/
+	[[nodiscard]] static double circumradius(double adEdgeLenght) noexcept;
+	/*!
 		  \brief Вычисляет длину ребра икосаэдра по радиусу описанной сферы
 		  \param[in] adCircumsphereRadius радиус описанной сферы икосаэдра
 		  \return Длину ребра икосаэдра
 	*/
-	static double circumradius(double adEdgeLenght) noexcept;
-	static double edgeLengthByCircumradius(double adCircumsphereRadius) noexcept;
+	[[nodiscard]] static double edgeLengthByCircumradius(double adCircumsphereRadius) noexcept;
 	Acad::ErrorStatus setFaceColor(Adesk::Int32 aI, short anColor);
 	Acad::ErrorStatus setCenter(const AcGePoint3d& aptCenter);
-	const AcGePoint3d& center() const;
-	double edgeLength() const;
+	[[nodiscard]] const AcGePoint3d& center() const;
+	[[nodiscard]] double edgeLength() const;
 	Acad::ErrorStatus setEdgeLength(double adEdgeLenght);
 	/*!
 		  \brief Вычисляет объём тетраэдра
 		  \details https://en.wikipedia.org/wiki/Regular_icosahedron#Mensuration
 		  \return Объём тетраэдра
 	*/
-	double volume() const noexcept;
-	const AcGePoint3dArray& vertices() const;
+	[[nodiscard]] double volume() const noexcept;
+	[[nodiscard]] const AcGePoint3dArray& vertices() const;
 	/*!
 			\brief Вычисляет координаты вершин вписанного в тетраэдра икосаэдра по координатам тетраэдра
 			\details Чтобы получить координаты вершин вписанного икосаэдра из тетраэдра, нужно разделить его ребра на золотое сечение. Полученные точки сметрично расположены от каждой вершины тетраэдра. В каждом треугольнике тетраэдра строятся 3 цевиана (от каждой вершины до точки разделившей сторону на золотое сечение). Пересечение цевианов дает нам грань икосаэдра. Source: https://veraviana.net/enclosing/inside-the-tetrahedron/
@@ -125,14 +130,14 @@ private:
 		  \param[in] arEdgesPointsIndexes индексы вершин, составлюющие ребра тетраэдра
 		  \return Массив точек сметрично расположеных от каждой вершины тетраэдра 
 	*/
-	static AcGePoint3dArray divideByGoldenRatio(const AcGePoint3dArray& arTetrahedronVertices, const std::vector<std::pair<int, int>>& arEdgesPointsIndexes);
+	[[nodiscard]] static AcGePoint3dArray divideByGoldenRatio(const AcGePoint3dArray& arTetrahedronVertices, const std::vector<std::pair<int, int>>& arEdgesPointsIndexes);
 	/*!
 		  \brief Вспомогательный метод для calculateVertices, который принимает тетраэдр. Делит тве точки на золотое сечение.
 		  \param[in] aptA первая вершина ребра
 		  \param[in] aptB вторая вершина ребра
 		  \return Точку делящую ребро в соотношении с золотым сечением
 	*/
-	static AcGePoint3d divideByGoldenRatio(AcGePoint3d& aptA, AcGePoint3d& aptB);
+	[[nodiscard]] static AcGePoint3d divideByGoldenRatio(AcGePoint3d& aptA, AcGePoint3d& aptB);
 	/*!
 		  \details Обновляет длину ребер тетраэдра, вызывается в методе subTransformBy
 	*/

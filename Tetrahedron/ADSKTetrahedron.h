@@ -96,27 +96,27 @@ public:
 		  \param[in] adEdgeLenght длина ребра тетраэдра
 		  \return Радиус вписанной сферы тетраэдра
 	*/
-	static double inradius(double adEdgeLength) noexcept;
-	static double midradius(double adEdgeLength) noexcept;
-	double inradius() const noexcept;
+	[[nodiscard]] static double inradius(double adEdgeLength) noexcept;
+	[[nodiscard]] static double midradius(double adEdgeLength) noexcept;
+	[[nodiscard]] double inradius() const noexcept;
 	/*!
 		  \brief Вычисляет объём тетраэдра
 		  \details https://en.wikipedia.org/wiki/Tetrahedron#Measurement
 		  \return Объём тетраэдра
 	*/
-	double volume() const noexcept;
+	[[nodiscard]] double volume() const noexcept;
 	/*!
 		  \brief Вычисляет высоту тетраэдра по длине ребра тетраэдра
 		  \details https://en.wikipedia.org/wiki/Tetrahedron#Measurement
 		  \return Высоту тетраэдра
 	*/
-	static double height(double adEdgeLenght) noexcept;
-	double height() const noexcept;
+	[[nodiscard]] static double height(double adEdgeLenght) noexcept;
+	[[nodiscard]] double height() const noexcept;
 	Acad::ErrorStatus setCenter(const AcGePoint3d& aptCenter);
-	const AcGePoint3d& center() const;
-	double edgeLength() const;
+	[[nodiscard]] const AcGePoint3d& center() const;
+	[[nodiscard]] double edgeLength() const;
 	Acad::ErrorStatus setEdgeLength(double adEdgeLenght);
-	const AcGePoint3dArray& vertices() const;
+	[[nodiscard]] const AcGePoint3dArray& vertices() const;
 #ifndef _DEBUG
 	bool runTests() const;
 #endif // !_DEBUG
